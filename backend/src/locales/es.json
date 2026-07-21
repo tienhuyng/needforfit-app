@@ -1,0 +1,28 @@
+{
+  "auth": {
+    "errors": {
+      "emailInvalid": "Formato de correo electrónico inválido",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "emailExists": "El correo electrónico ya existe",
+      "emailNotFound": "Correo electrónico no encontrado",
+      "passwordRequired": "La contraseña es obligatoria",
+      "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+      "passwordIncorrect": "Contraseña incorrecta",
+      "passwordSameAsOld": "La nueva contraseña debe ser diferente de la anterior",
+      "passwordMismatch": "La confirmación de contraseña no coincide",
+      "firstNameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "El apellido es obligatorio",
+      "roleInvalid": "Rol inválido",
+      "accountLocked": "La cuenta está bloqueada",
+      "resetTokenInvalid": "Enlace de restablecimiento de contraseña inválido",
+      "resetTokenExpired": "El enlace de restablecimiento de contraseña ha expirado",
+      "tokenRequired": "El token es obligatorio"
+    },
+    "messages": {
+      "loginSuccess": "Inicio de sesión exitoso",
+      "registerSuccess": "Registro exitoso",
+      "forgotPasswordSuccess": "Se ha enviado el enlace de restablecimiento de contraseña",
+      "resetPasswordSuccess": "Contraseña restablecida con éxito"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "auth": {
+    "errors": {
+      "emailInvalid": "メール形式が無効です",
+      "emailRequired": "メールアドレスは必須です",
+      "emailExists": "メールアドレスは既に存在します",
+      "emailNotFound": "メールアドレスが見つかりません",
+      "passwordRequired": "パスワードは必須です",
+      "passwordTooShort": "パスワードは8文字以上必要です",
+      "passwordIncorrect": "パスワードが正しくありません",
+      "passwordSameAsOld": "新しいパスワードは古いパスワードと異なる必要があります",
+      "passwordMismatch": "確認用パスワードが一致しません",
+      "firstNameRequired": "名は必須です",
+      "lastNameRequired": "姓は必須です",
+      "roleInvalid": "無効な役割です",
+      "accountLocked": "アカウントがロックされています",
+      "resetTokenInvalid": "パスワードリセットリンクが無効です",
+      "resetTokenExpired": "パスワードリセットリンクの有効期限が切れています",
+      "tokenRequired": "トークンは必須です"
+    },
+    "messages": {
+      "loginSuccess": "ログイン成功",
+      "registerSuccess": "登録成功",
+      "forgotPasswordSuccess": "パスワードリセットリンクを送信しました",
+      "resetPasswordSuccess": "パスワードのリセットに成功しました"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "subtitle": "¡Bienvenido de nuevo! Inicia sesión en tu cuenta.",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "rememberMe": "Recordarme",
+      "submit": "Iniciar Sesión",
+      "submitting": "Iniciando sesión...",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "noAccount": "¿No tienes cuenta?",
+      "registerLink": "Regístrate ahora"
+    },
+    "register": {
+      "title": "Registrarse",
+      "subtitle": "Crea una cuenta nueva para comenzar tu viaje fitness.",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "role": "Rol",
+      "roleTrainee": "Aprendiz",
+      "rolePt": "Entrenador Personal",
+      "submit": "Registrarse",
+      "submitting": "Registrando...",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "loginLink": "Iniciar sesión"
+    },
+    "forgotPassword": {
+      "title": "Olvidé mi Contraseña",
+      "subtitle": "Ingresa tu correo para recibir un enlace de restablecimiento.",
+      "email": "Correo electrónico",
+      "submit": "Enviar Enlace",
+      "submitting": "Enviando...",
+      "backToLogin": "Volver al inicio de sesión",
+      "success": "Se ha enviado el enlace de restablecimiento a tu correo."
+    },
+    "resetPassword": {
+      "title": "Restablecer Contraseña",
+      "subtitle": "Ingresa una nueva contraseña para tu cuenta.",
+      "email": "Correo electrónico",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "submit": "Restablecer Contraseña",
+      "submitting": "Actualizando...",
+      "success": "¡Contraseña restablecida con éxito! Ya puedes iniciar sesión.",
+      "loginLink": "Iniciar sesión ahora"
+    },
+    "errors": {
+      "emailInvalid": "Formato de correo electrónico inválido",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "passwordRequired": "La contraseña es obligatoria",
+      "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+      "passwordMismatch": "La confirmación de contraseña no coincide",
+      "firstNameRequired": "El nombre es obligatorio",
+      "lastNameRequired": "El apellido es obligatorio",
+      "roleRequired": "Por favor selecciona un rol",
+      "loginFailed": "Error al iniciar sesión. Inténtalo de nuevo.",
+      "registerFailed": "Error al registrarse. Inténtalo de nuevo.",
+      "forgotFailed": "No se pudo enviar el enlace. Inténtalo de nuevo.",
+      "resetFailed": "Error al restablecer la contraseña. Inténtalo de nuevo.",
+      "generic": "Ocurrió un error. Inténtalo de nuevo."
+    }
+  }
+}

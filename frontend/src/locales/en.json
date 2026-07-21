@@ -1,0 +1,66 @@
+{
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Welcome back! Please sign in to your account.",
+      "email": "Email",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register now"
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create a new account to start your fitness journey.",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "role": "Role",
+      "roleTrainee": "Trainee",
+      "rolePt": "Personal Trainer",
+      "submit": "Register",
+      "submitting": "Registering...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email to receive a password reset link.",
+      "email": "Email",
+      "submit": "Send Reset Link",
+      "submitting": "Sending...",
+      "backToLogin": "Back to login",
+      "success": "Password reset link has been sent to your email."
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter a new password for your account.",
+      "email": "Email",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Reset Password",
+      "submitting": "Updating...",
+      "success": "Password reset successful! You can sign in now.",
+      "loginLink": "Sign in now"
+    },
+    "errors": {
+      "emailInvalid": "Invalid email format",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "passwordMismatch": "Password confirmation does not match",
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "roleRequired": "Please select a role",
+      "loginFailed": "Login failed. Please try again.",
+      "registerFailed": "Registration failed. Please try again.",
+      "forgotFailed": "Could not send reset link. Please try again.",
+      "resetFailed": "Password reset failed. Please try again.",
+      "generic": "An error occurred. Please try again."
+    }
+  }
+}

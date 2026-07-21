@@ -1,0 +1,28 @@
+{
+  "auth": {
+    "errors": {
+      "emailInvalid": "Định dạng email không hợp lệ",
+      "emailRequired": "Email là bắt buộc",
+      "emailExists": "Email đã tồn tại",
+      "emailNotFound": "Email không tìm thấy",
+      "passwordRequired": "Mật khẩu là bắt buộc",
+      "passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự",
+      "passwordIncorrect": "Mật khẩu sai",
+      "passwordSameAsOld": "Mật khẩu mới phải khác mật khẩu cũ",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp",
+      "firstNameRequired": "Tên là bắt buộc",
+      "lastNameRequired": "Họ là bắt buộc",
+      "roleInvalid": "Vai trò không hợp lệ",
+      "accountLocked": "Tài khoản bị khóa",
+      "resetTokenInvalid": "Liên kết đặt lại mật khẩu không hợp lệ",
+      "resetTokenExpired": "Liên kết đặt lại mật khẩu đã hết hạn",
+      "tokenRequired": "Token là bắt buộc"
+    },
+    "messages": {
+      "loginSuccess": "Đăng nhập thành công",
+      "registerSuccess": "Đăng ký thành công",
+      "forgotPasswordSuccess": "Liên kết đặt lại mật khẩu đã được gửi",
+      "resetPasswordSuccess": "Đặt lại mật khẩu thành công"
+    }
+  }
+}

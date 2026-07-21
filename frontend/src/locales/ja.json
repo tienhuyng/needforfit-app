@@ -1,0 +1,66 @@
+{
+  "auth": {
+    "login": {
+      "title": "ログイン",
+      "subtitle": "おかえりなさい！アカウントにサインインしてください。",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "rememberMe": "ログイン状態を保持",
+      "submit": "ログイン",
+      "submitting": "ログイン中...",
+      "forgotPassword": "パスワードをお忘れですか？",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "registerLink": "今すぐ登録"
+    },
+    "register": {
+      "title": "登録",
+      "subtitle": "新しいアカウントを作成してフィットネスの旅を始めましょう。",
+      "firstName": "名",
+      "lastName": "姓",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "role": "役割",
+      "roleTrainee": "トレーニー",
+      "rolePt": "パーソナルトレーナー",
+      "submit": "登録",
+      "submitting": "登録中...",
+      "hasAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "ログイン"
+    },
+    "forgotPassword": {
+      "title": "パスワードを忘れた",
+      "subtitle": "メールアドレスを入力してリセットリンクを受け取ってください。",
+      "email": "メールアドレス",
+      "submit": "リセットリンクを送信",
+      "submitting": "送信中...",
+      "backToLogin": "ログインに戻る",
+      "success": "パスワードリセットリンクをメールに送信しました。"
+    },
+    "resetPassword": {
+      "title": "パスワードをリセット",
+      "subtitle": "アカウントの新しいパスワードを入力してください。",
+      "email": "メールアドレス",
+      "newPassword": "新しいパスワード",
+      "confirmPassword": "パスワード確認",
+      "submit": "パスワードをリセット",
+      "submitting": "更新中...",
+      "success": "パスワードのリセットに成功しました！今すぐログインできます。",
+      "loginLink": "今すぐログイン"
+    },
+    "errors": {
+      "emailInvalid": "メール形式が無効です",
+      "emailRequired": "メールアドレスは必須です",
+      "passwordRequired": "パスワードは必須です",
+      "passwordTooShort": "パスワードは8文字以上必要です",
+      "passwordMismatch": "確認用パスワードが一致しません",
+      "firstNameRequired": "名は必須です",
+      "lastNameRequired": "姓は必須です",
+      "roleRequired": "役割を選択してください",
+      "loginFailed": "ログインに失敗しました。もう一度お試しください。",
+      "registerFailed": "登録に失敗しました。もう一度お試しください。",
+      "forgotFailed": "リセットリンクを送信できませんでした。もう一度お試しください。",
+      "resetFailed": "パスワードのリセットに失敗しました。もう一度お試しください。",
+      "generic": "エラーが発生しました。もう一度お試しください。"
+    }
+  }
+}

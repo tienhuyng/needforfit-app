@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  pt
+  trainee
+}
+
+enum UserStatus {
+  pending
+  active
+  inactive
+  deleted
+}
+
+enum SupportedLanguage {
+  vi
+  en
+  zh
+  ja
+  es
+}
+
+model User {
+  id                String            @id @default(uuid())
+  email             String            @unique
+  passwordHash      String            @map("password_hash")
+  firstName         String?           @map("first_name")
+  lastName          String?           @map("last_name")
+  phone             String?
+  avatarUrl         String?           @map("avatar_url")
+  role              UserRole          @default(trainee)
+  status            UserStatus        @default(active)
+  preferredLanguage SupportedLanguage @default(vi) @map("preferred_language")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  passwordResetTokens PasswordResetToken[]
+
+  @@map("users")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}

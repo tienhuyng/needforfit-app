@@ -1,0 +1,28 @@
+{
+  "auth": {
+    "errors": {
+      "emailInvalid": "Invalid email format",
+      "emailRequired": "Email is required",
+      "emailExists": "Email already exists",
+      "emailNotFound": "Email not found",
+      "passwordRequired": "Password is required",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "passwordIncorrect": "Incorrect password",
+      "passwordSameAsOld": "New password must be different from the old password",
+      "passwordMismatch": "Password confirmation does not match",
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "roleInvalid": "Invalid role",
+      "accountLocked": "Account is locked",
+      "resetTokenInvalid": "Invalid password reset link",
+      "resetTokenExpired": "Password reset link has expired",
+      "tokenRequired": "Token is required"
+    },
+    "messages": {
+      "loginSuccess": "Login successful",
+      "registerSuccess": "Registration successful",
+      "forgotPasswordSuccess": "Password reset link has been sent",
+      "resetPasswordSuccess": "Password reset successful"
+    }
+  }
+}

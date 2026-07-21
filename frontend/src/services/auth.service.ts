@@ -1,0 +1,83 @@
+import axios, { AxiosError } from 'axios';
+import i18n from '@/config/i18n';
+import {
+  ApiErrorResponse,
+  ApiSuccessResponse,
+  LoginResponse,
+  MessageResponse,
+  RegisterResponse,
+} from '@/types/auth';
+import {
+  ForgotPasswordFormData,
+  LoginFormData,
+  RegisterFormData,
+  ResetPasswordFormData,
+} from '@/utils/validation';
+
+const api = axios.create({
+  baseURL: '/api',
+  headers: { 'Content-Type': 'application/json' },
+});
+
+api.interceptors.request.use((config) => {
+  config.headers['Accept-Language'] = i18n.language;
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export function getApiErrorMessage(error: unknown, fallbackKey: string): string {
+  if (axios.isAxiosError(error)) {
+    const axiosError = error as AxiosError<ApiErrorResponse>;
+    const data = axiosError.response?.data;
+    if (data?.errors?.[0]?.i18nKey) {
+      return i18n.t(data.errors[0].i18nKey);
+    }
+    if (data?.message) {
+      return data.message;
+    }
+  }
+  return i18n.t(fallbackKey);
+}
+
+export const authApi = {
+  login: async (data: LoginFormData): Promise<LoginResponse> => {
+    const res = await api.post<ApiSuccessResponse<LoginResponse>>('/auth/login', data);
+    return res.data.data;
+  },
+
+  register: async (data: RegisterFormData): Promise<RegisterResponse> => {
+    const res = await api.post<ApiSuccessResponse<RegisterResponse>>('/auth/register', data);
+    return res.data.data;
+  },
+
+  forgotPassword: async (data: ForgotPasswordFormData): Promise<MessageResponse> => {
+    const res = await api.post<ApiSuccessResponse<MessageResponse>>(
+      '/auth/forgot-password',
+      data
+    );
+    return res.data.data;
+  },
+
+  resetPassword: async (
+    data: ResetPasswordFormData & { token: string }
+  ): Promise<MessageResponse> => {
+    const res = await api.post<ApiSuccessResponse<MessageResponse>>('/auth/reset-password', {
+      email: data.email,
+      token: data.token,
+      newPassword: data.newPassword,
+      confirmPassword: data.confirmPassword,
+    });
+    return res.data.data;
+  },
+};
+
+export function storeAuthToken(token: string): void {
+  localStorage.setItem('token', token);
+}
+
+export function clearAuthToken(): void {
+  localStorage.removeItem('token');
+}
