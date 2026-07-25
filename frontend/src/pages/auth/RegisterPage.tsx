@@ -3,11 +3,21 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input } from '@/components/template';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+} from '@/components/template';
+import { Label } from '@/components/ui/label';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { authApi, getApiErrorMessage, storeAuthToken } from '@/services/auth.service';
 import { createRegisterSchema, RegisterFormData } from '@/utils/validation';
+import { cn } from '@/lib/utils';
 
 export const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
@@ -42,78 +52,86 @@ export const RegisterPage: React.FC = () => {
 
   return (
     <AuthLayout>
-      <Card title={t('auth.register.title')} subtitle={t('auth.register.subtitle')}>
-        {error && <Alert type="error" message={error} />}
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">{t('auth.register.title')}</CardTitle>
+          <CardDescription>{t('auth.register.subtitle')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && <Alert type="error" message={error} />}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                label={t('auth.register.firstName')}
+                autoComplete="given-name"
+                error={errors.firstName?.message}
+                {...register('firstName')}
+              />
+              <Input
+                label={t('auth.register.lastName')}
+                autoComplete="family-name"
+                error={errors.lastName?.message}
+                {...register('lastName')}
+              />
+            </div>
+
             <Input
-              label={t('auth.register.firstName')}
-              autoComplete="given-name"
-              error={errors.firstName?.message}
-              {...register('firstName')}
+              label={t('auth.register.email')}
+              type="email"
+              autoComplete="email"
+              placeholder="your@email.com"
+              error={errors.email?.message}
+              {...register('email')}
             />
+
             <Input
-              label={t('auth.register.lastName')}
-              autoComplete="family-name"
-              error={errors.lastName?.message}
-              {...register('lastName')}
+              label={t('auth.register.password')}
+              type="password"
+              autoComplete="new-password"
+              placeholder="••••••••"
+              error={errors.password?.message}
+              {...register('password')}
             />
-          </div>
 
-          <Input
-            label={t('auth.register.email')}
-            type="email"
-            autoComplete="email"
-            placeholder="your@email.com"
-            error={errors.email?.message}
-            {...register('email')}
-          />
+            <div className="space-y-2">
+              <Label htmlFor="role">{t('auth.register.role')}</Label>
+              <select
+                id="role"
+                className={cn(
+                  'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  errors.role && 'border-destructive focus-visible:ring-destructive'
+                )}
+                {...register('role')}
+              >
+                <option value="trainee">{t('auth.register.roleTrainee')}</option>
+                <option value="pt">{t('auth.register.rolePt')}</option>
+              </select>
+              {errors.role && (
+                <p className="text-sm font-medium text-destructive" role="alert">
+                  {errors.role.message}
+                </p>
+              )}
+            </div>
 
-          <Input
-            label={t('auth.register.password')}
-            type="password"
-            autoComplete="new-password"
-            placeholder="••••••••"
-            error={errors.password?.message}
-            {...register('password')}
-          />
-
-          <div className="flex flex-col gap-1.5">
-            <label className="block text-sm font-semibold text-gray-700">
-              {t('auth.register.role')}
-            </label>
-            <select
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
-              {...register('role')}
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full"
+              isLoading={isSubmitting || isLoading}
             >
-              <option value="trainee">{t('auth.register.roleTrainee')}</option>
-              <option value="pt">{t('auth.register.rolePt')}</option>
-            </select>
-            {errors.role && (
-              <p className="text-sm text-red-500 font-medium" role="alert">
-                {errors.role.message}
-              </p>
-            )}
-          </div>
+              {isSubmitting || isLoading ? t('auth.register.submitting') : t('auth.register.submit')}
+            </Button>
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            className="w-full"
-            isLoading={isSubmitting || isLoading}
-          >
-            {isSubmitting || isLoading ? t('auth.register.submitting') : t('auth.register.submit')}
-          </Button>
-
-          <p className="text-center text-sm text-gray-600">
-            {t('auth.register.hasAccount')}{' '}
-            <Link to="/login" className="text-primary-600 hover:text-primary-700 font-semibold">
-              {t('auth.register.loginLink')}
-            </Link>
-          </p>
-        </form>
+            <p className="text-center text-sm text-muted-foreground">
+              {t('auth.register.hasAccount')}{' '}
+              <Link to="/login" className="text-primary hover:underline font-semibold">
+                {t('auth.register.loginLink')}
+              </Link>
+            </p>
+          </form>
+        </CardContent>
       </Card>
     </AuthLayout>
   );

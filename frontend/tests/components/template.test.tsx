@@ -2,7 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Button } from '@/components/template/Button';
 import { Input } from '@/components/template/Input';
-import { Card } from '@/components/template/Card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/template/Card';
 
 describe('Template Components', () => {
   it('Button renders with variant and loading state', () => {
@@ -17,8 +22,13 @@ describe('Template Components', () => {
 
   it('Card renders title and children', () => {
     render(
-      <Card title="Test Card">
-        <p>Content</p>
+      <Card>
+        <CardHeader>
+          <CardTitle>Test Card</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p>Content</p>
+        </CardContent>
       </Card>
     );
     expect(screen.getByText('Test Card')).toBeInTheDocument();

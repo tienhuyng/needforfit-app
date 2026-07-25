@@ -3,7 +3,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input } from '@/components/template';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+} from '@/components/template';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { authApi, getApiErrorMessage } from '@/services/auth.service';
@@ -51,62 +59,65 @@ export const ResetPasswordPage: React.FC = () => {
 
   return (
     <AuthLayout>
-      <Card title={t('auth.resetPassword.title')} subtitle={t('auth.resetPassword.subtitle')}>
-        {error && <Alert type="error" message={error} />}
-        {success && <Alert type="success" message={success} />}
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">{t('auth.resetPassword.title')}</CardTitle>
+          <CardDescription>{t('auth.resetPassword.subtitle')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && <Alert type="error" message={error} />}
+          {success && <Alert type="success" message={success} />}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-          <Input
-            label={t('auth.resetPassword.email')}
-            type="email"
-            autoComplete="email"
-            placeholder="your@email.com"
-            error={errors.email?.message}
-            {...register('email')}
-          />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+            <Input
+              label={t('auth.resetPassword.email')}
+              type="email"
+              autoComplete="email"
+              placeholder="your@email.com"
+              error={errors.email?.message}
+              {...register('email')}
+            />
 
-          <Input
-            label={t('auth.resetPassword.newPassword')}
-            type="password"
-            autoComplete="new-password"
-            placeholder="••••••••"
-            error={errors.newPassword?.message}
-            {...register('newPassword')}
-          />
+            <Input
+              label={t('auth.resetPassword.newPassword')}
+              type="password"
+              autoComplete="new-password"
+              placeholder="••••••••"
+              error={errors.newPassword?.message}
+              {...register('newPassword')}
+            />
 
-          <Input
-            label={t('auth.resetPassword.confirmPassword')}
-            type="password"
-            autoComplete="new-password"
-            placeholder="••••••••"
-            error={errors.confirmPassword?.message}
-            {...register('confirmPassword')}
-          />
+            <Input
+              label={t('auth.resetPassword.confirmPassword')}
+              type="password"
+              autoComplete="new-password"
+              placeholder="••••••••"
+              error={errors.confirmPassword?.message}
+              {...register('confirmPassword')}
+            />
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            className="w-full"
-            isLoading={isSubmitting || isLoading}
-            disabled={!!success}
-          >
-            {isSubmitting || isLoading
-              ? t('auth.resetPassword.submitting')
-              : t('auth.resetPassword.submit')}
-          </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full"
+              isLoading={isSubmitting || isLoading}
+              disabled={!!success}
+            >
+              {isSubmitting || isLoading
+                ? t('auth.resetPassword.submitting')
+                : t('auth.resetPassword.submit')}
+            </Button>
 
-          {success && (
-            <p className="text-center">
-              <Link
-                to="/login"
-                className="text-sm text-primary-600 hover:text-primary-700 font-semibold"
-              >
-                {t('auth.resetPassword.loginLink')}
-              </Link>
-            </p>
-          )}
-        </form>
+            {success && (
+              <p className="text-center">
+                <Link to="/login" className="text-sm text-primary hover:underline font-semibold">
+                  {t('auth.resetPassword.loginLink')}
+                </Link>
+              </p>
+            )}
+          </form>
+        </CardContent>
       </Card>
     </AuthLayout>
   );

@@ -3,7 +3,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input } from '@/components/template';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+} from '@/components/template';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { authApi, getApiErrorMessage, storeAuthToken } from '@/services/auth.service';
@@ -42,62 +50,65 @@ export const LoginPage: React.FC = () => {
 
   return (
     <AuthLayout>
-      <Card title={t('auth.login.title')} subtitle={t('auth.login.subtitle')}>
-        {error && <Alert type="error" message={error} />}
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">{t('auth.login.title')}</CardTitle>
+          <CardDescription>{t('auth.login.subtitle')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && <Alert type="error" message={error} />}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-          <Input
-            label={t('auth.login.email')}
-            type="email"
-            autoComplete="email"
-            placeholder="your@email.com"
-            error={errors.email?.message}
-            {...register('email')}
-          />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+            <Input
+              label={t('auth.login.email')}
+              type="email"
+              autoComplete="email"
+              placeholder="your@email.com"
+              error={errors.email?.message}
+              {...register('email')}
+            />
 
-          <Input
-            label={t('auth.login.password')}
-            type="password"
-            autoComplete="current-password"
-            placeholder="••••••••"
-            error={errors.password?.message}
-            {...register('password')}
-          />
+            <Input
+              label={t('auth.login.password')}
+              type="password"
+              autoComplete="current-password"
+              placeholder="••••••••"
+              error={errors.password?.message}
+              {...register('password')}
+            />
 
-          <div className="flex items-center justify-between gap-4">
-            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-              <input
-                type="checkbox"
-                className="rounded border-gray-300 text-primary-500 focus:ring-primary-500"
-                {...register('rememberMe')}
-              />
-              {t('auth.login.rememberMe')}
-            </label>
-            <Link
-              to="/forgot-password"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            <div className="flex items-center justify-between gap-4">
+              <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="rounded border-input text-primary focus:ring-ring"
+                  {...register('rememberMe')}
+                />
+                {t('auth.login.rememberMe')}
+              </label>
+              <Link to="/forgot-password" className="text-sm text-primary hover:underline font-medium">
+                {t('auth.login.forgotPassword')}
+              </Link>
+            </div>
+
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full"
+              isLoading={isSubmitting || isLoading}
             >
-              {t('auth.login.forgotPassword')}
-            </Link>
-          </div>
+              {isSubmitting || isLoading ? t('auth.login.submitting') : t('auth.login.submit')}
+            </Button>
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            className="w-full"
-            isLoading={isSubmitting || isLoading}
-          >
-            {isSubmitting || isLoading ? t('auth.login.submitting') : t('auth.login.submit')}
-          </Button>
-
-          <p className="text-center text-sm text-gray-600">
-            {t('auth.login.noAccount')}{' '}
-            <Link to="/register" className="text-primary-600 hover:text-primary-700 font-semibold">
-              {t('auth.login.registerLink')}
-            </Link>
-          </p>
-        </form>
+            <p className="text-center text-sm text-muted-foreground">
+              {t('auth.login.noAccount')}{' '}
+              <Link to="/register" className="text-primary hover:underline font-semibold">
+                {t('auth.login.registerLink')}
+              </Link>
+            </p>
+          </form>
+        </CardContent>
       </Card>
     </AuthLayout>
   );

@@ -3,7 +3,15 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Card, Input } from '@/components/template';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+} from '@/components/template';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { authApi, getApiErrorMessage } from '@/services/auth.service';
@@ -41,42 +49,45 @@ export const ForgotPasswordPage: React.FC = () => {
 
   return (
     <AuthLayout>
-      <Card title={t('auth.forgotPassword.title')} subtitle={t('auth.forgotPassword.subtitle')}>
-        {error && <Alert type="error" message={error} />}
-        {success && <Alert type="success" message={success} />}
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">{t('auth.forgotPassword.title')}</CardTitle>
+          <CardDescription>{t('auth.forgotPassword.subtitle')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && <Alert type="error" message={error} />}
+          {success && <Alert type="success" message={success} />}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-          <Input
-            label={t('auth.forgotPassword.email')}
-            type="email"
-            autoComplete="email"
-            placeholder="your@email.com"
-            error={errors.email?.message}
-            {...register('email')}
-          />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+            <Input
+              label={t('auth.forgotPassword.email')}
+              type="email"
+              autoComplete="email"
+              placeholder="your@email.com"
+              error={errors.email?.message}
+              {...register('email')}
+            />
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            className="w-full"
-            isLoading={isSubmitting || isLoading}
-            disabled={!!success}
-          >
-            {isSubmitting || isLoading
-              ? t('auth.forgotPassword.submitting')
-              : t('auth.forgotPassword.submit')}
-          </Button>
-
-          <p className="text-center">
-            <Link
-              to="/login"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full"
+              isLoading={isSubmitting || isLoading}
+              disabled={!!success}
             >
-              {t('auth.forgotPassword.backToLogin')}
-            </Link>
-          </p>
-        </form>
+              {isSubmitting || isLoading
+                ? t('auth.forgotPassword.submitting')
+                : t('auth.forgotPassword.submit')}
+            </Button>
+
+            <p className="text-center">
+              <Link to="/login" className="text-sm text-primary hover:underline font-medium">
+                {t('auth.forgotPassword.backToLogin')}
+              </Link>
+            </p>
+          </form>
+        </CardContent>
       </Card>
     </AuthLayout>
   );

@@ -25,3 +25,6 @@ Thumbs.db
 # Prisma
 backend/prisma/*.db
 backend/prisma/*.db-journal
+
+# Temp clones
+temp/
