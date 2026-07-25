@@ -12,6 +12,45 @@ fitHub/
 
 ## Quick Start
 
+### New machine (Mac / Windows)
+
+```bash
+git clone https://github.com/tienhuyng/fithub-app.git
+cd fithub-app
+
+# Install backend + frontend dependencies
+npm run setup
+
+# First time on a NEW machine only — temp/ is not in git
+npm run clone:template
+
+# Backend env (first time only)
+cp backend/.env.example backend/.env   # Mac / Linux
+# copy backend\.env.example backend\.env   # Windows CMD
+# Copy-Item backend\.env.example backend\.env   # Windows PowerShell
+
+cd backend
+npm run prisma:generate
+npx prisma db push    # create tables (PostgreSQL must be running)
+```
+
+### Vercel template reference (`temp/`)
+
+The Vercel admin template is **not committed** (see `.gitignore`). On a **new machine** (MacBook, PC công ty), run once:
+
+```bash
+npm run clone:template
+```
+
+On a machine that **already has** `temp/vercel-template/`, skip this — only re-run when you want to refresh the reference for Phase 2+.
+
+| Path | Contents |
+|------|----------|
+| `temp/vercel-template/components/ui/` | Shadcn primitives (Table, Sheet, Badge, …) |
+| `temp/vercel-template/app/` | Page layout examples (dashboard, login) |
+
+Extract → adapt for Vite SPA (remove Next.js imports) → place in `frontend/src/components/ui/`.
+
 ### Backend
 
 ```bash

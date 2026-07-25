@@ -1,0 +1,20 @@
+{
+  "name": "fithub-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fithub App — Gym Management & Coaching Platform",
+  "scripts": {
+    "setup": "npm run setup:backend && npm run setup:frontend",
+    "setup:backend": "npm install --prefix backend",
+    "setup:frontend": "npm install --prefix frontend",
+    "clone:template": "node scripts/clone-vercel-template.mjs",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "test": "npm test --prefix backend && npm test --prefix frontend",
+    "test:backend": "npm test --prefix backend",
+    "test:frontend": "npm test --prefix frontend"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
