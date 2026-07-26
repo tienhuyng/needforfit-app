@@ -45,5 +45,29 @@
       "sessionCreated": "Session created successfully",
       "exercisesAdded": "Exercises added successfully"
     }
+  },
+  "trainee": {
+    "errors": {
+      "unauthorized": "Authentication required",
+      "forbidden": "Access denied",
+      "notFound": "Not found",
+      "sessionNotFound": "Workout session not found",
+      "sessionNotAccessible": "You do not have access to this session",
+      "outsideLogWindow": "Logging is only allowed within 24 hours of the scheduled date",
+      "alreadyLogged": "This workout has already been logged",
+      "logLocked": "This workout log is locked and cannot be edited",
+      "metricLocked": "This metric entry is locked",
+      "futureDate": "Date cannot be in the future",
+      "weightRequired": "Weight is required",
+      "positiveNumber": "Value must be a positive number",
+      "ratingRange": "Rating must be between 1 and 10",
+      "painRequired": "Please indicate if you experienced pain or discomfort",
+      "templateRequired": "This field is required",
+      "exerciseRequired": "At least one exercise is required"
+    },
+    "messages": {
+      "logSuccess": "Workout logged successfully",
+      "metricSuccess": "Body metrics saved successfully"
+    }
   }
 }

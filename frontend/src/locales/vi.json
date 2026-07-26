@@ -233,5 +233,123 @@
       "loadFailed": "Không thể tải dữ liệu. Vui lòng thử lại.",
       "createFailed": "Không thể lưu. Vui lòng thử lại."
     }
+  },
+  "trainee": {
+    "nav": {
+      "home": "Trang chủ",
+      "history": "Lịch sử",
+      "metrics": "Chỉ số"
+    },
+    "layout": {
+      "title": "Tập luyện",
+      "logout": "Đăng xuất"
+    },
+    "common": {
+      "loading": "Đang tải...",
+      "back": "Quay lại"
+    },
+    "home": {
+      "title": "Trang chủ",
+      "todayWorkout": "Buổi tập hôm nay",
+      "todayWorkoutDesc": "Ghi nhận buổi tập trong vòng 24 giờ.",
+      "logWorkout": "Ghi nhận buổi tập",
+      "viewLog": "Xem nhật ký",
+      "locked": "Đã hết thời gian ghi nhận",
+      "noWorkoutToday": "Không có buổi tập hôm nay.",
+      "upcoming": "Buổi tập sắp tới",
+      "noUpcoming": "Không có buổi tập sắp tới tuần này.",
+      "recentHistory": "Lịch sử gần đây",
+      "viewAll": "Xem tất cả",
+      "weightTrend": "Xu hướng cân nặng",
+      "activePrograms": "Chương trình đang hoạt động",
+      "noPrograms": "Chưa có chương trình được gán.",
+      "exercises": "bài tập",
+      "sessions": "buổi tập"
+    },
+    "log": {
+      "title": "Ghi nhận buổi tập",
+      "exercisesTitle": "Bài tập",
+      "exercisesDesc": "So sánh kế hoạch và thực tế.",
+      "planned": "Kế hoạch",
+      "sets": "Hiệp",
+      "reps": "Lần",
+      "actualSets": "Hiệp thực tế",
+      "actualReps": "Lần thực tế",
+      "actualWeight": "Tạ (kg)",
+      "plannedWeight": "Tạ kế hoạch",
+      "feedbackTitle": "Phản hồi buổi tập",
+      "feedbackDesc": "Tất cả trường đều bắt buộc trừ ghi chú.",
+      "difficulty": "Độ khó",
+      "fatigue": "Mệt mỏi",
+      "ratingHint": "1–10",
+      "pain": "Đau/khó chịu?",
+      "yes": "Có",
+      "no": "Không",
+      "templateQ1": "Bạn cảm thấy thế nào khi khởi động?",
+      "templateQ2": "Bài tập nào khó nhất?",
+      "templateQ3": "Điều gì bạn muốn PT biết?",
+      "notes": "Ghi chú thêm",
+      "submit": "Gửi nhật ký",
+      "submitting": "Đang gửi...",
+      "lockedTitle": "Buổi tập đã khóa",
+      "lockedDesc": "Không thể ghi nhận (đã quá 24 giờ)."
+    },
+    "history": {
+      "title": "Lịch sử tập",
+      "filters": "Bộ lọc",
+      "program": "Chương trình",
+      "allPrograms": "Tất cả chương trình",
+      "fromDate": "Từ ngày",
+      "toDate": "Đến ngày",
+      "apply": "Áp dụng",
+      "empty": "Chưa có lịch sử tập.",
+      "date": "Ngày",
+      "exercises": "Bài tập",
+      "feedback": "Phản hồi",
+      "noFeedback": "—"
+    },
+    "detail": {
+      "title": "Chi tiết buổi tập",
+      "exercises": "Bài tập",
+      "feedback": "Phản hồi",
+      "locked": "Nhật ký đã khóa, chỉ xem."
+    },
+    "metrics": {
+      "title": "Chỉ số cơ thể",
+      "logTab": "Ghi nhận",
+      "progressTab": "Tiến độ",
+      "logTitle": "Ghi chỉ số",
+      "logDesc": "Cân nặng bắt buộc; các trường khác tùy chọn.",
+      "date": "Ngày",
+      "weight": "Cân nặng (kg)",
+      "bodyFat": "Mỡ cơ thể (%)",
+      "muscleMass": "Khối cơ (kg)",
+      "notes": "Ghi chú",
+      "submit": "Lưu chỉ số",
+      "submitting": "Đang lưu...",
+      "weightKg": "Cân nặng (kg)",
+      "latest": "Mới nhất",
+      "start": "Bắt đầu",
+      "change": "Thay đổi",
+      "entries": "Số lần ghi",
+      "chartTitle": "Biểu đồ cân nặng",
+      "historyTable": "Lịch sử",
+      "empty": "Chưa có chỉ số nào."
+    },
+    "messages": {
+      "logSuccess": "Ghi nhận buổi tập thành công.",
+      "metricSuccess": "Lưu chỉ số thành công."
+    },
+    "errors": {
+      "loadFailed": "Không thể tải dữ liệu. Vui lòng thử lại.",
+      "submitFailed": "Không thể lưu. Vui lòng thử lại.",
+      "ratingRequired": "Đánh giá là bắt buộc.",
+      "ratingRange": "Đánh giá phải từ 1 đến 10.",
+      "painRequired": "Vui lòng cho biết đau/khó chịu.",
+      "templateRequired": "Trường này là bắt buộc.",
+      "weightRequired": "Cân nặng là bắt buộc.",
+      "positiveNumber": "Phải là số dương.",
+      "dateRequired": "Ngày là bắt buộc."
+    }
   }
 }

@@ -202,6 +202,7 @@ model ProgramTraineeAssignment {
   program TrainingProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
 
   @@unique([programId, traineeId])
+  @@index([traineeId])
   @@map("program_trainee_assignments")
 }
 
@@ -263,6 +264,7 @@ model WorkoutLog {
   exercises WorkoutLogExercise[]
   feedback  WorkoutLogFeedback?
 
+  @@unique([sessionId, traineeId])
   @@index([traineeId, workoutDate])
   @@index([ptId, createdAt])
   @@map("workout_logs")

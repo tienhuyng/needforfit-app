@@ -45,5 +45,29 @@
       "sessionCreated": "セッションが正常に作成されました",
       "exercisesAdded": "エクササイズが正常に追加されました"
     }
+  },
+  "trainee": {
+    "errors": {
+      "unauthorized": "ログインが必要です",
+      "forbidden": "アクセスが拒否されました",
+      "notFound": "見つかりません",
+      "sessionNotFound": "ワークアウトセッションが見つかりません",
+      "sessionNotAccessible": "このセッションにアクセスできません",
+      "outsideLogWindow": "予定日から24時間以内のみ記録できます",
+      "alreadyLogged": "このワークアウトは既に記録されています",
+      "logLocked": "この記録はロックされています",
+      "metricLocked": "この指標はロックされています",
+      "futureDate": "未来の日付は使用できません",
+      "weightRequired": "体重は必須です",
+      "positiveNumber": "値は正の数である必要があります",
+      "ratingRange": "評価は1から10の間である必要があります",
+      "painRequired": "痛みや不快感があるかどうかを選択してください",
+      "templateRequired": "この項目は必須です",
+      "exerciseRequired": "少なくとも1つのエクササイズが必要です"
+    },
+    "messages": {
+      "logSuccess": "ワークアウトが正常に記録されました",
+      "metricSuccess": "身体指標が正常に保存されました"
+    }
   }
 }

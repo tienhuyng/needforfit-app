@@ -42,5 +42,5 @@ export function getPostLoginPath(role: AuthUser['role']): string {
   if (role === 'pt' || role === 'admin') {
     return '/pt/dashboard';
   }
-  return '/';
+  return '/trainee/home';
 }

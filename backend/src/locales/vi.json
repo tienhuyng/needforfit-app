@@ -45,5 +45,29 @@
       "sessionCreated": "Tạo buổi tập thành công",
       "exercisesAdded": "Thêm bài tập thành công"
     }
+  },
+  "trainee": {
+    "errors": {
+      "unauthorized": "Yêu cầu đăng nhập",
+      "forbidden": "Không có quyền truy cập",
+      "notFound": "Không tìm thấy",
+      "sessionNotFound": "Không tìm thấy buổi tập",
+      "sessionNotAccessible": "Bạn không có quyền truy cập buổi tập này",
+      "outsideLogWindow": "Chỉ được ghi nhận trong vòng 24 giờ kể từ ngày lên lịch",
+      "alreadyLogged": "Buổi tập này đã được ghi nhận",
+      "logLocked": "Nhật ký buổi tập đã bị khóa",
+      "metricLocked": "Chỉ số cơ thể đã bị khóa",
+      "futureDate": "Ngày không được ở tương lai",
+      "weightRequired": "Cân nặng là bắt buộc",
+      "positiveNumber": "Giá trị phải là số dương",
+      "ratingRange": "Đánh giá phải từ 1 đến 10",
+      "painRequired": "Vui lòng cho biết có đau/khó chịu không",
+      "templateRequired": "Trường này là bắt buộc",
+      "exerciseRequired": "Cần ít nhất một bài tập"
+    },
+    "messages": {
+      "logSuccess": "Ghi nhận buổi tập thành công",
+      "metricSuccess": "Lưu chỉ số cơ thể thành công"
+    }
   }
 }

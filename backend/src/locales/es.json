@@ -45,5 +45,29 @@
       "sessionCreated": "Sesión creada con éxito",
       "exercisesAdded": "Ejercicios añadidos con éxito"
     }
+  },
+  "trainee": {
+    "errors": {
+      "unauthorized": "Se requiere autenticación",
+      "forbidden": "Acceso denegado",
+      "notFound": "No encontrado",
+      "sessionNotFound": "Sesión de entrenamiento no encontrada",
+      "sessionNotAccessible": "No tienes acceso a esta sesión",
+      "outsideLogWindow": "Solo se puede registrar dentro de las 24 horas posteriores a la fecha programada",
+      "alreadyLogged": "Este entrenamiento ya fue registrado",
+      "logLocked": "Este registro está bloqueado",
+      "metricLocked": "Esta métrica está bloqueada",
+      "futureDate": "La fecha no puede ser futura",
+      "weightRequired": "El peso es obligatorio",
+      "positiveNumber": "El valor debe ser un número positivo",
+      "ratingRange": "La calificación debe estar entre 1 y 10",
+      "painRequired": "Indica si experimentaste dolor o molestias",
+      "templateRequired": "Este campo es obligatorio",
+      "exerciseRequired": "Se requiere al menos un ejercicio"
+    },
+    "messages": {
+      "logSuccess": "Entrenamiento registrado con éxito",
+      "metricSuccess": "Métricas corporales guardadas con éxito"
+    }
   }
 }

@@ -11,12 +11,11 @@ import { TraineeDetailPage } from '@/pages/pt/TraineeDetailPage';
 import { CreateProgramPage } from '@/pages/pt/CreateProgramPage';
 import { CreateSessionPage } from '@/pages/pt/CreateSessionPage';
 import { AddExercisesPage } from '@/pages/pt/AddExercisesPage';
-
-const HomePlaceholder: React.FC = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50">
-    <p className="text-gray-600">Dashboard coming soon</p>
-  </div>
-);
+import { HomePage } from '@/pages/trainee/HomePage';
+import { LogWorkoutPage } from '@/pages/trainee/LogWorkoutPage';
+import { WorkoutHistoryPage } from '@/pages/trainee/WorkoutHistoryPage';
+import { WorkoutDetailPage } from '@/pages/trainee/WorkoutDetailPage';
+import { BodyMetricsPage } from '@/pages/trainee/BodyMetricsPage';
 
 export const App: React.FC = () => {
   return (
@@ -26,7 +25,49 @@ export const App: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/" element={<HomePlaceholder />} />
+
+        <Route path="/" element={<Navigate to="/trainee/home" replace />} />
+
+        <Route
+          path="/trainee/home"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/log/:sessionId"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <LogWorkoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/history"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <WorkoutHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/workouts/:id"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <WorkoutDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/metrics"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <BodyMetricsPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/pt/dashboard"

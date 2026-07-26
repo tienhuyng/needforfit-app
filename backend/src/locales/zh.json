@@ -45,5 +45,29 @@
       "sessionCreated": "训练课程创建成功",
       "exercisesAdded": "练习添加成功"
     }
+  },
+  "trainee": {
+    "errors": {
+      "unauthorized": "需要登录",
+      "forbidden": "无权访问",
+      "notFound": "未找到",
+      "sessionNotFound": "未找到训练课程",
+      "sessionNotAccessible": "您无权访问此课程",
+      "outsideLogWindow": "只能在计划日期后24小时内记录",
+      "alreadyLogged": "此训练已记录",
+      "logLocked": "训练记录已锁定",
+      "metricLocked": "身体指标已锁定",
+      "futureDate": "日期不能是未来",
+      "weightRequired": "体重为必填项",
+      "positiveNumber": "值必须为正数",
+      "ratingRange": "评分必须在1到10之间",
+      "painRequired": "请说明是否有疼痛或不适",
+      "templateRequired": "此字段为必填项",
+      "exerciseRequired": "至少需要一个练习"
+    },
+    "messages": {
+      "logSuccess": "训练记录成功",
+      "metricSuccess": "身体指标保存成功"
+    }
   }
 }

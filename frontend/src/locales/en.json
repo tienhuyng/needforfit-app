@@ -233,5 +233,123 @@
       "loadFailed": "Failed to load data. Please try again.",
       "createFailed": "Failed to save. Please try again."
     }
+  },
+  "trainee": {
+    "nav": {
+      "home": "Home",
+      "history": "History",
+      "metrics": "Metrics"
+    },
+    "layout": {
+      "title": "My Training",
+      "logout": "Log out"
+    },
+    "common": {
+      "loading": "Loading...",
+      "back": "Back"
+    },
+    "home": {
+      "title": "Home",
+      "todayWorkout": "Today's Workout",
+      "todayWorkoutDesc": "Log your session while the 24-hour window is open.",
+      "logWorkout": "Log Workout",
+      "viewLog": "View logged workout",
+      "locked": "Logging window closed",
+      "noWorkoutToday": "No workout scheduled for today.",
+      "upcoming": "Upcoming Workouts",
+      "noUpcoming": "No upcoming workouts this week.",
+      "recentHistory": "Recent History",
+      "viewAll": "View all",
+      "weightTrend": "Weight Trend",
+      "activePrograms": "Active Programs",
+      "noPrograms": "No active programs assigned.",
+      "exercises": "exercises",
+      "sessions": "sessions"
+    },
+    "log": {
+      "title": "Log Workout",
+      "exercisesTitle": "Exercises",
+      "exercisesDesc": "Compare planned vs actual performance.",
+      "planned": "Planned",
+      "sets": "Sets",
+      "reps": "Reps",
+      "actualSets": "Actual sets",
+      "actualReps": "Actual reps",
+      "actualWeight": "Weight (kg)",
+      "plannedWeight": "Planned weight",
+      "feedbackTitle": "Session Feedback",
+      "feedbackDesc": "All fields are required except notes.",
+      "difficulty": "Difficulty",
+      "fatigue": "Fatigue",
+      "ratingHint": "1–10",
+      "pain": "Pain or discomfort?",
+      "yes": "Yes",
+      "no": "No",
+      "templateQ1": "How did you feel during the warm-up?",
+      "templateQ2": "Which exercise felt hardest?",
+      "templateQ3": "Anything you want your PT to know?",
+      "notes": "Additional notes",
+      "submit": "Submit Workout Log",
+      "submitting": "Submitting...",
+      "lockedTitle": "Workout locked",
+      "lockedDesc": "This session can no longer be logged (24-hour window expired)."
+    },
+    "history": {
+      "title": "Workout History",
+      "filters": "Filters",
+      "program": "Program",
+      "allPrograms": "All programs",
+      "fromDate": "From",
+      "toDate": "To",
+      "apply": "Apply filters",
+      "empty": "No workout history yet.",
+      "date": "Date",
+      "exercises": "Exercises",
+      "feedback": "Feedback",
+      "noFeedback": "—"
+    },
+    "detail": {
+      "title": "Workout Detail",
+      "exercises": "Exercises",
+      "feedback": "Feedback",
+      "locked": "This log is locked and read-only."
+    },
+    "metrics": {
+      "title": "Body Metrics",
+      "logTab": "Log",
+      "progressTab": "Progress",
+      "logTitle": "Log Metrics",
+      "logDesc": "Weight is required; other fields are optional.",
+      "date": "Date",
+      "weight": "Weight (kg)",
+      "bodyFat": "Body fat (%)",
+      "muscleMass": "Muscle mass (kg)",
+      "notes": "Notes",
+      "submit": "Save metrics",
+      "submitting": "Saving...",
+      "weightKg": "Weight (kg)",
+      "latest": "Latest",
+      "start": "Start",
+      "change": "Change",
+      "entries": "Entries",
+      "chartTitle": "Weight over time",
+      "historyTable": "History",
+      "empty": "No metrics recorded yet."
+    },
+    "messages": {
+      "logSuccess": "Workout logged successfully.",
+      "metricSuccess": "Body metrics saved successfully."
+    },
+    "errors": {
+      "loadFailed": "Failed to load data. Please try again.",
+      "submitFailed": "Failed to save. Please try again.",
+      "ratingRequired": "Rating is required.",
+      "ratingRange": "Rating must be between 1 and 10.",
+      "painRequired": "Please indicate pain or discomfort.",
+      "templateRequired": "This field is required.",
+      "weightRequired": "Weight is required.",
+      "positiveNumber": "Must be a positive number.",
+      "dateRequired": "Date is required."
+    }
   }
 }
