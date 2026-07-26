@@ -36,5 +36,35 @@ export const prismaMock = prisma as unknown as {
     create: jest.Mock;
     update: jest.Mock;
   };
+  ptTraineeAssignment: {
+    count: jest.Mock;
+    findMany: jest.Mock;
+    findFirst: jest.Mock;
+  };
+  trainingProgram: {
+    count: jest.Mock;
+    findMany: jest.Mock;
+    findFirst: jest.Mock;
+    create: jest.Mock;
+  };
+  workoutLog: {
+    count: jest.Mock;
+    findMany: jest.Mock;
+  };
+  programTraineeAssignment: {
+    findMany: jest.Mock;
+    groupBy: jest.Mock;
+  };
+  workoutSession: {
+    findMany: jest.Mock;
+    findFirst: jest.Mock;
+    create: jest.Mock;
+  };
+  workoutSessionExercise: {
+    create: jest.Mock;
+  };
+  bodyMeasurementLog: {
+    findMany: jest.Mock;
+  };
   $transaction: jest.Mock;
 };

@@ -14,6 +14,36 @@ jest.mock('../src/config/database', () => ({
       create: jest.fn(),
       update: jest.fn(),
     },
+    ptTraineeAssignment: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+      findFirst: jest.fn(),
+    },
+    trainingProgram: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+      findFirst: jest.fn(),
+      create: jest.fn(),
+    },
+    workoutLog: {
+      count: jest.fn(),
+      findMany: jest.fn(),
+    },
+    programTraineeAssignment: {
+      findMany: jest.fn(),
+      groupBy: jest.fn(),
+    },
+    workoutSession: {
+      findMany: jest.fn(),
+      findFirst: jest.fn(),
+      create: jest.fn(),
+    },
+    workoutSessionExercise: {
+      create: jest.fn(),
+    },
+    bodyMeasurementLog: {
+      findMany: jest.fn(),
+    },
     $transaction: jest.fn(),
   },
   disconnectDatabase: jest.fn(),

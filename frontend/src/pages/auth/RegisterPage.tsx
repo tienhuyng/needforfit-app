@@ -15,7 +15,8 @@ import {
 import { Label } from '@/components/ui/label';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
-import { authApi, getApiErrorMessage, storeAuthToken } from '@/services/auth.service';
+import { authApi, getApiErrorMessage } from '@/services/auth.service';
+import { getPostLoginPath, storeAuthToken, storeAuthUser } from '@/utils/auth-storage';
 import { createRegisterSchema, RegisterFormData } from '@/utils/validation';
 import { cn } from '@/lib/utils';
 
@@ -42,7 +43,8 @@ export const RegisterPage: React.FC = () => {
     try {
       const result = await authApi.register(data);
       storeAuthToken(result.token);
-      navigate('/');
+      storeAuthUser(result.user);
+      navigate(getPostLoginPath(result.user.role));
     } catch (err) {
       setError(getApiErrorMessage(err, 'auth.errors.registerFailed'));
     } finally {

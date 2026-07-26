@@ -28,6 +28,58 @@ enum SupportedLanguage {
   es
 }
 
+enum TraineeGoal {
+  lose_weight
+  gain_muscle
+  improve_health
+  increase_strength
+  improve_posture
+}
+
+enum AssignmentStatus {
+  active
+  paused
+  ended
+}
+
+enum ProgramType {
+  strength
+  cardio
+  flexibility
+  mixed
+}
+
+enum ProgramStatus {
+  draft
+  active
+  paused
+  completed
+  archived
+}
+
+enum SessionType {
+  strength
+  cardio
+  flexibility
+}
+
+enum SessionStatus {
+  draft
+  active
+  paused
+  completed
+}
+
+enum WorkoutLogStatus {
+  completed
+  locked
+}
+
+enum BodyMetricStatus {
+  completed
+  locked
+}
+
 model User {
   id                String            @id @default(uuid())
   email             String            @unique
@@ -42,20 +94,225 @@ model User {
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 
-  passwordResetTokens PasswordResetToken[]
+  passwordResetTokens  PasswordResetToken[]
+  traineeProfile       TraineeProfile?
+  ptProfile            PtProfile?
+  ptAssignments        PtTraineeAssignment[] @relation("PtAssignments")
+  traineeAssignments   PtTraineeAssignment[] @relation("TraineeAssignments")
+  trainingPrograms     TrainingProgram[]
+  workoutLogsAsTrainee WorkoutLog[]        @relation("TraineeLogs")
+  workoutLogsAsPt      WorkoutLog[]        @relation("PtLogs")
+  bodyMeasurements   BodyMeasurementLog[]
 
   @@map("users")
 }
 
 model PasswordResetToken {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  token     String   @unique
-  expiresAt DateTime @map("expires_at")
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  token     String    @unique
+  expiresAt DateTime  @map("expires_at")
   usedAt    DateTime? @map("used_at")
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime  @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("password_reset_tokens")
+}
+
+model TraineeProfile {
+  id              String       @id @default(uuid())
+  userId          String       @unique @map("user_id")
+  dateOfBirth     DateTime?    @map("date_of_birth") @db.Date
+  heightCm        Decimal?     @map("height_cm") @db.Decimal(5, 2)
+  currentWeightKg Decimal?     @map("current_weight_kg") @db.Decimal(5, 2)
+  goal            TraineeGoal?
+  injuryHistory   String?      @map("injury_history")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("trainee_profiles")
+}
+
+model PtProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique @map("user_id")
+  bio               String?
+  specialization    String?
+  yearsExperience   Int?     @map("years_experience")
+  certifications    String?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("pt_profiles")
+}
+
+model PtTraineeAssignment {
+  id         String           @id @default(uuid())
+  ptId       String           @map("pt_id")
+  traineeId  String           @map("trainee_id")
+  status     AssignmentStatus @default(active)
+  assignedAt DateTime         @default(now()) @map("assigned_at")
+  pausedAt   DateTime?        @map("paused_at")
+  endedAt    DateTime?        @map("ended_at")
+  createdAt  DateTime         @default(now()) @map("created_at")
+  updatedAt  DateTime         @updatedAt @map("updated_at")
+
+  pt      User @relation("PtAssignments", fields: [ptId], references: [id], onDelete: Cascade)
+  trainee User @relation("TraineeAssignments", fields: [traineeId], references: [id], onDelete: Cascade)
+
+  @@index([ptId, status])
+  @@index([traineeId, status])
+  @@map("pt_trainee_assignments")
+}
+
+model TrainingProgram {
+  id            String        @id @default(uuid())
+  ptId          String        @map("pt_id")
+  name          String
+  objective     String?
+  programType   ProgramType   @map("program_type")
+  durationWeeks Int?          @map("duration_weeks")
+  status        ProgramStatus @default(draft)
+  startDate     DateTime?     @map("start_date") @db.Date
+  endDate       DateTime?     @map("end_date") @db.Date
+  notes         String?
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  pt          User                     @relation(fields: [ptId], references: [id], onDelete: Cascade)
+  sessions    WorkoutSession[]
+  assignments ProgramTraineeAssignment[]
+
+  @@index([ptId, status])
+  @@map("training_programs")
+}
+
+model ProgramTraineeAssignment {
+  id         String   @id @default(uuid())
+  programId  String   @map("program_id")
+  traineeId  String   @map("trainee_id")
+  assignedAt DateTime @default(now()) @map("assigned_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  program TrainingProgram @relation(fields: [programId], references: [id], onDelete: Cascade)
+
+  @@unique([programId, traineeId])
+  @@map("program_trainee_assignments")
+}
+
+model WorkoutSession {
+  id                       String        @id @default(uuid())
+  programId                String        @map("program_id")
+  name                     String
+  sessionType              SessionType   @map("session_type")
+  scheduledDate            DateTime      @map("scheduled_date") @db.Date
+  estimatedDurationMinutes Int?          @map("estimated_duration_minutes")
+  notes                    String?
+  status                   SessionStatus @default(draft)
+  sessionVersion           Int           @default(1) @map("session_version")
+  createdAt                DateTime      @default(now()) @map("created_at")
+  updatedAt                DateTime      @updatedAt @map("updated_at")
+
+  program   TrainingProgram        @relation(fields: [programId], references: [id], onDelete: Cascade)
+  exercises WorkoutSessionExercise[]
+  logs      WorkoutLog[]
+
+  @@index([programId, scheduledDate])
+  @@map("workout_sessions")
+}
+
+model WorkoutSessionExercise {
+  id              String   @id @default(uuid())
+  sessionId       String   @map("session_id")
+  exerciseName    String   @map("exercise_name")
+  plannedSets     Int?     @map("planned_sets")
+  plannedReps     Int?     @map("planned_reps")
+  plannedWeightKg Decimal? @map("planned_weight_kg") @db.Decimal(6, 2)
+  restSeconds     Int?     @map("rest_seconds")
+  notes           String?
+  orderIndex      Int      @default(0) @map("order_index")
+  sessionVersion  Int      @default(1) @map("session_version")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  session WorkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, orderIndex])
+  @@map("workout_session_exercises")
+}
+
+model WorkoutLog {
+  id          String           @id @default(uuid())
+  sessionId   String           @map("session_id")
+  traineeId   String           @map("trainee_id")
+  ptId        String           @map("pt_id")
+  workoutDate DateTime         @map("workout_date") @db.Date
+  status      WorkoutLogStatus @default(completed)
+  lockedAt    DateTime?        @map("locked_at")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  session   WorkoutSession       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  trainee   User                 @relation("TraineeLogs", fields: [traineeId], references: [id], onDelete: Cascade)
+  pt        User                 @relation("PtLogs", fields: [ptId], references: [id], onDelete: Cascade)
+  exercises WorkoutLogExercise[]
+  feedback  WorkoutLogFeedback?
+
+  @@index([traineeId, workoutDate])
+  @@index([ptId, createdAt])
+  @@map("workout_logs")
+}
+
+model WorkoutLogExercise {
+  id              String   @id @default(uuid())
+  logId           String   @map("log_id")
+  exerciseName    String   @map("exercise_name")
+  actualSets      Int?     @map("actual_sets")
+  actualReps      Int?     @map("actual_reps")
+  actualWeightKg  Decimal? @map("actual_weight_kg") @db.Decimal(6, 2)
+  notes           String?
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  log WorkoutLog @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  @@map("workout_log_exercises")
+}
+
+model WorkoutLogFeedback {
+  id                 String   @id @default(uuid())
+  logId              String   @unique @map("log_id")
+  difficultyRating   Int      @map("difficulty_rating")
+  fatigueRating      Int      @map("fatigue_rating")
+  painOrDiscomfort   Boolean  @map("pain_or_discomfort")
+  templateResponses  Json?    @map("template_responses")
+  traineeNotes       String?  @map("trainee_notes")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  log WorkoutLog @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  @@map("workout_log_feedback")
+}
+
+model BodyMeasurementLog {
+  id                String           @id @default(uuid())
+  traineeId         String           @map("trainee_id")
+  measurementDate   DateTime         @map("measurement_date") @db.Date
+  weightKg          Decimal          @map("weight_kg") @db.Decimal(5, 2)
+  bodyFatPercent    Decimal?         @map("body_fat_percent") @db.Decimal(5, 2)
+  muscleMassKg      Decimal?         @map("muscle_mass_kg") @db.Decimal(5, 2)
+  measurementsJson  Json?            @map("measurements_json")
+  notes             String?
+  status            BodyMetricStatus @default(completed)
+  lockedAt          DateTime?        @map("locked_at")
+  createdAt         DateTime         @default(now()) @map("created_at")
+
+  trainee User @relation(fields: [traineeId], references: [id], onDelete: Cascade)
+
+  @@index([traineeId, measurementDate])
+  @@map("body_measurement_logs")
 }

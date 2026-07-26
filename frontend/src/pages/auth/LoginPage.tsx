@@ -14,7 +14,8 @@ import {
 } from '@/components/template';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
-import { authApi, getApiErrorMessage, storeAuthToken } from '@/services/auth.service';
+import { authApi, getApiErrorMessage } from '@/services/auth.service';
+import { getPostLoginPath, storeAuthToken, storeAuthUser } from '@/utils/auth-storage';
 import { createLoginSchema, LoginFormData } from '@/utils/validation';
 
 export const LoginPage: React.FC = () => {
@@ -40,7 +41,8 @@ export const LoginPage: React.FC = () => {
     try {
       const result = await authApi.login(data);
       storeAuthToken(result.token);
-      navigate('/');
+      storeAuthUser(result.user);
+      navigate(getPostLoginPath(result.user.role));
     } catch (err) {
       setError(getApiErrorMessage(err, 'auth.errors.loginFailed'));
     } finally {

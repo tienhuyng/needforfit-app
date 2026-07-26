@@ -62,5 +62,176 @@
       "resetFailed": "密码重置失败，请重试。",
       "generic": "发生错误，请重试。"
     }
+  },
+  "pt": {
+    "nav": {
+      "dashboard": "仪表板",
+      "trainees": "学员",
+      "programs": "训练计划"
+    },
+    "layout": {
+      "title": "PT 门户",
+      "openMenu": "打开菜单",
+      "closeMenu": "关闭菜单",
+      "logout": "退出登录"
+    },
+    "common": {
+      "loading": "加载中...",
+      "back": "返回",
+      "previous": "上一页",
+      "next": "下一页"
+    },
+    "dashboard": {
+      "title": "仪表板",
+      "subtitle": "学员和训练计划概览。",
+      "kpi": {
+        "trainees": "活跃学员",
+        "programs": "训练计划",
+        "workoutsThisWeek": "本周训练"
+      },
+      "recentTrainees": "最近学员",
+      "recentTraineesDesc": "最近分配的学员。",
+      "viewAll": "查看全部",
+      "recentActivity": "最近活动",
+      "recentActivityDesc": "最新的训练和计划更新。",
+      "noActivity": "暂无最近活动。"
+    },
+    "trainees": {
+      "title": "学员",
+      "subtitle": "管理和监控已分配的学员。",
+      "detail": "学员详情",
+      "profileDesc": "个人信息和健身档案。",
+      "filters": "筛选",
+      "search": "搜索",
+      "searchPlaceholder": "按姓名或邮箱搜索...",
+      "statusFilter": "状态",
+      "allStatuses": "全部状态",
+      "applyFilters": "应用",
+      "backToList": "返回列表",
+      "empty": "未找到学员。",
+      "phone": "电话",
+      "height": "身高",
+      "weight": "体重",
+      "injuryHistory": "伤病史",
+      "pagination": "第 {{from}}–{{to}} 条，共 {{total}} 条",
+      "columns": {
+        "name": "姓名",
+        "email": "邮箱",
+        "age": "年龄",
+        "goal": "目标",
+        "programs": "计划",
+        "status": "状态"
+      }
+    },
+    "tabs": {
+      "profile": "档案",
+      "programs": "训练计划",
+      "history": "历史",
+      "metrics": "指标"
+    },
+    "programs": {
+      "createTitle": "创建训练计划",
+      "createSubtitle": "为学员定义新的训练计划。",
+      "name": "计划名称",
+      "objective": "目标",
+      "type": "计划类型",
+      "durationWeeks": "时长（周）",
+      "notes": "备注",
+      "status": "状态",
+      "assignedAt": "分配日期",
+      "empty": "暂无分配的计划。",
+      "submit": "创建计划",
+      "submitting": "创建中..."
+    },
+    "sessions": {
+      "createTitle": "创建训练课",
+      "createSubtitle": "为此计划添加训练课。",
+      "name": "训练课名称",
+      "type": "训练课类型",
+      "scheduledDate": "计划日期",
+      "duration": "时长（分钟）",
+      "notes": "备注",
+      "submit": "创建训练课",
+      "submitting": "创建中..."
+    },
+    "exercises": {
+      "title": "添加动作",
+      "subtitle": "为此训练课添加一个或多个动作。",
+      "exerciseNumber": "动作 {{number}}",
+      "name": "动作名称",
+      "sets": "组数",
+      "reps": "次数",
+      "weight": "重量（kg）",
+      "rest": "休息（秒）",
+      "notes": "备注",
+      "addAnother": "添加另一个动作",
+      "remove": "删除动作",
+      "submit": "保存动作",
+      "submitting": "保存中..."
+    },
+    "history": {
+      "empty": "暂无训练历史。",
+      "session": "训练课",
+      "program": "计划",
+      "date": "日期",
+      "completion": "完成度"
+    },
+    "metrics": {
+      "empty": "暂无身体指标。",
+      "date": "日期",
+      "weight": "体重",
+      "bodyFat": "体脂率"
+    },
+    "goals": {
+      "lose_weight": "减重",
+      "gain_muscle": "增肌",
+      "improve_health": "改善健康",
+      "increase_strength": "增强力量",
+      "improve_posture": "改善姿态"
+    },
+    "statuses": {
+      "active": "活跃",
+      "paused": "暂停",
+      "ended": "已结束"
+    },
+    "programTypes": {
+      "strength": "力量",
+      "cardio": "有氧",
+      "flexibility": "柔韧",
+      "mixed": "综合"
+    },
+    "programStatuses": {
+      "draft": "草稿",
+      "active": "活跃",
+      "paused": "暂停",
+      "completed": "已完成",
+      "archived": "已归档"
+    },
+    "sessionTypes": {
+      "strength": "力量",
+      "cardio": "有氧",
+      "flexibility": "柔韧"
+    },
+    "messages": {
+      "programCreated": "计划创建成功。",
+      "sessionCreated": "训练课创建成功。",
+      "exercisesAdded": "动作添加成功。"
+    },
+    "errors": {
+      "unauthorized": "您需要登录才能访问此页面。",
+      "forbidden": "您没有权限访问此页面。",
+      "notFound": "未找到资源。",
+      "traineeNotAssigned": "该学员未分配给您。",
+      "programNotFound": "未找到训练计划。",
+      "sessionNotFound": "未找到训练课。",
+      "nameRequired": "名称为必填项。",
+      "programTypeInvalid": "无效的计划类型。",
+      "sessionTypeInvalid": "无效的训练课类型。",
+      "scheduledDateRequired": "计划日期为必填项。",
+      "exerciseNameRequired": "至少需要一个动作名称。",
+      "positiveNumber": "必须是正数。",
+      "loadFailed": "加载数据失败，请重试。",
+      "createFailed": "保存失败，请重试。"
+    }
   }
 }

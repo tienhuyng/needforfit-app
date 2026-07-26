@@ -62,5 +62,176 @@
       "resetFailed": "Error al restablecer la contraseña. Inténtalo de nuevo.",
       "generic": "Ocurrió un error. Inténtalo de nuevo."
     }
+  },
+  "pt": {
+    "nav": {
+      "dashboard": "Panel",
+      "trainees": "Alumnos",
+      "programs": "Programas"
+    },
+    "layout": {
+      "title": "Portal PT",
+      "openMenu": "Abrir menú",
+      "closeMenu": "Cerrar menú",
+      "logout": "Cerrar sesión"
+    },
+    "common": {
+      "loading": "Cargando...",
+      "back": "Volver",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "dashboard": {
+      "title": "Panel",
+      "subtitle": "Resumen de tus alumnos y programas.",
+      "kpi": {
+        "trainees": "Alumnos activos",
+        "programs": "Programas",
+        "workoutsThisWeek": "Entrenamientos esta semana"
+      },
+      "recentTrainees": "Alumnos recientes",
+      "recentTraineesDesc": "Tus alumnos asignados más recientemente.",
+      "viewAll": "Ver todos",
+      "recentActivity": "Actividad reciente",
+      "recentActivityDesc": "Últimos entrenamientos y actualizaciones de programas.",
+      "noActivity": "Sin actividad reciente."
+    },
+    "trainees": {
+      "title": "Alumnos",
+      "subtitle": "Gestiona y supervisa a tus alumnos asignados.",
+      "detail": "Detalle del alumno",
+      "profileDesc": "Información personal y perfil fitness.",
+      "filters": "Filtros",
+      "search": "Buscar",
+      "searchPlaceholder": "Buscar por nombre o correo...",
+      "statusFilter": "Estado",
+      "allStatuses": "Todos los estados",
+      "applyFilters": "Aplicar",
+      "backToList": "Volver a la lista",
+      "empty": "No se encontraron alumnos.",
+      "phone": "Teléfono",
+      "height": "Altura",
+      "weight": "Peso",
+      "injuryHistory": "Historial de lesiones",
+      "pagination": "{{from}}–{{to}} de {{total}}",
+      "columns": {
+        "name": "Nombre",
+        "email": "Correo",
+        "age": "Edad",
+        "goal": "Objetivo",
+        "programs": "Programas",
+        "status": "Estado"
+      }
+    },
+    "tabs": {
+      "profile": "Perfil",
+      "programs": "Programas",
+      "history": "Historial",
+      "metrics": "Métricas"
+    },
+    "programs": {
+      "createTitle": "Crear programa",
+      "createSubtitle": "Define un nuevo programa de entrenamiento para tus alumnos.",
+      "name": "Nombre del programa",
+      "objective": "Objetivo",
+      "type": "Tipo de programa",
+      "durationWeeks": "Duración (semanas)",
+      "notes": "Notas",
+      "status": "Estado",
+      "assignedAt": "Asignado",
+      "empty": "No hay programas asignados.",
+      "submit": "Crear programa",
+      "submitting": "Creando..."
+    },
+    "sessions": {
+      "createTitle": "Crear sesión",
+      "createSubtitle": "Añade una sesión de entrenamiento a este programa.",
+      "name": "Nombre de la sesión",
+      "type": "Tipo de sesión",
+      "scheduledDate": "Fecha programada",
+      "duration": "Duración (minutos)",
+      "notes": "Notas",
+      "submit": "Crear sesión",
+      "submitting": "Creando..."
+    },
+    "exercises": {
+      "title": "Añadir ejercicios",
+      "subtitle": "Añade uno o más ejercicios a esta sesión.",
+      "exerciseNumber": "Ejercicio {{number}}",
+      "name": "Nombre del ejercicio",
+      "sets": "Series",
+      "reps": "Repeticiones",
+      "weight": "Peso (kg)",
+      "rest": "Descanso (segundos)",
+      "notes": "Notas",
+      "addAnother": "Añadir otro ejercicio",
+      "remove": "Eliminar ejercicio",
+      "submit": "Guardar ejercicios",
+      "submitting": "Guardando..."
+    },
+    "history": {
+      "empty": "Sin historial de entrenamientos.",
+      "session": "Sesión",
+      "program": "Programa",
+      "date": "Fecha",
+      "completion": "Completado"
+    },
+    "metrics": {
+      "empty": "Sin métricas corporales registradas.",
+      "date": "Fecha",
+      "weight": "Peso",
+      "bodyFat": "Grasa corporal"
+    },
+    "goals": {
+      "lose_weight": "Perder peso",
+      "gain_muscle": "Ganar músculo",
+      "improve_health": "Mejorar salud",
+      "increase_strength": "Aumentar fuerza",
+      "improve_posture": "Mejorar postura"
+    },
+    "statuses": {
+      "active": "Activo",
+      "paused": "Pausado",
+      "ended": "Finalizado"
+    },
+    "programTypes": {
+      "strength": "Fuerza",
+      "cardio": "Cardio",
+      "flexibility": "Flexibilidad",
+      "mixed": "Mixto"
+    },
+    "programStatuses": {
+      "draft": "Borrador",
+      "active": "Activo",
+      "paused": "Pausado",
+      "completed": "Completado",
+      "archived": "Archivado"
+    },
+    "sessionTypes": {
+      "strength": "Fuerza",
+      "cardio": "Cardio",
+      "flexibility": "Flexibilidad"
+    },
+    "messages": {
+      "programCreated": "Programa creado exitosamente.",
+      "sessionCreated": "Sesión creada exitosamente.",
+      "exercisesAdded": "Ejercicios añadidos exitosamente."
+    },
+    "errors": {
+      "unauthorized": "Debes iniciar sesión para acceder a esta página.",
+      "forbidden": "No tienes permiso para acceder a esta página.",
+      "notFound": "Recurso no encontrado.",
+      "traineeNotAssigned": "Este alumno no está asignado a ti.",
+      "programNotFound": "Programa no encontrado.",
+      "sessionNotFound": "Sesión no encontrada.",
+      "nameRequired": "El nombre es obligatorio.",
+      "programTypeInvalid": "Tipo de programa inválido.",
+      "sessionTypeInvalid": "Tipo de sesión inválido.",
+      "scheduledDateRequired": "La fecha programada es obligatoria.",
+      "exerciseNameRequired": "Se requiere al menos un nombre de ejercicio.",
+      "positiveNumber": "Debe ser un número positivo.",
+      "loadFailed": "Error al cargar datos. Inténtalo de nuevo.",
+      "createFailed": "Error al guardar. Inténtalo de nuevo."
+    }
   }
 }

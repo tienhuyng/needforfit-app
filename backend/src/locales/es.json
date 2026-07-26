@@ -24,5 +24,26 @@
       "forgotPasswordSuccess": "Se ha enviado el enlace de restablecimiento de contraseña",
       "resetPasswordSuccess": "Contraseña restablecida con éxito"
     }
+  },
+  "pt": {
+    "errors": {
+      "unauthorized": "Se requiere autenticación",
+      "forbidden": "Acceso denegado",
+      "notFound": "No encontrado",
+      "traineeNotAssigned": "El alumno no está asignado a usted",
+      "programNotFound": "Programa no encontrado",
+      "sessionNotFound": "Sesión no encontrada",
+      "nameRequired": "El nombre es obligatorio",
+      "programTypeInvalid": "Tipo de programa inválido",
+      "sessionTypeInvalid": "Tipo de sesión inválido",
+      "scheduledDateRequired": "La fecha programada es obligatoria",
+      "exerciseNameRequired": "El nombre del ejercicio es obligatorio",
+      "positiveNumber": "El valor debe ser un número positivo"
+    },
+    "messages": {
+      "programCreated": "Programa creado con éxito",
+      "sessionCreated": "Sesión creada con éxito",
+      "exercisesAdded": "Ejercicios añadidos con éxito"
+    }
   }
 }

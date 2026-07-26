@@ -13,15 +13,18 @@ import {
   RegisterFormData,
   ResetPasswordFormData,
 } from '@/utils/validation';
+import { getAuthToken } from '@/utils/auth-storage';
 
-const api = axios.create({
+export { getAuthToken, storeAuthToken, clearAuthToken, storeAuthUser, getAuthUser, clearAuth, getPostLoginPath } from '@/utils/auth-storage';
+
+export const api = axios.create({
   baseURL: '/api',
   headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use((config) => {
   config.headers['Accept-Language'] = i18n.language;
-  const token = localStorage.getItem('token');
+  const token = getAuthToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -73,11 +76,3 @@ export const authApi = {
     return res.data.data;
   },
 };
-
-export function storeAuthToken(token: string): void {
-  localStorage.setItem('token', token);
-}
-
-export function clearAuthToken(): void {
-  localStorage.removeItem('token');
-}

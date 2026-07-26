@@ -20,7 +20,8 @@ export function formatZodErrors(
   return error.issues.map((issue: ZodIssue) => {
     const field = issue.path[0]?.toString();
     const i18nKey =
-      typeof issue.message === 'string' && issue.message.startsWith('auth.')
+      typeof issue.message === 'string' &&
+      (issue.message.startsWith('auth.') || issue.message.startsWith('pt.'))
         ? issue.message
         : field
           ? (FIELD_I18N_MAP[field] ?? 'auth.errors.validation')

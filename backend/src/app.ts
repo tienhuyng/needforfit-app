@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes';
+import ptRoutes from './routes/pt.routes';
 import { i18nMiddleware } from './middleware/i18n.middleware';
 import { errorHandler } from './middleware/validation.middleware';
 
@@ -16,6 +17,7 @@ export function createApp() {
   });
 
   app.use('/api/auth', authRoutes);
+  app.use('/api/pt', ptRoutes);
 
   app.use(errorHandler);
 

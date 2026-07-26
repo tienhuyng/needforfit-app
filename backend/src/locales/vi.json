@@ -24,5 +24,26 @@
       "forgotPasswordSuccess": "Liên kết đặt lại mật khẩu đã được gửi",
       "resetPasswordSuccess": "Đặt lại mật khẩu thành công"
     }
+  },
+  "pt": {
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập",
+      "forbidden": "Bạn không có quyền truy cập",
+      "notFound": "Không tìm thấy",
+      "traineeNotAssigned": "Học viên không thuộc quyền quản lý của bạn",
+      "programNotFound": "Không tìm thấy chương trình",
+      "sessionNotFound": "Không tìm thấy buổi tập",
+      "nameRequired": "Tên là bắt buộc",
+      "programTypeInvalid": "Loại chương trình không hợp lệ",
+      "sessionTypeInvalid": "Loại buổi tập không hợp lệ",
+      "scheduledDateRequired": "Ngày dự kiến là bắt buộc",
+      "exerciseNameRequired": "Tên bài tập là bắt buộc",
+      "positiveNumber": "Giá trị phải là số dương"
+    },
+    "messages": {
+      "programCreated": "Tạo chương trình thành công",
+      "sessionCreated": "Tạo buổi tập thành công",
+      "exercisesAdded": "Thêm bài tập thành công"
+    }
   }
 }

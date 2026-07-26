@@ -62,5 +62,176 @@
       "resetFailed": "パスワードのリセットに失敗しました。もう一度お試しください。",
       "generic": "エラーが発生しました。もう一度お試しください。"
     }
+  },
+  "pt": {
+    "nav": {
+      "dashboard": "ダッシュボード",
+      "trainees": "トレーニー",
+      "programs": "プログラム"
+    },
+    "layout": {
+      "title": "PTポータル",
+      "openMenu": "メニューを開く",
+      "closeMenu": "メニューを閉じる",
+      "logout": "ログアウト"
+    },
+    "common": {
+      "loading": "読み込み中...",
+      "back": "戻る",
+      "previous": "前へ",
+      "next": "次へ"
+    },
+    "dashboard": {
+      "title": "ダッシュボード",
+      "subtitle": "トレーニーとプログラムの概要。",
+      "kpi": {
+        "trainees": "アクティブなトレーニー",
+        "programs": "プログラム",
+        "workoutsThisWeek": "今週のワークアウト"
+      },
+      "recentTrainees": "最近のトレーニー",
+      "recentTraineesDesc": "最近割り当てられたトレーニー。",
+      "viewAll": "すべて表示",
+      "recentActivity": "最近のアクティビティ",
+      "recentActivityDesc": "最新のワークアウトとプログラム更新。",
+      "noActivity": "最近のアクティビティはありません。"
+    },
+    "trainees": {
+      "title": "トレーニー",
+      "subtitle": "割り当てられたトレーニーの管理とモニタリング。",
+      "detail": "トレーニー詳細",
+      "profileDesc": "個人情報とフィットネスプロフィール。",
+      "filters": "フィルター",
+      "search": "検索",
+      "searchPlaceholder": "名前またはメールで検索...",
+      "statusFilter": "ステータス",
+      "allStatuses": "すべてのステータス",
+      "applyFilters": "適用",
+      "backToList": "リストに戻る",
+      "empty": "トレーニーが見つかりません。",
+      "phone": "電話番号",
+      "height": "身長",
+      "weight": "体重",
+      "injuryHistory": "怪我の履歴",
+      "pagination": "{{total}}件中 {{from}}–{{to}}件",
+      "columns": {
+        "name": "名前",
+        "email": "メール",
+        "age": "年齢",
+        "goal": "目標",
+        "programs": "プログラム",
+        "status": "ステータス"
+      }
+    },
+    "tabs": {
+      "profile": "プロフィール",
+      "programs": "プログラム",
+      "history": "履歴",
+      "metrics": "指標"
+    },
+    "programs": {
+      "createTitle": "プログラム作成",
+      "createSubtitle": "トレーニーの新しいプログラムを定義します。",
+      "name": "プログラム名",
+      "objective": "目的",
+      "type": "プログラムタイプ",
+      "durationWeeks": "期間（週）",
+      "notes": "メモ",
+      "status": "ステータス",
+      "assignedAt": "割り当て日",
+      "empty": "割り当てられたプログラムはありません。",
+      "submit": "プログラム作成",
+      "submitting": "作成中..."
+    },
+    "sessions": {
+      "createTitle": "セッション作成",
+      "createSubtitle": "このプログラムにワークアウトセッションを追加します。",
+      "name": "セッション名",
+      "type": "セッションタイプ",
+      "scheduledDate": "予定日",
+      "duration": "時間（分）",
+      "notes": "メモ",
+      "submit": "セッション作成",
+      "submitting": "作成中..."
+    },
+    "exercises": {
+      "title": "エクササイズ追加",
+      "subtitle": "このセッションに1つ以上のエクササイズを追加します。",
+      "exerciseNumber": "エクササイズ {{number}}",
+      "name": "エクササイズ名",
+      "sets": "セット",
+      "reps": "レップ",
+      "weight": "重量（kg）",
+      "rest": "休息（秒）",
+      "notes": "メモ",
+      "addAnother": "別のエクササイズを追加",
+      "remove": "エクササイズを削除",
+      "submit": "エクササイズを保存",
+      "submitting": "保存中..."
+    },
+    "history": {
+      "empty": "ワークアウト履歴がありません。",
+      "session": "セッション",
+      "program": "プログラム",
+      "date": "日付",
+      "completion": "完了率"
+    },
+    "metrics": {
+      "empty": "身体指標が記録されていません。",
+      "date": "日付",
+      "weight": "体重",
+      "bodyFat": "体脂肪率"
+    },
+    "goals": {
+      "lose_weight": "減量",
+      "gain_muscle": "筋肉増量",
+      "improve_health": "健康改善",
+      "increase_strength": "筋力向上",
+      "improve_posture": "姿勢改善"
+    },
+    "statuses": {
+      "active": "アクティブ",
+      "paused": "一時停止",
+      "ended": "終了"
+    },
+    "programTypes": {
+      "strength": "筋力",
+      "cardio": "有酸素",
+      "flexibility": "柔軟",
+      "mixed": "混合"
+    },
+    "programStatuses": {
+      "draft": "下書き",
+      "active": "アクティブ",
+      "paused": "一時停止",
+      "completed": "完了",
+      "archived": "アーカイブ"
+    },
+    "sessionTypes": {
+      "strength": "筋力",
+      "cardio": "有酸素",
+      "flexibility": "柔軟"
+    },
+    "messages": {
+      "programCreated": "プログラムが正常に作成されました。",
+      "sessionCreated": "セッションが正常に作成されました。",
+      "exercisesAdded": "エクササイズが正常に追加されました。"
+    },
+    "errors": {
+      "unauthorized": "このページにアクセスするにはログインが必要です。",
+      "forbidden": "このページにアクセスする権限がありません。",
+      "notFound": "リソースが見つかりません。",
+      "traineeNotAssigned": "このトレーニーは割り当てられていません。",
+      "programNotFound": "プログラムが見つかりません。",
+      "sessionNotFound": "セッションが見つかりません。",
+      "nameRequired": "名前は必須です。",
+      "programTypeInvalid": "無効なプログラムタイプです。",
+      "sessionTypeInvalid": "無効なセッションタイプです。",
+      "scheduledDateRequired": "予定日は必須です。",
+      "exerciseNameRequired": "少なくとも1つのエクササイズ名が必要です。",
+      "positiveNumber": "正の数である必要があります。",
+      "loadFailed": "データの読み込みに失敗しました。もう一度お試しください。",
+      "createFailed": "保存に失敗しました。もう一度お試しください。"
+    }
   }
 }

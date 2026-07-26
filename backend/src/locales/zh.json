@@ -24,5 +24,26 @@
       "forgotPasswordSuccess": "密码重置链接已发送",
       "resetPasswordSuccess": "密码重置成功"
     }
+  },
+  "pt": {
+    "errors": {
+      "unauthorized": "需要身份验证",
+      "forbidden": "访问被拒绝",
+      "notFound": "未找到",
+      "traineeNotAssigned": "学员未分配给您",
+      "programNotFound": "未找到训练计划",
+      "sessionNotFound": "未找到训练课程",
+      "nameRequired": "名称为必填项",
+      "programTypeInvalid": "训练计划类型无效",
+      "sessionTypeInvalid": "训练课程类型无效",
+      "scheduledDateRequired": "计划日期为必填项",
+      "exerciseNameRequired": "练习名称为必填项",
+      "positiveNumber": "值必须为正数"
+    },
+    "messages": {
+      "programCreated": "训练计划创建成功",
+      "sessionCreated": "训练课程创建成功",
+      "exercisesAdded": "练习添加成功"
+    }
   }
 }

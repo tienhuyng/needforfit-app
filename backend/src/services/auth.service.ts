@@ -43,6 +43,8 @@ export class AuthService {
         lastName: input.lastName,
         role: input.role,
         status: UserStatus.active,
+        ...(input.role === 'trainee' ? { traineeProfile: { create: {} } } : {}),
+        ...(input.role === 'pt' ? { ptProfile: { create: {} } } : {}),
       },
     });
 

@@ -17,7 +17,22 @@ const variantMap: Record<TemplateVariant, NonNullable<ShadcnButtonProps['variant
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', isLoading = false, children, disabled, className, ...props }, ref) => {
+  ({ variant = 'primary', isLoading = false, children, disabled, className, asChild = false, ...props }, ref) => {
+    if (asChild) {
+      return (
+        <ShadcnButton
+          ref={ref}
+          variant={variantMap[variant]}
+          disabled={disabled || isLoading}
+          className={className}
+          asChild
+          {...props}
+        >
+          {children}
+        </ShadcnButton>
+      );
+    }
+
     return (
       <ShadcnButton
         ref={ref}

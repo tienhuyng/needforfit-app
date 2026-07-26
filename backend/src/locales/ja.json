@@ -24,5 +24,26 @@
       "forgotPasswordSuccess": "パスワードリセットリンクを送信しました",
       "resetPasswordSuccess": "パスワードのリセットに成功しました"
     }
+  },
+  "pt": {
+    "errors": {
+      "unauthorized": "認証が必要です",
+      "forbidden": "アクセスが拒否されました",
+      "notFound": "見つかりません",
+      "traineeNotAssigned": "受講者はあなたに割り当てられていません",
+      "programNotFound": "プログラムが見つかりません",
+      "sessionNotFound": "セッションが見つかりません",
+      "nameRequired": "名前は必須です",
+      "programTypeInvalid": "無効なプログラムタイプです",
+      "sessionTypeInvalid": "無効なセッションタイプです",
+      "scheduledDateRequired": "予定日は必須です",
+      "exerciseNameRequired": "エクササイズ名は必須です",
+      "positiveNumber": "値は正の数である必要があります"
+    },
+    "messages": {
+      "programCreated": "プログラムが正常に作成されました",
+      "sessionCreated": "セッションが正常に作成されました",
+      "exercisesAdded": "エクササイズが正常に追加されました"
+    }
   }
 }

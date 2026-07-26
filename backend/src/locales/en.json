@@ -24,5 +24,26 @@
       "forgotPasswordSuccess": "Password reset link has been sent",
       "resetPasswordSuccess": "Password reset successful"
     }
+  },
+  "pt": {
+    "errors": {
+      "unauthorized": "Authentication required",
+      "forbidden": "Access denied",
+      "notFound": "Not found",
+      "traineeNotAssigned": "Trainee is not assigned to you",
+      "programNotFound": "Program not found",
+      "sessionNotFound": "Session not found",
+      "nameRequired": "Name is required",
+      "programTypeInvalid": "Invalid program type",
+      "sessionTypeInvalid": "Invalid session type",
+      "scheduledDateRequired": "Scheduled date is required",
+      "exerciseNameRequired": "Exercise name is required",
+      "positiveNumber": "Value must be a positive number"
+    },
+    "messages": {
+      "programCreated": "Program created successfully",
+      "sessionCreated": "Session created successfully",
+      "exercisesAdded": "Exercises added successfully"
+    }
   }
 }

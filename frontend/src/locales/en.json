@@ -62,5 +62,176 @@
       "resetFailed": "Password reset failed. Please try again.",
       "generic": "An error occurred. Please try again."
     }
+  },
+  "pt": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "trainees": "Trainees",
+      "programs": "Programs"
+    },
+    "layout": {
+      "title": "PT Portal",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "logout": "Log out"
+    },
+    "common": {
+      "loading": "Loading...",
+      "back": "Back",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Overview of your trainees and programs.",
+      "kpi": {
+        "trainees": "Active Trainees",
+        "programs": "Programs",
+        "workoutsThisWeek": "Workouts This Week"
+      },
+      "recentTrainees": "Recent Trainees",
+      "recentTraineesDesc": "Your most recently assigned trainees.",
+      "viewAll": "View all",
+      "recentActivity": "Recent Activity",
+      "recentActivityDesc": "Latest workouts and program updates.",
+      "noActivity": "No recent activity."
+    },
+    "trainees": {
+      "title": "Trainees",
+      "subtitle": "Manage and monitor your assigned trainees.",
+      "detail": "Trainee Detail",
+      "profileDesc": "Personal information and fitness profile.",
+      "filters": "Filters",
+      "search": "Search",
+      "searchPlaceholder": "Search by name or email...",
+      "statusFilter": "Status",
+      "allStatuses": "All statuses",
+      "applyFilters": "Apply",
+      "backToList": "Back to list",
+      "empty": "No trainees found.",
+      "phone": "Phone",
+      "height": "Height",
+      "weight": "Weight",
+      "injuryHistory": "Injury History",
+      "pagination": "{{from}}–{{to}} of {{total}}",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "age": "Age",
+        "goal": "Goal",
+        "programs": "Programs",
+        "status": "Status"
+      }
+    },
+    "tabs": {
+      "profile": "Profile",
+      "programs": "Programs",
+      "history": "History",
+      "metrics": "Metrics"
+    },
+    "programs": {
+      "createTitle": "Create Program",
+      "createSubtitle": "Define a new training program for your trainees.",
+      "name": "Program Name",
+      "objective": "Objective",
+      "type": "Program Type",
+      "durationWeeks": "Duration (weeks)",
+      "notes": "Notes",
+      "status": "Status",
+      "assignedAt": "Assigned",
+      "empty": "No programs assigned.",
+      "submit": "Create Program",
+      "submitting": "Creating..."
+    },
+    "sessions": {
+      "createTitle": "Create Session",
+      "createSubtitle": "Add a workout session to this program.",
+      "name": "Session Name",
+      "type": "Session Type",
+      "scheduledDate": "Scheduled Date",
+      "duration": "Duration (minutes)",
+      "notes": "Notes",
+      "submit": "Create Session",
+      "submitting": "Creating..."
+    },
+    "exercises": {
+      "title": "Add Exercises",
+      "subtitle": "Add one or more exercises to this session.",
+      "exerciseNumber": "Exercise {{number}}",
+      "name": "Exercise Name",
+      "sets": "Sets",
+      "reps": "Reps",
+      "weight": "Weight (kg)",
+      "rest": "Rest (seconds)",
+      "notes": "Notes",
+      "addAnother": "Add another exercise",
+      "remove": "Remove exercise",
+      "submit": "Save Exercises",
+      "submitting": "Saving..."
+    },
+    "history": {
+      "empty": "No workout history yet.",
+      "session": "Session",
+      "program": "Program",
+      "date": "Date",
+      "completion": "Completion"
+    },
+    "metrics": {
+      "empty": "No body metrics recorded.",
+      "date": "Date",
+      "weight": "Weight",
+      "bodyFat": "Body Fat"
+    },
+    "goals": {
+      "lose_weight": "Lose Weight",
+      "gain_muscle": "Gain Muscle",
+      "improve_health": "Improve Health",
+      "increase_strength": "Increase Strength",
+      "improve_posture": "Improve Posture"
+    },
+    "statuses": {
+      "active": "Active",
+      "paused": "Paused",
+      "ended": "Ended"
+    },
+    "programTypes": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "flexibility": "Flexibility",
+      "mixed": "Mixed"
+    },
+    "programStatuses": {
+      "draft": "Draft",
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed",
+      "archived": "Archived"
+    },
+    "sessionTypes": {
+      "strength": "Strength",
+      "cardio": "Cardio",
+      "flexibility": "Flexibility"
+    },
+    "messages": {
+      "programCreated": "Program created successfully.",
+      "sessionCreated": "Session created successfully.",
+      "exercisesAdded": "Exercises added successfully."
+    },
+    "errors": {
+      "unauthorized": "You must be logged in to access this page.",
+      "forbidden": "You do not have permission to access this page.",
+      "notFound": "Resource not found.",
+      "traineeNotAssigned": "This trainee is not assigned to you.",
+      "programNotFound": "Program not found.",
+      "sessionNotFound": "Session not found.",
+      "nameRequired": "Name is required.",
+      "programTypeInvalid": "Invalid program type.",
+      "sessionTypeInvalid": "Invalid session type.",
+      "scheduledDateRequired": "Scheduled date is required.",
+      "exerciseNameRequired": "At least one exercise name is required.",
+      "positiveNumber": "Must be a positive number.",
+      "loadFailed": "Failed to load data. Please try again.",
+      "createFailed": "Failed to save. Please try again."
+    }
   }
 }

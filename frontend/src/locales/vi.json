@@ -62,5 +62,176 @@
       "resetFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
       "generic": "Đã xảy ra lỗi. Vui lòng thử lại."
     }
+  },
+  "pt": {
+    "nav": {
+      "dashboard": "Bảng điều khiển",
+      "trainees": "Học viên",
+      "programs": "Chương trình"
+    },
+    "layout": {
+      "title": "Cổng PT",
+      "openMenu": "Mở menu",
+      "closeMenu": "Đóng menu",
+      "logout": "Đăng xuất"
+    },
+    "common": {
+      "loading": "Đang tải...",
+      "back": "Quay lại",
+      "previous": "Trước",
+      "next": "Sau"
+    },
+    "dashboard": {
+      "title": "Bảng điều khiển",
+      "subtitle": "Tổng quan học viên và chương trình của bạn.",
+      "kpi": {
+        "trainees": "Học viên đang hoạt động",
+        "programs": "Chương trình",
+        "workoutsThisWeek": "Buổi tập tuần này"
+      },
+      "recentTrainees": "Học viên gần đây",
+      "recentTraineesDesc": "Các học viên được gán gần nhất.",
+      "viewAll": "Xem tất cả",
+      "recentActivity": "Hoạt động gần đây",
+      "recentActivityDesc": "Buổi tập và cập nhật chương trình mới nhất.",
+      "noActivity": "Không có hoạt động gần đây."
+    },
+    "trainees": {
+      "title": "Học viên",
+      "subtitle": "Quản lý và theo dõi học viên được gán.",
+      "detail": "Chi tiết học viên",
+      "profileDesc": "Thông tin cá nhân và hồ sơ fitness.",
+      "filters": "Bộ lọc",
+      "search": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo tên hoặc email...",
+      "statusFilter": "Trạng thái",
+      "allStatuses": "Tất cả trạng thái",
+      "applyFilters": "Áp dụng",
+      "backToList": "Quay lại danh sách",
+      "empty": "Không tìm thấy học viên.",
+      "phone": "Số điện thoại",
+      "height": "Chiều cao",
+      "weight": "Cân nặng",
+      "injuryHistory": "Tiền sử chấn thương",
+      "pagination": "{{from}}–{{to}} trong {{total}}",
+      "columns": {
+        "name": "Tên",
+        "email": "Email",
+        "age": "Tuổi",
+        "goal": "Mục tiêu",
+        "programs": "Chương trình",
+        "status": "Trạng thái"
+      }
+    },
+    "tabs": {
+      "profile": "Hồ sơ",
+      "programs": "Chương trình",
+      "history": "Lịch sử",
+      "metrics": "Chỉ số"
+    },
+    "programs": {
+      "createTitle": "Tạo chương trình",
+      "createSubtitle": "Tạo chương trình tập mới cho học viên.",
+      "name": "Tên chương trình",
+      "objective": "Mục tiêu",
+      "type": "Loại chương trình",
+      "durationWeeks": "Thời lượng (tuần)",
+      "notes": "Ghi chú",
+      "status": "Trạng thái",
+      "assignedAt": "Ngày gán",
+      "empty": "Chưa có chương trình nào.",
+      "submit": "Tạo chương trình",
+      "submitting": "Đang tạo..."
+    },
+    "sessions": {
+      "createTitle": "Tạo buổi tập",
+      "createSubtitle": "Thêm buổi tập vào chương trình này.",
+      "name": "Tên buổi tập",
+      "type": "Loại buổi tập",
+      "scheduledDate": "Ngày lên lịch",
+      "duration": "Thời lượng (phút)",
+      "notes": "Ghi chú",
+      "submit": "Tạo buổi tập",
+      "submitting": "Đang tạo..."
+    },
+    "exercises": {
+      "title": "Thêm bài tập",
+      "subtitle": "Thêm một hoặc nhiều bài tập vào buổi tập này.",
+      "exerciseNumber": "Bài tập {{number}}",
+      "name": "Tên bài tập",
+      "sets": "Hiệp",
+      "reps": "Lần lặp",
+      "weight": "Tạ (kg)",
+      "rest": "Nghỉ (giây)",
+      "notes": "Ghi chú",
+      "addAnother": "Thêm bài tập khác",
+      "remove": "Xóa bài tập",
+      "submit": "Lưu bài tập",
+      "submitting": "Đang lưu..."
+    },
+    "history": {
+      "empty": "Chưa có lịch sử tập luyện.",
+      "session": "Buổi tập",
+      "program": "Chương trình",
+      "date": "Ngày",
+      "completion": "Hoàn thành"
+    },
+    "metrics": {
+      "empty": "Chưa có chỉ số cơ thể.",
+      "date": "Ngày",
+      "weight": "Cân nặng",
+      "bodyFat": "Mỡ cơ thể"
+    },
+    "goals": {
+      "lose_weight": "Giảm cân",
+      "gain_muscle": "Tăng cơ",
+      "improve_health": "Cải thiện sức khỏe",
+      "increase_strength": "Tăng sức mạnh",
+      "improve_posture": "Cải thiện tư thế"
+    },
+    "statuses": {
+      "active": "Đang hoạt động",
+      "paused": "Tạm dừng",
+      "ended": "Đã kết thúc"
+    },
+    "programTypes": {
+      "strength": "Sức mạnh",
+      "cardio": "Cardio",
+      "flexibility": "Linh hoạt",
+      "mixed": "Kết hợp"
+    },
+    "programStatuses": {
+      "draft": "Nháp",
+      "active": "Đang hoạt động",
+      "paused": "Tạm dừng",
+      "completed": "Hoàn thành",
+      "archived": "Lưu trữ"
+    },
+    "sessionTypes": {
+      "strength": "Sức mạnh",
+      "cardio": "Cardio",
+      "flexibility": "Linh hoạt"
+    },
+    "messages": {
+      "programCreated": "Tạo chương trình thành công.",
+      "sessionCreated": "Tạo buổi tập thành công.",
+      "exercisesAdded": "Thêm bài tập thành công."
+    },
+    "errors": {
+      "unauthorized": "Bạn cần đăng nhập để truy cập trang này.",
+      "forbidden": "Bạn không có quyền truy cập trang này.",
+      "notFound": "Không tìm thấy tài nguyên.",
+      "traineeNotAssigned": "Học viên này chưa được gán cho bạn.",
+      "programNotFound": "Không tìm thấy chương trình.",
+      "sessionNotFound": "Không tìm thấy buổi tập.",
+      "nameRequired": "Tên là bắt buộc.",
+      "programTypeInvalid": "Loại chương trình không hợp lệ.",
+      "sessionTypeInvalid": "Loại buổi tập không hợp lệ.",
+      "scheduledDateRequired": "Ngày lên lịch là bắt buộc.",
+      "exerciseNameRequired": "Cần ít nhất một tên bài tập.",
+      "positiveNumber": "Phải là số dương.",
+      "loadFailed": "Không thể tải dữ liệu. Vui lòng thử lại.",
+      "createFailed": "Không thể lưu. Vui lòng thử lại."
+    }
   }
 }
