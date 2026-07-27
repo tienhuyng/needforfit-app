@@ -126,6 +126,38 @@ export interface ProgramSummary {
   createdAt: string;
 }
 
+export interface AssignedTraineeSummary {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string;
+  assignedAt: string;
+}
+
+export interface ProgramDetailResponse extends ProgramSummary {
+  notes: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  sessions: SessionSummary[];
+  assignedTrainees: AssignedTraineeSummary[];
+}
+
+export interface SessionDetailResponse extends SessionSummary {
+  notes: string | null;
+  sessionVersion: number;
+  exercises: WorkoutSessionExercise[];
+}
+
+export interface AssignProgramInput {
+  traineeId: string;
+}
+
+export type UpdateProgramInput = Partial<CreateProgramInput>;
+
+export type UpdateSessionInput = Partial<CreateSessionInput> & {
+  status?: SessionStatus;
+};
+
 export interface TrainingProgram {
   id: string;
   ptId: string;

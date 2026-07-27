@@ -14,12 +14,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { traineeApi, getApiErrorMessage } from '@/services/trainee.service';
-import { ProgramOption, WorkoutHistorySummary } from '@/types/trainee';
+import { TraineeProgramItem, WorkoutHistorySummary } from '@/types/trainee';
 
 export const WorkoutHistoryPage: React.FC = () => {
   const { t } = useTranslation();
   const [items, setItems] = useState<WorkoutHistorySummary[]>([]);
-  const [programs, setPrograms] = useState<ProgramOption[]>([]);
+  const [programs, setPrograms] = useState<TraineeProgramItem[]>([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [programId, setProgramId] = useState('');

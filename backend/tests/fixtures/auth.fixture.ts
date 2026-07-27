@@ -28,6 +28,7 @@ export const mockResetToken = {
 export const prismaMock = prisma as unknown as {
   user: {
     findUnique: jest.Mock;
+    findMany: jest.Mock;
     create: jest.Mock;
     update: jest.Mock;
   };
@@ -46,25 +47,39 @@ export const prismaMock = prisma as unknown as {
     findMany: jest.Mock;
     findFirst: jest.Mock;
     create: jest.Mock;
+    update: jest.Mock;
   };
   workoutLog: {
     count: jest.Mock;
     findMany: jest.Mock;
+    findFirst: jest.Mock;
+    create: jest.Mock;
+    update: jest.Mock;
+    groupBy: jest.Mock;
   };
   programTraineeAssignment: {
     findMany: jest.Mock;
+    findUnique: jest.Mock;
+    create: jest.Mock;
     groupBy: jest.Mock;
   };
   workoutSession: {
     findMany: jest.Mock;
     findFirst: jest.Mock;
+    findUnique: jest.Mock;
     create: jest.Mock;
+    update: jest.Mock;
   };
   workoutSessionExercise: {
     create: jest.Mock;
   };
   bodyMeasurementLog: {
     findMany: jest.Mock;
+    create: jest.Mock;
+    update: jest.Mock;
+  };
+  traineeProfile: {
+    updateMany: jest.Mock;
   };
   $transaction: jest.Mock;
 };

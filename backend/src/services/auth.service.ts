@@ -6,6 +6,7 @@ import {
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateProfileInput,
 } from '../validators/auth.validator';
 import {
   comparePassword,
@@ -17,6 +18,8 @@ import {
 } from '../utils/password';
 import { AppError } from '../utils/errors';
 import { AUTH_ERROR_CODES, AUTH_I18N_KEYS } from '../types/errors';
+import { emailService } from './email.service';
+import { env, isProduction } from '../config/env';
 import {
   LoginResponse,
   MessageResponse,
@@ -106,7 +109,7 @@ export class AuthService {
   async forgotPassword(
     input: ForgotPasswordInput,
     lng: SupportedLanguage
-  ): Promise<MessageResponse & { resetToken?: string }> {
+  ): Promise<MessageResponse> {
     const user = await prisma.user.findUnique({
       where: { email: input.email.toLowerCase() },
     });
@@ -130,13 +133,22 @@ export class AuthService {
       },
     });
 
-    const response: MessageResponse & { resetToken?: string } = {
+    const resetLink = `${env.frontendUrl}/reset-password?token=${encodeURIComponent(token)}&email=${encodeURIComponent(user.email)}`;
+
+    await emailService.sendPasswordResetEmail({
+      to: user.email,
+      resetUrl: resetLink,
+      lng,
+      userName: user.firstName ?? user.email,
+    });
+
+    const response: MessageResponse = {
       message: t(AUTH_I18N_KEYS.forgotPasswordSuccess, lng),
     };
 
-    // In development, return token for testing; in production, send via email
-    if (process.env.NODE_ENV !== 'production') {
+    if (!isProduction) {
       response.resetToken = token;
+      response.resetLink = resetLink;
     }
 
     return response;
@@ -207,6 +219,28 @@ export class AuthService {
 
     return {
       message: t(AUTH_I18N_KEYS.resetPasswordSuccess, lng),
+    };
+  }
+
+  async updateProfile(
+    userId: string,
+    input: UpdateProfileInput,
+    lng: SupportedLanguage
+  ): Promise<{ user: ReturnType<typeof toAuthUser> }> {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(input.firstName !== undefined ? { firstName: input.firstName } : {}),
+        ...(input.lastName !== undefined ? { lastName: input.lastName } : {}),
+        ...(input.phone !== undefined ? { phone: input.phone } : {}),
+        ...(input.preferredLanguage !== undefined
+          ? { preferredLanguage: input.preferredLanguage }
+          : {}),
+      },
+    });
+
+    return {
+      user: toAuthUser(user),
     };
   }
 }

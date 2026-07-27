@@ -12,6 +12,7 @@ import {
   CardTitle,
   Input,
 } from '@/components/template';
+import { PasswordInput } from '@/components/common/PasswordInput';
 import { Label } from '@/components/ui/label';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
@@ -41,7 +42,8 @@ export const RegisterPage: React.FC = () => {
     setError('');
     setIsLoading(true);
     try {
-      const result = await authApi.register(data);
+      const { confirmPassword: _confirmPassword, ...registerData } = data;
+      const result = await authApi.register(registerData);
       storeAuthToken(result.token);
       storeAuthUser(result.user);
       navigate(getPostLoginPath(result.user.role));
@@ -87,13 +89,20 @@ export const RegisterPage: React.FC = () => {
               {...register('email')}
             />
 
-            <Input
+            <PasswordInput
               label={t('auth.register.password')}
-              type="password"
               autoComplete="new-password"
               placeholder="••••••••"
               error={errors.password?.message}
               {...register('password')}
+            />
+
+            <PasswordInput
+              label={t('auth.register.confirmPassword')}
+              autoComplete="new-password"
+              placeholder="••••••••"
+              error={errors.confirmPassword?.message}
+              {...register('confirmPassword')}
             />
 
             <div className="space-y-2">

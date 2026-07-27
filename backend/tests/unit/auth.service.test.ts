@@ -3,6 +3,12 @@ import { authService } from '../../src/services/auth.service';
 import { mockResetToken, mockUser, prismaMock } from '../fixtures/auth.fixture';
 import { UserRole } from '@prisma/client';
 
+jest.mock('../../src/services/email.service', () => ({
+  emailService: {
+    sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
+  },
+}));
+
 describe('AuthService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -91,6 +97,7 @@ describe('AuthService', () => {
 
       expect(result.message).toContain('Password reset');
       expect(result.resetToken).toBeDefined();
+      expect(result.resetLink).toContain('/reset-password?token=');
       expect(prismaMock.passwordResetToken.create).toHaveBeenCalled();
     });
 

@@ -52,7 +52,21 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
+export const updateProfileSchema = z.object({
+  firstName: z
+    .string({ required_error: AUTH_I18N_KEYS.firstNameRequired })
+    .min(1, AUTH_I18N_KEYS.firstNameRequired)
+    .optional(),
+  lastName: z
+    .string({ required_error: AUTH_I18N_KEYS.lastNameRequired })
+    .min(1, AUTH_I18N_KEYS.lastNameRequired)
+    .optional(),
+  phone: z.string().optional(),
+  preferredLanguage: z.enum(['vi', 'en', 'zh', 'ja', 'es']).optional(),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

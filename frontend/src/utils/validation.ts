@@ -13,18 +13,24 @@ export function createLoginSchema(t: TFunction) {
 }
 
 export function createRegisterSchema(t: TFunction) {
-  return z.object({
-    email: z
-      .string()
-      .min(1, t('auth.errors.emailRequired'))
-      .email(t('auth.errors.emailInvalid')),
-    password: z.string().min(8, t('auth.errors.passwordTooShort')),
-    firstName: z.string().min(1, t('auth.errors.firstNameRequired')),
-    lastName: z.string().min(1, t('auth.errors.lastNameRequired')),
-    role: z.enum(['pt', 'trainee'], {
-      errorMap: () => ({ message: t('auth.errors.roleRequired') }),
-    }),
-  });
+  return z
+    .object({
+      email: z
+        .string()
+        .min(1, t('auth.errors.emailRequired'))
+        .email(t('auth.errors.emailInvalid')),
+      password: z.string().min(8, t('auth.errors.passwordTooShort')),
+      confirmPassword: z.string().min(1, t('auth.errors.passwordRequired')),
+      firstName: z.string().min(1, t('auth.errors.firstNameRequired')),
+      lastName: z.string().min(1, t('auth.errors.lastNameRequired')),
+      role: z.enum(['pt', 'trainee'], {
+        errorMap: () => ({ message: t('auth.errors.roleRequired') }),
+      }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('auth.errors.passwordMismatch'),
+      path: ['confirmPassword'],
+    });
 }
 
 export function createForgotPasswordSchema(t: TFunction) {

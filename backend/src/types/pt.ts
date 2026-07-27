@@ -100,6 +100,28 @@ export interface ProgramSummary {
   createdAt: string;
 }
 
+export interface AssignedTraineeSummary {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string;
+  assignedAt: string;
+}
+
+export interface ProgramDetailResponse extends ProgramSummary {
+  notes: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  sessions: SessionSummary[];
+  assignedTrainees: AssignedTraineeSummary[];
+}
+
+export interface SessionDetailResponse extends SessionSummary {
+  notes: string | null;
+  sessionVersion: number;
+  exercises: ExerciseSummary[];
+}
+
 export interface SessionSummary {
   id: string;
   name: string;

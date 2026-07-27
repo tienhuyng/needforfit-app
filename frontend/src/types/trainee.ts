@@ -138,6 +138,29 @@ export interface ProgramOption {
   programType: string;
 }
 
+export interface TraineeProgramItem {
+  id: string;
+  name: string;
+  programType: string;
+  status: string;
+  ptName: string;
+  progressPercent: number;
+  sessionCount: number;
+  completedCount: number;
+}
+
+export interface TraineeProgramSessionItem {
+  sessionId: string;
+  sessionName: string;
+  scheduledDate: string;
+  sessionType: string;
+  exerciseCount: number;
+  canLog: boolean;
+  isLocked: boolean;
+  existingLogId: string | null;
+  isCompleted: boolean;
+}
+
 export interface LogWorkoutInput {
   sessionId: string;
   exercises: {

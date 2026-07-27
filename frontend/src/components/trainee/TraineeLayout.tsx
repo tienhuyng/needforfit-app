@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Home, History, Scale, Dumbbell, LogOut } from 'lucide-react';
+import { Home, History, Scale, Dumbbell, LogOut, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LogoutConfirmModal } from '@/components/auth/LogoutConfirmModal';
 import { clearAuth, getAuthUser } from '@/utils/auth-storage';
 
 interface TraineeLayoutProps {
@@ -13,6 +14,7 @@ interface TraineeLayoutProps {
 
 const navItems = [
   { to: '/trainee/home', icon: Home, labelKey: 'trainee.nav.home' },
+  { to: '/trainee/programs', icon: Dumbbell, labelKey: 'trainee.nav.programs' },
   { to: '/trainee/history', icon: History, labelKey: 'trainee.nav.history' },
   { to: '/trainee/metrics', icon: Scale, labelKey: 'trainee.nav.metrics' },
 ] as const;
@@ -24,13 +26,14 @@ export const TraineeLayout: React.FC<TraineeLayoutProps> = ({
 }) => {
   const { t } = useTranslation();
   const location = useLocation();
+  const [logoutOpen, setLogoutOpen] = React.useState(false);
   const user = getAuthUser();
 
   const displayName = user
     ? [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email
     : '';
 
-  const handleLogout = () => {
+  const confirmLogout = () => {
     clearAuth();
     window.location.href = '/login';
   };
@@ -48,14 +51,24 @@ export const TraineeLayout: React.FC<TraineeLayoutProps> = ({
               </h1>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="rounded-md p-2 text-muted-foreground hover:bg-accent"
-            aria-label={t('trainee.layout.logout')}
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            <Link
+              to="/settings/profile"
+              className="rounded-md p-2 text-muted-foreground hover:bg-accent"
+              aria-label={t('auth.profile.title')}
+              title={t('auth.profile.title')}
+            >
+              <Settings className="h-4 w-4" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setLogoutOpen(true)}
+              className="rounded-md p-2 text-muted-foreground hover:bg-accent"
+              aria-label={t('trainee.layout.logout')}
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         {displayName && (
           <p className="mx-auto mt-1 max-w-lg truncate text-xs text-muted-foreground sm:max-w-2xl">
@@ -92,6 +105,12 @@ export const TraineeLayout: React.FC<TraineeLayoutProps> = ({
           </div>
         </nav>
       )}
+
+      <LogoutConfirmModal
+        open={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        onConfirm={confirmLogout}
+      />
     </div>
   );
 };

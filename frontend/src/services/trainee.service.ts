@@ -5,9 +5,10 @@ import {
   LogWorkoutInput,
   MetricsProgressResponse,
   PaginatedResponse,
-  ProgramOption,
   SessionDetailResponse,
   TraineeHomeResponse,
+  TraineeProgramItem,
+  TraineeProgramSessionItem,
   WorkoutHistoryQuery,
   WorkoutHistorySummary,
   WorkoutLogDetail,
@@ -21,8 +22,25 @@ export const traineeApi = {
     return res.data.data;
   },
 
-  getPrograms: async (): Promise<ProgramOption[]> => {
-    const res = await api.get<ApiSuccessResponse<ProgramOption[]>>('/trainee/programs');
+  getPrograms: async (): Promise<TraineeProgramItem[]> => {
+    const res = await api.get<ApiSuccessResponse<TraineeProgramItem[]>>('/trainee/programs');
+    return res.data.data;
+  },
+
+  getProgramSessions: async (programId: string): Promise<TraineeProgramSessionItem[]> => {
+    const res = await api.get<ApiSuccessResponse<TraineeProgramSessionItem[]>>(
+      `/trainee/programs/${programId}/sessions`
+    );
+    return res.data.data;
+  },
+
+  getProgramSession: async (
+    programId: string,
+    sessionId: string
+  ): Promise<SessionDetailResponse> => {
+    const res = await api.get<ApiSuccessResponse<SessionDetailResponse>>(
+      `/trainee/programs/${programId}/sessions/${sessionId}`
+    );
     return res.data.data;
   },
 

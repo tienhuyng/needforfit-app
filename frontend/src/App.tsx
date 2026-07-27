@@ -4,14 +4,20 @@ import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
+import { ProfileSettingsPage } from '@/pages/auth/ProfileSettingsPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardPage } from '@/pages/pt/DashboardPage';
 import { TraineeListPage } from '@/pages/pt/TraineeListPage';
 import { TraineeDetailPage } from '@/pages/pt/TraineeDetailPage';
+import { ProgramListPage } from '@/pages/pt/ProgramListPage';
+import { ProgramDetailPage } from '@/pages/pt/ProgramDetailPage';
 import { CreateProgramPage } from '@/pages/pt/CreateProgramPage';
 import { CreateSessionPage } from '@/pages/pt/CreateSessionPage';
+import { EditSessionPage } from '@/pages/pt/EditSessionPage';
 import { AddExercisesPage } from '@/pages/pt/AddExercisesPage';
 import { HomePage } from '@/pages/trainee/HomePage';
+import { MyProgramsPage } from '@/pages/trainee/MyProgramsPage';
+import { ProgramSessionsPage, TraineeSessionDetailPage } from '@/pages/trainee/ProgramSessionsPage';
 import { LogWorkoutPage } from '@/pages/trainee/LogWorkoutPage';
 import { WorkoutHistoryPage } from '@/pages/trainee/WorkoutHistoryPage';
 import { WorkoutDetailPage } from '@/pages/trainee/WorkoutDetailPage';
@@ -25,6 +31,14 @@ export const App: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route
+          path="/settings/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileSettingsPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="/" element={<Navigate to="/trainee/home" replace />} />
 
@@ -33,6 +47,30 @@ export const App: React.FC = () => {
           element={
             <ProtectedRoute allowedRoles={['trainee']}>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/programs"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <MyProgramsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/programs/:programId"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <ProgramSessionsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/programs/:programId/sessions/:sessionId"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <TraineeSessionDetailPage />
             </ProtectedRoute>
           }
         />
@@ -94,6 +132,14 @@ export const App: React.FC = () => {
           }
         />
         <Route
+          path="/pt/programs"
+          element={
+            <ProtectedRoute allowedRoles={['pt', 'admin']}>
+              <ProgramListPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/pt/programs/new"
           element={
             <ProtectedRoute allowedRoles={['pt', 'admin']}>
@@ -102,10 +148,26 @@ export const App: React.FC = () => {
           }
         />
         <Route
+          path="/pt/programs/:programId"
+          element={
+            <ProtectedRoute allowedRoles={['pt', 'admin']}>
+              <ProgramDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/pt/programs/:programId/sessions/new"
           element={
             <ProtectedRoute allowedRoles={['pt', 'admin']}>
               <CreateSessionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pt/programs/:programId/sessions/:sessionId/edit"
+          element={
+            <ProtectedRoute allowedRoles={['pt', 'admin']}>
+              <EditSessionPage />
             </ProtectedRoute>
           }
         />

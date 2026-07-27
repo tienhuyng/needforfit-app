@@ -22,7 +22,17 @@
       "loginSuccess": "Đăng nhập thành công",
       "registerSuccess": "Đăng ký thành công",
       "forgotPasswordSuccess": "Liên kết đặt lại mật khẩu đã được gửi",
-      "resetPasswordSuccess": "Đặt lại mật khẩu thành công"
+      "resetPasswordSuccess": "Đặt lại mật khẩu thành công",
+      "profileUpdated": "Cập nhật hồ sơ thành công"
+    },
+    "emails": {
+      "resetPassword": {
+        "subject": "Đặt lại mật khẩu FitHub",
+        "greeting": "Xin chào {{name}},",
+        "body": "Chúng tôi nhận được yêu cầu đặt lại mật khẩu. Dùng liên kết bên dưới để chọn mật khẩu mới.",
+        "cta": "Đặt lại mật khẩu",
+        "footer": "Nếu bạn không yêu cầu, hãy bỏ qua email này."
+      }
     }
   },
   "pt": {
@@ -33,6 +43,8 @@
       "traineeNotAssigned": "Học viên không thuộc quyền quản lý của bạn",
       "programNotFound": "Không tìm thấy chương trình",
       "sessionNotFound": "Không tìm thấy buổi tập",
+      "alreadyAssigned": "Chương trình đã được gán cho học viên này",
+      "traineeIdRequired": "Học viên là bắt buộc",
       "nameRequired": "Tên là bắt buộc",
       "programTypeInvalid": "Loại chương trình không hợp lệ",
       "sessionTypeInvalid": "Loại buổi tập không hợp lệ",
@@ -43,7 +55,10 @@
     "messages": {
       "programCreated": "Tạo chương trình thành công",
       "sessionCreated": "Tạo buổi tập thành công",
-      "exercisesAdded": "Thêm bài tập thành công"
+      "exercisesAdded": "Thêm bài tập thành công",
+      "programUpdated": "Cập nhật chương trình thành công",
+      "programAssigned": "Gán chương trình thành công",
+      "sessionUpdated": "Cập nhật buổi tập thành công"
     }
   },
   "trainee": {

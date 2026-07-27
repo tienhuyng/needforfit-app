@@ -1,5 +1,9 @@
 {
   "auth": {
+    "common": {
+      "showPassword": "Show",
+      "hidePassword": "Hide"
+    },
     "login": {
       "title": "Login",
       "subtitle": "Welcome back! Please sign in to your account.",
@@ -19,6 +23,7 @@
       "lastName": "Last Name",
       "email": "Email",
       "password": "Password",
+      "confirmPassword": "Confirm Password",
       "role": "Role",
       "roleTrainee": "Trainee",
       "rolePt": "Personal Trainer",
@@ -34,7 +39,9 @@
       "submit": "Send Reset Link",
       "submitting": "Sending...",
       "backToLogin": "Back to login",
-      "success": "Password reset link has been sent to your email."
+      "success": "Password reset link has been sent to your email.",
+      "devLinkTitle": "Development reset link",
+      "devLinkHint": "SMTP is not configured locally. Use this link to test password reset:"
     },
     "resetPassword": {
       "title": "Reset Password",
@@ -61,6 +68,22 @@
       "forgotFailed": "Could not send reset link. Please try again.",
       "resetFailed": "Password reset failed. Please try again.",
       "generic": "An error occurred. Please try again."
+    },
+    "profile": {
+      "title": "Profile Settings",
+      "subtitle": "Update your personal information and language preference.",
+      "phone": "Phone",
+      "language": "Language",
+      "submit": "Save changes",
+      "submitting": "Saving...",
+      "success": "Profile updated successfully.",
+      "back": "Back to dashboard"
+    },
+    "logoutConfirm": {
+      "title": "Log out?",
+      "message": "Are you sure you want to log out of your account?",
+      "confirm": "Log out",
+      "cancel": "Cancel"
     }
   },
   "pt": {
@@ -215,7 +238,44 @@
     "messages": {
       "programCreated": "Program created successfully.",
       "sessionCreated": "Session created successfully.",
-      "exercisesAdded": "Exercises added successfully."
+      "exercisesAdded": "Exercises added successfully.",
+      "programUpdated": "Program updated successfully.",
+      "programAssigned": "Program assigned successfully.",
+      "sessionUpdated": "Session updated successfully."
+    },
+    "programList": {
+      "title": "Programs",
+      "subtitle": "Manage your training programs.",
+      "create": "New program",
+      "empty": "No programs yet.",
+      "sessions": "Sessions"
+    },
+    "programDetail": {
+      "edit": "Program details",
+      "save": "Save changes",
+      "saving": "Saving...",
+      "sessions": "Sessions",
+      "noSessions": "No sessions yet.",
+      "exercises": "exercises",
+      "editSession": "Edit",
+      "addExercises": "Exercises",
+      "addSession": "Add session",
+      "assignedTrainees": "Assigned trainees",
+      "noAssignees": "Not assigned to any trainee yet."
+    },
+    "assign": {
+      "title": "Assign program",
+      "desc": "Select a trainee to assign this program.",
+      "trainee": "Trainee",
+      "selectTrainee": "Select trainee",
+      "submit": "Assign program",
+      "open": "Assign to trainee"
+    },
+    "editSession": {
+      "title": "Edit session",
+      "subtitle": "Saving creates version {{version}}. Previous logs keep the old version.",
+      "submit": "Save session",
+      "submitting": "Saving..."
     },
     "errors": {
       "unauthorized": "You must be logged in to access this page.",
@@ -231,12 +291,15 @@
       "exerciseNameRequired": "At least one exercise name is required.",
       "positiveNumber": "Must be a positive number.",
       "loadFailed": "Failed to load data. Please try again.",
-      "createFailed": "Failed to save. Please try again."
+      "createFailed": "Failed to save. Please try again.",
+      "alreadyAssigned": "Program is already assigned to this trainee.",
+      "traineeIdRequired": "Trainee is required."
     }
   },
   "trainee": {
     "nav": {
       "home": "Home",
+      "programs": "Programs",
       "history": "History",
       "metrics": "Metrics"
     },
@@ -265,6 +328,20 @@
       "noPrograms": "No active programs assigned.",
       "exercises": "exercises",
       "sessions": "sessions"
+    },
+    "programs": {
+      "title": "My Programs",
+      "empty": "No programs assigned yet.",
+      "sessionsDone": "sessions completed",
+      "sessionsTitle": "Program sessions",
+      "noSessions": "No sessions in this program.",
+      "completed": "Completed"
+    },
+    "session": {
+      "title": "Session detail",
+      "exercises": "Planned exercises",
+      "logWorkout": "Log workout",
+      "locked": "This session is not available for logging."
     },
     "log": {
       "title": "Log Workout",

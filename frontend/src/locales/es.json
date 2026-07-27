@@ -19,6 +19,7 @@
       "lastName": "Apellido",
       "email": "Correo electrónico",
       "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
       "role": "Rol",
       "roleTrainee": "Aprendiz",
       "rolePt": "Entrenador Personal",
@@ -34,7 +35,9 @@
       "submit": "Enviar Enlace",
       "submitting": "Enviando...",
       "backToLogin": "Volver al inicio de sesión",
-      "success": "Se ha enviado el enlace de restablecimiento a tu correo."
+      "success": "Se ha enviado el enlace de restablecimiento a tu correo.",
+      "devLinkTitle": "Enlace de restablecimiento (dev)",
+      "devLinkHint": "SMTP no está configurado. Usa este enlace para probar el restablecimiento:"
     },
     "resetPassword": {
       "title": "Restablecer Contraseña",
@@ -61,6 +64,26 @@
       "forgotFailed": "No se pudo enviar el enlace. Inténtalo de nuevo.",
       "resetFailed": "Error al restablecer la contraseña. Inténtalo de nuevo.",
       "generic": "Ocurrió un error. Inténtalo de nuevo."
+    },
+    "common": {
+      "showPassword": "Mostrar",
+      "hidePassword": "Ocultar"
+    },
+    "profile": {
+      "title": "Configuración de perfil",
+      "subtitle": "Actualiza tu información personal y el idioma.",
+      "phone": "Teléfono",
+      "language": "Idioma",
+      "submit": "Guardar cambios",
+      "submitting": "Guardando...",
+      "success": "Perfil actualizado correctamente.",
+      "back": "Volver al inicio"
+    },
+    "logoutConfirm": {
+      "title": "¿Cerrar sesión?",
+      "message": "¿Estás seguro de que quieres cerrar sesión?",
+      "confirm": "Cerrar sesión",
+      "cancel": "Cancelar"
     }
   },
   "pt": {

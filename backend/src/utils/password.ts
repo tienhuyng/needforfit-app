@@ -39,6 +39,7 @@ export function toAuthUser(user: {
   email: string;
   firstName: string | null;
   lastName: string | null;
+  phone?: string | null;
   role: UserRole;
   status: string;
   preferredLanguage: string;
@@ -48,6 +49,7 @@ export function toAuthUser(user: {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
+    phone: user.phone ?? null,
     role: user.role,
     status: user.status as AuthUser['status'],
     preferredLanguage: user.preferredLanguage as AuthUser['preferredLanguage'],

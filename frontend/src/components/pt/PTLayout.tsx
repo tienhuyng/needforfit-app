@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LayoutDashboard, Users, Dumbbell, Menu, X, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Dumbbell, Menu, X, LogOut, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { LogoutConfirmModal } from '@/components/auth/LogoutConfirmModal';
 import { clearAuth, getAuthUser } from '@/utils/auth-storage';
 
 interface PTLayoutProps {
@@ -13,16 +14,17 @@ interface PTLayoutProps {
 const navItems = [
   { to: '/pt/dashboard', icon: LayoutDashboard, labelKey: 'pt.nav.dashboard' },
   { to: '/pt/trainees', icon: Users, labelKey: 'pt.nav.trainees' },
-  { to: '/pt/programs/new', icon: Dumbbell, labelKey: 'pt.nav.programs' },
+  { to: '/pt/programs', icon: Dumbbell, labelKey: 'pt.nav.programs' },
 ] as const;
 
 export const PTLayout: React.FC<PTLayoutProps> = ({ children }) => {
   const { t } = useTranslation();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [logoutOpen, setLogoutOpen] = React.useState(false);
   const user = getAuthUser();
 
-  const handleLogout = () => {
+  const confirmLogout = () => {
     clearAuth();
     window.location.href = '/login';
   };
@@ -66,7 +68,7 @@ export const PTLayout: React.FC<PTLayoutProps> = ({ children }) => {
             const isActive =
               location.pathname === to ||
               (to === '/pt/trainees' && location.pathname.startsWith('/pt/trainees')) ||
-              (to === '/pt/programs/new' &&
+              (to === '/pt/programs' &&
                 (location.pathname.startsWith('/pt/programs') ||
                   location.pathname.includes('/sessions')));
 
@@ -90,7 +92,11 @@ export const PTLayout: React.FC<PTLayoutProps> = ({ children }) => {
         </nav>
 
         <div className="border-t p-4">
-          <Button variant="ghost" className="w-full justify-start gap-2" onClick={handleLogout}>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2"
+            onClick={() => setLogoutOpen(true)}
+          >
             <LogOut className="h-4 w-4" />
             {t('pt.layout.logout')}
           </Button>
@@ -111,13 +117,26 @@ export const PTLayout: React.FC<PTLayoutProps> = ({ children }) => {
           <div className="flex flex-1 items-center justify-between">
             <h1 className="text-lg font-semibold">{t('pt.layout.title')}</h1>
             {displayName && (
-              <span className="text-sm text-muted-foreground">{displayName}</span>
+              <Link
+                to="/settings/profile"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                title={t('auth.profile.title')}
+              >
+                <Settings className="h-4 w-4" />
+                <span>{displayName}</span>
+              </Link>
             )}
           </div>
         </header>
 
         <main className="p-4 sm:p-6">{children}</main>
       </div>
+
+      <LogoutConfirmModal
+        open={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        onConfirm={confirmLogout}
+      />
     </div>
   );
 };

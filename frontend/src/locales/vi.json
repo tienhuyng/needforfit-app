@@ -1,5 +1,9 @@
 {
   "auth": {
+    "common": {
+      "showPassword": "Hiện",
+      "hidePassword": "Ẩn"
+    },
     "login": {
       "title": "Đăng Nhập",
       "subtitle": "Chào mừng trở lại! Vui lòng đăng nhập vào tài khoản.",
@@ -19,6 +23,7 @@
       "lastName": "Họ",
       "email": "Email",
       "password": "Mật khẩu",
+      "confirmPassword": "Xác nhận mật khẩu",
       "role": "Vai trò",
       "roleTrainee": "Học viên",
       "rolePt": "Huấn luyện viên",
@@ -34,7 +39,9 @@
       "submit": "Gửi Liên Kết",
       "submitting": "Đang gửi...",
       "backToLogin": "Quay lại đăng nhập",
-      "success": "Liên kết đặt lại mật khẩu đã được gửi đến email của bạn."
+      "success": "Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.",
+      "devLinkTitle": "Liên kết reset (môi trường dev)",
+      "devLinkHint": "SMTP chưa được cấu hình. Dùng liên kết này để test đặt lại mật khẩu:"
     },
     "resetPassword": {
       "title": "Đặt Lại Mật Khẩu",
@@ -61,6 +68,22 @@
       "forgotFailed": "Không thể gửi liên kết. Vui lòng thử lại.",
       "resetFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
       "generic": "Đã xảy ra lỗi. Vui lòng thử lại."
+    },
+    "profile": {
+      "title": "Cài đặt hồ sơ",
+      "subtitle": "Cập nhật thông tin cá nhân và ngôn ngữ.",
+      "phone": "Số điện thoại",
+      "language": "Ngôn ngữ",
+      "submit": "Lưu thay đổi",
+      "submitting": "Đang lưu...",
+      "success": "Cập nhật hồ sơ thành công.",
+      "back": "Quay lại trang chính"
+    },
+    "logoutConfirm": {
+      "title": "Đăng xuất?",
+      "message": "Bạn có chắc muốn đăng xuất khỏi tài khoản không?",
+      "confirm": "Đăng xuất",
+      "cancel": "Hủy"
     }
   },
   "pt": {

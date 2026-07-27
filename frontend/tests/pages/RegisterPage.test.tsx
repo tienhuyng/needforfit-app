@@ -42,7 +42,7 @@ describe('RegisterPage', () => {
     await user.type(screen.getByLabelText(/^tên$/i), 'Test');
     await user.type(screen.getByLabelText(/^họ$/i), 'User');
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
-    await user.type(screen.getByLabelText(/mật khẩu/i), 'short');
+    await user.type(screen.getByLabelText(/^mật khẩu$/i), 'short');
     await user.click(screen.getByRole('button', { name: /đăng ký/i }));
 
     expect(await screen.findByText(/ít nhất 8/i)).toBeInTheDocument();

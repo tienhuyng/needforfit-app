@@ -49,7 +49,23 @@ export const traineeListQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(10),
 });
 
+export const updateProgramSchema = createProgramSchema.partial();
+
+export const assignProgramSchema = z.object({
+  traineeId: z
+    .string({ required_error: PT_I18N_KEYS.traineeIdRequired })
+    .uuid(PT_I18N_KEYS.traineeIdRequired),
+});
+
+export const updateSessionSchema = createSessionSchema.partial().extend({
+  status: z.enum(['draft', 'active', 'paused', 'completed']).optional(),
+  exercises: z.array(exerciseItemSchema).optional(),
+});
+
 export type CreateProgramInput = z.infer<typeof createProgramSchema>;
+export type UpdateProgramInput = z.infer<typeof updateProgramSchema>;
+export type AssignProgramInput = z.infer<typeof assignProgramSchema>;
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
+export type UpdateSessionInput = z.infer<typeof updateSessionSchema>;
 export type AddExercisesInput = z.infer<typeof addExercisesSchema>;
 export type TraineeListQuery = z.infer<typeof traineeListQuerySchema>;

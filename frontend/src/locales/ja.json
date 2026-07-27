@@ -19,6 +19,7 @@
       "lastName": "姓",
       "email": "メールアドレス",
       "password": "パスワード",
+      "confirmPassword": "パスワード確認",
       "role": "役割",
       "roleTrainee": "トレーニー",
       "rolePt": "パーソナルトレーナー",
@@ -34,7 +35,9 @@
       "submit": "リセットリンクを送信",
       "submitting": "送信中...",
       "backToLogin": "ログインに戻る",
-      "success": "パスワードリセットリンクをメールに送信しました。"
+      "success": "パスワードリセットリンクをメールに送信しました。",
+      "devLinkTitle": "開発用リセットリンク",
+      "devLinkHint": "SMTPが未設定です。このリンクでパスワードリセットをテストしてください："
     },
     "resetPassword": {
       "title": "パスワードをリセット",
@@ -61,6 +64,26 @@
       "forgotFailed": "リセットリンクを送信できませんでした。もう一度お試しください。",
       "resetFailed": "パスワードのリセットに失敗しました。もう一度お試しください。",
       "generic": "エラーが発生しました。もう一度お試しください。"
+    },
+    "common": {
+      "showPassword": "表示",
+      "hidePassword": "非表示"
+    },
+    "profile": {
+      "title": "プロフィール設定",
+      "subtitle": "個人情報と言語設定を更新します。",
+      "phone": "電話番号",
+      "language": "言語",
+      "submit": "変更を保存",
+      "submitting": "保存中...",
+      "success": "プロフィールを更新しました。",
+      "back": "ホームに戻る"
+    },
+    "logoutConfirm": {
+      "title": "ログアウトしますか？",
+      "message": "アカウントからログアウトしてもよろしいですか？",
+      "confirm": "ログアウト",
+      "cancel": "キャンセル"
     }
   },
   "pt": {

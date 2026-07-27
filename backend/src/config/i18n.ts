@@ -39,6 +39,10 @@ void i18next.init({
 
 export { i18next };
 
-export function t(key: string, lng: SupportedLanguage = DEFAULT_LANGUAGE): string {
-  return i18next.t(key, { lng });
+export function t(
+  key: string,
+  lng: SupportedLanguage = DEFAULT_LANGUAGE,
+  options?: Record<string, unknown>
+): string {
+  return i18next.t(key, { lng, ...options });
 }

@@ -32,7 +32,7 @@ describe('LoginPage', () => {
     renderLogin();
     expect(screen.getByRole('heading', { name: /đăng nhập/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/mật khẩu/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^mật khẩu$/i)).toBeInTheDocument();
   });
 
   it('shows validation error for invalid email', async () => {
@@ -40,7 +40,7 @@ describe('LoginPage', () => {
     renderLogin();
 
     await user.type(screen.getByLabelText(/email/i), 'invalid-email');
-    await user.type(screen.getByLabelText(/mật khẩu/i), 'password123');
+    await user.type(screen.getByLabelText(/^mật khẩu$/i), 'password123');
     await user.click(screen.getByRole('button', { name: /đăng nhập/i }));
 
     expect(await screen.findByText(/định dạng email/i)).toBeInTheDocument();

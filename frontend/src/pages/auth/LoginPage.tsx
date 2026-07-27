@@ -10,8 +10,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Input,
 } from '@/components/template';
+import { Input } from '@/components/template';
+import { PasswordInput } from '@/components/common/PasswordInput';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { authApi, getApiErrorMessage } from '@/services/auth.service';
@@ -70,9 +71,8 @@ export const LoginPage: React.FC = () => {
               {...register('email')}
             />
 
-            <Input
+            <PasswordInput
               label={t('auth.login.password')}
-              type="password"
               autoComplete="current-password"
               placeholder="••••••••"
               error={errors.password?.message}

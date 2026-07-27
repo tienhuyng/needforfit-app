@@ -8,6 +8,7 @@ jest.mock('../src/config/database', () => ({
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      findMany: jest.fn(),
     },
     passwordResetToken: {
       findFirst: jest.fn(),
@@ -24,19 +25,25 @@ jest.mock('../src/config/database', () => ({
       findMany: jest.fn(),
       findFirst: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
     },
     workoutLog: {
       count: jest.fn(),
       findMany: jest.fn(),
+      groupBy: jest.fn(),
     },
     programTraineeAssignment: {
       findMany: jest.fn(),
+      findUnique: jest.fn(),
+      create: jest.fn(),
       groupBy: jest.fn(),
     },
     workoutSession: {
       findMany: jest.fn(),
       findFirst: jest.fn(),
+      findUnique: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
     },
     workoutSessionExercise: {
       create: jest.fn(),

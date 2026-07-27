@@ -15,6 +15,8 @@ router.use(authenticate, requireRoles('trainee'));
 
 router.get('/home', traineeController.getHome);
 router.get('/programs', traineeController.listPrograms);
+router.get('/programs/:programId/sessions', traineeController.getProgramSessions);
+router.get('/programs/:programId/sessions/:sessionId', traineeController.getProgramSessionDetail);
 router.get('/sessions/:sessionId', traineeController.getSessionDetail);
 
 router.post('/workouts/log', validateBody(logWorkoutSchema), traineeController.logWorkout);

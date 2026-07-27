@@ -2,6 +2,7 @@ import {
   AssignmentStatus,
   Prisma,
   ProgramStatus,
+  SessionStatus,
   UserRole,
   UserStatus,
 } from '@prisma/client';
@@ -11,21 +12,28 @@ import { AppError } from '../utils/errors';
 import { PT_ERROR_CODES, PT_I18N_KEYS } from '../types/pt.errors';
 import {
   AddExercisesInput,
+  AssignProgramInput,
   CreateProgramInput,
   CreateSessionInput,
   TraineeListQuery,
+  UpdateProgramInput,
+  UpdateSessionInput,
 } from '../validators/pt.validator';
 import {
+  AssignedTraineeSummary,
   ExerciseSummary,
   PaginatedResponse,
+  ProgramDetailResponse,
   ProgramSummary,
   PtActivityItem,
   PtDashboardResponse,
   PtDashboardTraineeRow,
+  SessionDetailResponse,
   SessionSummary,
   TraineeDetailResponse,
   TraineeListItem,
 } from '../types/pt';
+import { getCurrentVersionExercises } from '../utils/session-exercises';
 
 function calcAge(dateOfBirth: Date | null | undefined): number | null {
   if (!dateOfBirth) return null;
@@ -412,9 +420,270 @@ export class PtService {
       )
     );
 
+    if (session.status === SessionStatus.draft) {
+      await prisma.workoutSession.update({
+        where: { id: sessionId },
+        data: { status: SessionStatus.active },
+      });
+    }
+
     return {
       exercises: created as ExerciseSummary[],
       message: t(PT_I18N_KEYS.exercisesAdded, lng),
+    };
+  }
+
+  async getProgramDetail(ptId: string, programId: string): Promise<ProgramDetailResponse> {
+    const program = await prisma.trainingProgram.findFirst({
+      where: { id: programId, ptId },
+      include: {
+        sessions: {
+          include: { _count: { select: { exercises: true } } },
+          orderBy: { scheduledDate: 'asc' },
+        },
+        assignments: true,
+      },
+    });
+
+    if (!program) {
+      throw new AppError(PT_ERROR_CODES.PROGRAM_NOT_FOUND, PT_I18N_KEYS.programNotFound, 404);
+    }
+
+    const traineeIds = program.assignments.map((a) => a.traineeId);
+    const trainees = traineeIds.length
+      ? await prisma.user.findMany({
+          where: { id: { in: traineeIds } },
+          select: { id: true, firstName: true, lastName: true, email: true },
+        })
+      : [];
+
+    const traineeMap = new Map(trainees.map((t) => [t.id, t]));
+    const assignedTrainees: AssignedTraineeSummary[] = program.assignments.map((a) => {
+      const trainee = traineeMap.get(a.traineeId);
+      return {
+        id: a.traineeId,
+        firstName: trainee?.firstName ?? null,
+        lastName: trainee?.lastName ?? null,
+        email: trainee?.email ?? '',
+        assignedAt: a.assignedAt.toISOString(),
+      };
+    });
+
+    return {
+      id: program.id,
+      name: program.name,
+      objective: program.objective,
+      programType: program.programType,
+      durationWeeks: program.durationWeeks,
+      status: program.status,
+      sessionCount: program.sessions.length,
+      createdAt: program.createdAt.toISOString(),
+      notes: program.notes,
+      startDate: program.startDate?.toISOString().slice(0, 10) ?? null,
+      endDate: program.endDate?.toISOString().slice(0, 10) ?? null,
+      sessions: program.sessions.map((s) => ({
+        id: s.id,
+        name: s.name,
+        sessionType: s.sessionType,
+        scheduledDate: s.scheduledDate.toISOString().slice(0, 10),
+        estimatedDurationMinutes: s.estimatedDurationMinutes,
+        status: s.status,
+        exerciseCount: s._count.exercises,
+      })),
+      assignedTrainees,
+    };
+  }
+
+  async updateProgram(
+    ptId: string,
+    programId: string,
+    input: UpdateProgramInput,
+    lng: SupportedLanguage
+  ) {
+    await assertProgramOwned(ptId, programId);
+
+    const program = await prisma.trainingProgram.update({
+      where: { id: programId },
+      data: {
+        ...(input.name !== undefined ? { name: input.name } : {}),
+        ...(input.objective !== undefined ? { objective: input.objective } : {}),
+        ...(input.programType !== undefined ? { programType: input.programType } : {}),
+        ...(input.durationWeeks !== undefined ? { durationWeeks: input.durationWeeks } : {}),
+        ...(input.notes !== undefined ? { notes: input.notes } : {}),
+      },
+    });
+
+    return {
+      program,
+      message: t(PT_I18N_KEYS.programUpdated, lng),
+    };
+  }
+
+  async assignProgram(
+    ptId: string,
+    programId: string,
+    input: AssignProgramInput,
+    lng: SupportedLanguage
+  ) {
+    const program = await assertProgramOwned(ptId, programId);
+    await assertTraineeAssigned(ptId, input.traineeId);
+
+    const existing = await prisma.programTraineeAssignment.findUnique({
+      where: {
+        programId_traineeId: { programId, traineeId: input.traineeId },
+      },
+    });
+
+    if (existing) {
+      throw new AppError(
+        PT_ERROR_CODES.ALREADY_ASSIGNED,
+        PT_I18N_KEYS.alreadyAssigned,
+        409
+      );
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const assignment = await tx.programTraineeAssignment.create({
+        data: { programId, traineeId: input.traineeId },
+      });
+
+      let updatedProgram = program;
+      if (program.status === ProgramStatus.draft) {
+        updatedProgram = await tx.trainingProgram.update({
+          where: { id: programId },
+          data: {
+            status: ProgramStatus.active,
+            startDate: program.startDate ?? new Date(),
+          },
+        });
+      }
+
+      return { assignment, program: updatedProgram };
+    });
+
+    return {
+      program: result.program,
+      assignedAt: result.assignment.assignedAt.toISOString(),
+      message: t(PT_I18N_KEYS.programAssigned, lng),
+    };
+  }
+
+  async getSessionDetail(
+    ptId: string,
+    programId: string,
+    sessionId: string
+  ): Promise<SessionDetailResponse> {
+    await assertProgramOwned(ptId, programId);
+
+    const session = await prisma.workoutSession.findFirst({
+      where: { id: sessionId, programId },
+      include: { exercises: { orderBy: { orderIndex: 'asc' } } },
+    });
+
+    if (!session) {
+      throw new AppError(PT_ERROR_CODES.SESSION_NOT_FOUND, PT_I18N_KEYS.sessionNotFound, 404);
+    }
+
+    const currentExercises = getCurrentVersionExercises(session.sessionVersion, session.exercises);
+
+    return {
+      id: session.id,
+      name: session.name,
+      sessionType: session.sessionType,
+      scheduledDate: session.scheduledDate.toISOString().slice(0, 10),
+      estimatedDurationMinutes: session.estimatedDurationMinutes,
+      status: session.status,
+      exerciseCount: currentExercises.length,
+      notes: session.notes,
+      sessionVersion: session.sessionVersion,
+      exercises: currentExercises.map((e) => ({
+        id: e.id,
+        exerciseName: e.exerciseName,
+        plannedSets: e.plannedSets,
+        plannedReps: e.plannedReps,
+        plannedWeightKg: e.plannedWeightKg ? Number(e.plannedWeightKg) : null,
+        restSeconds: e.restSeconds,
+        notes: e.notes,
+        orderIndex: e.orderIndex,
+      })),
+    };
+  }
+
+  async updateSession(
+    ptId: string,
+    programId: string,
+    sessionId: string,
+    input: UpdateSessionInput,
+    lng: SupportedLanguage
+  ) {
+    await assertProgramOwned(ptId, programId);
+
+    const session = await prisma.workoutSession.findFirst({
+      where: { id: sessionId, programId },
+      include: { exercises: { orderBy: { orderIndex: 'asc' } } },
+    });
+
+    if (!session) {
+      throw new AppError(PT_ERROR_CODES.SESSION_NOT_FOUND, PT_I18N_KEYS.sessionNotFound, 404);
+    }
+
+    const newVersion = session.sessionVersion + 1;
+    const currentExercises = getCurrentVersionExercises(session.sessionVersion, session.exercises);
+    const exercisesToCreate =
+      input.exercises ??
+      currentExercises.map((e) => ({
+        exerciseName: e.exerciseName,
+        plannedSets: e.plannedSets ?? undefined,
+        plannedReps: e.plannedReps ?? undefined,
+        plannedWeightKg: e.plannedWeightKg ? Number(e.plannedWeightKg) : undefined,
+        restSeconds: e.restSeconds ?? undefined,
+        notes: e.notes ?? undefined,
+      }));
+
+    const updated = await prisma.$transaction(async (tx) => {
+      const updatedSession = await tx.workoutSession.update({
+        where: { id: sessionId },
+        data: {
+          ...(input.name !== undefined ? { name: input.name } : {}),
+          ...(input.sessionType !== undefined ? { sessionType: input.sessionType } : {}),
+          ...(input.scheduledDate !== undefined
+            ? { scheduledDate: new Date(input.scheduledDate) }
+            : {}),
+          ...(input.estimatedDurationMinutes !== undefined
+            ? { estimatedDurationMinutes: input.estimatedDurationMinutes }
+            : {}),
+          ...(input.notes !== undefined ? { notes: input.notes } : {}),
+          ...(input.status !== undefined ? { status: input.status } : {}),
+          sessionVersion: newVersion,
+        },
+      });
+
+      if (exercisesToCreate.length > 0) {
+        await Promise.all(
+          exercisesToCreate.map((exercise, index) =>
+            tx.workoutSessionExercise.create({
+              data: {
+                sessionId,
+                exerciseName: exercise.exerciseName,
+                plannedSets: exercise.plannedSets,
+                plannedReps: exercise.plannedReps,
+                plannedWeightKg: exercise.plannedWeightKg,
+                restSeconds: exercise.restSeconds,
+                notes: exercise.notes,
+                orderIndex: index,
+                sessionVersion: newVersion,
+              },
+            })
+          )
+        );
+      }
+
+      return updatedSession;
+    });
+
+    return {
+      session: updated,
+      message: t(PT_I18N_KEYS.sessionUpdated, lng),
     };
   }
 }

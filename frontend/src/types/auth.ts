@@ -5,6 +5,7 @@ export interface AuthUser {
   email: string;
   firstName: string | null;
   lastName: string | null;
+  phone: string | null;
   role: UserRole;
   status: string;
   preferredLanguage: string;
@@ -43,4 +44,5 @@ export interface RegisterResponse {
 export interface MessageResponse {
   message: string;
   resetToken?: string;
+  resetLink?: string;
 }

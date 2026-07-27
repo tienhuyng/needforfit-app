@@ -21,6 +21,7 @@ import {
   MetricsHistoryQuery,
   WorkoutHistoryQuery,
 } from '../validators/trainee.validator';
+import { getCurrentVersionExercises } from '../utils/session-exercises';
 import {
   ActiveProgramItem,
   BodyMetricEntry,
@@ -28,6 +29,8 @@ import {
   PaginatedResponse,
   SessionDetailResponse,
   TraineeHomeResponse,
+  TraineeProgramItem,
+  TraineeProgramSessionItem,
   UpcomingWorkoutItem,
   WeightTrendPoint,
   WorkoutHistorySummary,
@@ -265,10 +268,11 @@ export class TraineeService {
     await lockExpiredLogs(traineeId);
     const { session } = await assertSessionAccessible(traineeId, sessionId);
     const existingLog = session.logs[0] ?? null;
+    const currentExercises = getCurrentVersionExercises(session.sessionVersion, session.exercises);
     const canLog =
       !existingLog &&
       isWithinLogWindow(session.scheduledDate) &&
-      session.exercises.length > 0;
+      currentExercises.length > 0;
 
     return {
       sessionId: session.id,
@@ -282,7 +286,7 @@ export class TraineeService {
         existingLog?.status === WorkoutLogStatus.locked ||
         shouldLockLog(session.scheduledDate),
       existingLogId: existingLog?.id ?? null,
-      exercises: session.exercises.map((e) => ({
+      exercises: currentExercises.map((e) => ({
         id: e.id,
         exerciseName: e.exerciseName,
         plannedSets: e.plannedSets,
@@ -572,15 +576,131 @@ export class TraineeService {
     };
   }
 
-  async listPrograms(traineeId: string) {
-    const programIds = await getAssignedProgramIds(traineeId);
-    if (!programIds.length) return [];
-
-    return prisma.trainingProgram.findMany({
-      where: { id: { in: programIds } },
-      select: { id: true, name: true, status: true, programType: true },
-      orderBy: { name: 'asc' },
+  async listPrograms(traineeId: string): Promise<TraineeProgramItem[]> {
+    const assignments = await prisma.programTraineeAssignment.findMany({
+      where: {
+        traineeId,
+        program: { status: { in: [ProgramStatus.active, ProgramStatus.paused, ProgramStatus.completed] } },
+      },
+      include: {
+        program: {
+          include: {
+            pt: { select: { firstName: true, lastName: true, email: true } },
+            sessions: { select: { id: true } },
+          },
+        },
+      },
+      orderBy: { assignedAt: 'desc' },
     });
+
+    const programIds = assignments.map((a) => a.programId);
+    const completedCounts = programIds.length
+      ? await prisma.workoutLog.groupBy({
+          by: ['sessionId'],
+          where: { traineeId, session: { programId: { in: programIds } } },
+        })
+      : [];
+
+    const completedSessionIds = new Set(completedCounts.map((c) => c.sessionId));
+
+    return assignments.map((a) => {
+      const sessionCount = a.program.sessions.length;
+      const completedCount = a.program.sessions.filter((s) =>
+        completedSessionIds.has(s.id)
+      ).length;
+      const pt = a.program.pt;
+      const ptName =
+        [pt.firstName, pt.lastName].filter(Boolean).join(' ') || pt.email;
+
+      return {
+        id: a.program.id,
+        name: a.program.name,
+        programType: a.program.programType,
+        status: a.program.status,
+        ptName,
+        sessionCount,
+        completedCount,
+        progressPercent:
+          sessionCount > 0 ? Math.round((completedCount / sessionCount) * 100) : 0,
+      };
+    });
+  }
+
+  async getProgramSessions(
+    traineeId: string,
+    programId: string
+  ): Promise<TraineeProgramSessionItem[]> {
+    const assignment = await prisma.programTraineeAssignment.findUnique({
+      where: { programId_traineeId: { programId, traineeId } },
+    });
+
+    if (!assignment) {
+      throw new AppError(
+        TRAINEE_ERROR_CODES.SESSION_NOT_ACCESSIBLE,
+        TRAINEE_I18N_KEYS.sessionNotAccessible,
+        403
+      );
+    }
+
+    await lockExpiredLogs(traineeId);
+
+    const sessions = await prisma.workoutSession.findMany({
+      where: {
+        programId,
+        status: { in: [SessionStatus.active, SessionStatus.completed] },
+      },
+      include: {
+        exercises: true,
+        logs: { where: { traineeId } },
+      },
+      orderBy: { scheduledDate: 'asc' },
+    });
+
+    return sessions.map((session) => {
+      const currentExercises = getCurrentVersionExercises(
+        session.sessionVersion,
+        session.exercises
+      );
+      const existingLog = session.logs[0] ?? null;
+      const canLog =
+        !existingLog &&
+        isWithinLogWindow(session.scheduledDate) &&
+        currentExercises.length > 0;
+
+      return {
+        sessionId: session.id,
+        sessionName: session.name,
+        scheduledDate: formatDate(session.scheduledDate),
+        sessionType: session.sessionType,
+        exerciseCount: currentExercises.length,
+        canLog,
+        isLocked:
+          existingLog?.status === WorkoutLogStatus.locked ||
+          shouldLockLog(session.scheduledDate),
+        existingLogId: existingLog?.id ?? null,
+        isCompleted: !!existingLog,
+      };
+    });
+  }
+
+  async getProgramSessionDetail(
+    traineeId: string,
+    programId: string,
+    sessionId: string
+  ): Promise<SessionDetailResponse> {
+    const assignment = await prisma.programTraineeAssignment.findUnique({
+      where: { programId_traineeId: { programId, traineeId } },
+    });
+
+    if (!assignment) {
+      throw new AppError(
+        TRAINEE_ERROR_CODES.SESSION_NOT_ACCESSIBLE,
+        TRAINEE_I18N_KEYS.sessionNotAccessible,
+        403
+      );
+    }
+
+    return this.getSessionDetail(traineeId, sessionId);
   }
 }
 

@@ -58,6 +58,20 @@ export const getMetricsHistory = asyncHandler(async (req: Request, res: Response
   res.json(buildSuccessResponse(data));
 });
 
+export const getProgramSessions = asyncHandler(async (req: Request, res: Response) => {
+  const data = await traineeService.getProgramSessions(getTraineeId(req), req.params.programId);
+  res.json(buildSuccessResponse(data));
+});
+
+export const getProgramSessionDetail = asyncHandler(async (req: Request, res: Response) => {
+  const data = await traineeService.getProgramSessionDetail(
+    getTraineeId(req),
+    req.params.programId,
+    req.params.sessionId
+  );
+  res.json(buildSuccessResponse(data));
+});
+
 export const getMetricsProgress = asyncHandler(async (req: Request, res: Response) => {
   const data = await traineeService.getMetricsProgress(getTraineeId(req));
   res.json(buildSuccessResponse(data));

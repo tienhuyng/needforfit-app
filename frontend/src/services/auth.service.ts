@@ -75,4 +75,17 @@ export const authApi = {
     });
     return res.data.data;
   },
+
+  updateProfile: async (data: {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+    preferredLanguage?: string;
+  }): Promise<{ user: import('@/types/auth').AuthUser }> => {
+    const res = await api.put<ApiSuccessResponse<{ user: import('@/types/auth').AuthUser }>>(
+      '/auth/profile',
+      data
+    );
+    return res.data.data;
+  },
 };

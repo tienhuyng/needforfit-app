@@ -3,11 +3,13 @@ import { authService } from '../services/auth.service';
 import { asyncHandler, successMessage } from '../middleware/validation.middleware';
 import { buildSuccessResponse } from '../utils/errors';
 import { AUTH_I18N_KEYS } from '../types/errors';
+import { authenticate } from '../middleware/auth.middleware';
 import {
   ForgotPasswordInput,
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
+  UpdateProfileInput,
 } from '../validators/auth.validator';
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
@@ -36,4 +38,19 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
   const input = req.body as ResetPasswordInput;
   const result = await authService.resetPassword(input, req.language);
   res.json(buildSuccessResponse(result));
+});
+
+export const updateProfile = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ status: 'error', code: 'UNAUTHORIZED', message: 'Unauthorized' });
+    return;
+  }
+  const input = req.body as UpdateProfileInput;
+  const result = await authService.updateProfile(req.user.sub, input, req.language);
+  res.json(
+    buildSuccessResponse(
+      result,
+      successMessage(AUTH_I18N_KEYS.profileUpdated, req.language)
+    )
+  );
 });

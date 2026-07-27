@@ -12,6 +12,7 @@ import {
   CardTitle,
   Input,
 } from '@/components/template';
+import { PasswordInput } from '@/components/common/PasswordInput';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { authApi, getApiErrorMessage } from '@/services/auth.service';
@@ -78,18 +79,16 @@ export const ResetPasswordPage: React.FC = () => {
               {...register('email')}
             />
 
-            <Input
+            <PasswordInput
               label={t('auth.resetPassword.newPassword')}
-              type="password"
               autoComplete="new-password"
               placeholder="••••••••"
               error={errors.newPassword?.message}
               {...register('newPassword')}
             />
 
-            <Input
+            <PasswordInput
               label={t('auth.resetPassword.confirmPassword')}
-              type="password"
               autoComplete="new-password"
               placeholder="••••••••"
               error={errors.confirmPassword?.message}
