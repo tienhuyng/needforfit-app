@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { PTLayout } from '@/components/pt/PTLayout';
 import { Alert } from '@/components/common/Alert';
 import { Button } from '@/components/template';
@@ -40,20 +41,20 @@ export const ProgramListPage: React.FC = () => {
 
   return (
     <PTLayout>
-      <div className="space-y-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">{t('pt.programList.title')}</h2>
-            <p className="text-muted-foreground">{t('pt.programList.subtitle')}</p>
-          </div>
+      <PageStickyHeader
+        title={t('pt.programList.title')}
+        subtitle={t('pt.programList.subtitle')}
+        actions={
           <Button asChild>
             <Link to="/pt/programs/new">
               <Plus className="mr-2 h-4 w-4" />
               {t('pt.programList.create')}
             </Link>
           </Button>
-        </div>
+        }
+      />
 
+      <div className="space-y-6">
         {error && <Alert type="error" message={error} />}
 
         {isLoading ? (

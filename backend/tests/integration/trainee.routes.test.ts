@@ -40,6 +40,7 @@ describe('Trainee Routes', () => {
 
     it('returns home data for trainee', async () => {
       prismaMock.programTraineeAssignment.findMany.mockResolvedValue([]);
+      prismaMock.ptTraineeAssignment.findMany.mockResolvedValue([]);
       prismaMock.workoutLog.findMany.mockResolvedValue([]);
       prismaMock.bodyMeasurementLog.findMany.mockResolvedValue([]);
 

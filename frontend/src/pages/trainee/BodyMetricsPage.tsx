@@ -13,7 +13,7 @@ import {
   CardTitle,
   Input,
 } from '@/components/template';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Table,
@@ -106,14 +106,18 @@ export const BodyMetricsPage: React.FC = () => {
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
-                  <Label htmlFor="date">{t('trainee.metrics.date')}</Label>
+                  <FormLabel htmlFor="date" required>
+                    {t('trainee.metrics.date')}
+                  </FormLabel>
                   <Input id="date" type="date" max={today} {...register('measurementDate')} />
                   {errors.measurementDate && (
                     <p className="text-xs text-destructive">{errors.measurementDate.message}</p>
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="weight">{t('trainee.metrics.weight')} *</Label>
+                  <FormLabel htmlFor="weight" required>
+                    {t('trainee.metrics.weight')}
+                  </FormLabel>
                   <Input
                     id="weight"
                     type="number"
@@ -126,15 +130,15 @@ export const BodyMetricsPage: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="bodyFat">{t('trainee.metrics.bodyFat')}</Label>
+                  <FormLabel htmlFor="bodyFat">{t('trainee.metrics.bodyFat')}</FormLabel>
                   <Input id="bodyFat" type="number" step="0.1" min={0} {...register('bodyFatPercent')} />
                 </div>
                 <div>
-                  <Label htmlFor="muscle">{t('trainee.metrics.muscleMass')}</Label>
+                  <FormLabel htmlFor="muscle">{t('trainee.metrics.muscleMass')}</FormLabel>
                   <Input id="muscle" type="number" step="0.1" min={0} {...register('muscleMassKg')} />
                 </div>
                 <div>
-                  <Label htmlFor="metricNotes">{t('trainee.metrics.notes')}</Label>
+                  <FormLabel htmlFor="metricNotes">{t('trainee.metrics.notes')}</FormLabel>
                   <Input id="metricNotes" {...register('notes')} />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>

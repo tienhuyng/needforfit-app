@@ -56,7 +56,7 @@ describe('LogWorkoutPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Squat')).toBeInTheDocument();
     });
-    expect(screen.getByText(/session feedback/i)).toBeInTheDocument();
+    expect(screen.getByText(/workout feedback/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /submit workout log/i })).toBeInTheDocument();
   });
 });

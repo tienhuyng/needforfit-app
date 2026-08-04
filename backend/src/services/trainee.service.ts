@@ -1,4 +1,5 @@
 import {
+  AssignmentStatus,
   BodyMetricStatus,
   Prisma,
   ProgramStatus,
@@ -22,6 +23,7 @@ import {
   WorkoutHistoryQuery,
 } from '../validators/trainee.validator';
 import { getCurrentVersionExercises } from '../utils/session-exercises';
+import { createUserNotification, formatUserName } from '../utils/user-notifications';
 import {
   ActiveProgramItem,
   BodyMetricEntry,
@@ -31,6 +33,7 @@ import {
   TraineeHomeResponse,
   TraineeProgramItem,
   TraineeProgramSessionItem,
+  TraineePtInviteItem,
   UpcomingWorkoutItem,
   WeightTrendPoint,
   WorkoutHistorySummary,
@@ -141,7 +144,7 @@ export class TraineeService {
     const weekAhead = new Date(today);
     weekAhead.setDate(weekAhead.getDate() + 7);
 
-    const [sessions, recentLogs, weightLogs, programs] = await Promise.all([
+    const [sessions, recentLogs, weightLogs, programs, pendingInvites] = await Promise.all([
       programIds.length
         ? prisma.workoutSession.findMany({
             where: {
@@ -181,6 +184,11 @@ export class TraineeService {
             include: { _count: { select: { sessions: true } } },
           })
         : Promise.resolve([]),
+      prisma.ptTraineeAssignment.findMany({
+        where: { traineeId, status: AssignmentStatus.invite_pending },
+        include: { pt: true },
+        orderBy: { assignedAt: 'desc' },
+      }),
     ]);
 
     const todaySessions = sessions.filter((s) => startOfDay(s.scheduledDate).getTime() === today.getTime());
@@ -228,12 +236,78 @@ export class TraineeService {
       sessionCount: p._count.sessions,
     }));
 
+    const ptInvites: TraineePtInviteItem[] = pendingInvites.map((invite) => ({
+      assignmentId: invite.id,
+      ptId: invite.ptId,
+      ptName: formatUserName(invite.pt.firstName, invite.pt.lastName, invite.pt.email),
+      ptEmail: invite.pt.email,
+      invitedAt: invite.assignedAt.toISOString(),
+    }));
+
     return {
       todayWorkout,
       upcomingWorkouts,
       recentHistory,
       weightTrend,
       activePrograms,
+      ptInvites,
+    };
+  }
+
+  async respondToPtInvite(
+    traineeId: string,
+    assignmentId: string,
+    accept: boolean,
+    lng: SupportedLanguage
+  ) {
+    const assignment = await prisma.ptTraineeAssignment.findFirst({
+      where: {
+        id: assignmentId,
+        traineeId,
+        status: AssignmentStatus.invite_pending,
+      },
+      include: { pt: true, trainee: true },
+    });
+
+    if (!assignment) {
+      throw new AppError(TRAINEE_ERROR_CODES.NOT_FOUND, TRAINEE_I18N_KEYS.inviteNotFound, 404);
+    }
+
+    const traineeName = formatUserName(
+      assignment.trainee.firstName,
+      assignment.trainee.lastName,
+      assignment.trainee.email
+    );
+
+    if (accept) {
+      await prisma.ptTraineeAssignment.update({
+        where: { id: assignment.id },
+        data: { status: AssignmentStatus.active },
+      });
+      await createUserNotification(
+        assignment.ptId,
+        'invite_accepted',
+        'Trainee accepted invitation',
+        `${traineeName} accepted your training invitation.`,
+        { assignmentId: assignment.id, traineeId }
+      );
+      return { status: AssignmentStatus.active, message: t(TRAINEE_I18N_KEYS.inviteAccepted, lng) };
+    }
+
+    await prisma.ptTraineeAssignment.update({
+      where: { id: assignment.id },
+      data: { status: AssignmentStatus.invite_rejected },
+    });
+    await createUserNotification(
+      assignment.ptId,
+      'invite_rejected',
+      'Trainee declined invitation',
+      `${traineeName} declined your training invitation.`,
+      { assignmentId: assignment.id, traineeId }
+    );
+    return {
+      status: AssignmentStatus.invite_rejected,
+      message: t(TRAINEE_I18N_KEYS.inviteRejected, lng),
     };
   }
 

@@ -50,15 +50,21 @@
       "sessionTypeInvalid": "Invalid session type",
       "scheduledDateRequired": "Scheduled date is required",
       "exerciseNameRequired": "Exercise name is required",
-      "positiveNumber": "Value must be a positive number"
+      "positiveNumber": "Value must be a positive number",
+      "traineeNotFound": "Trainee not found",
+      "inviteAlreadyPending": "An invitation is already pending for this trainee"
     },
     "messages": {
       "programCreated": "Program created successfully",
-      "sessionCreated": "Session created successfully",
+      "sessionCreated": "Workout created successfully",
       "exercisesAdded": "Exercises added successfully",
       "programUpdated": "Program updated successfully",
       "programAssigned": "Program assigned successfully",
-      "sessionUpdated": "Session updated successfully"
+      "sessionUpdated": "Workout updated successfully",
+      "inviteSent": "Invitation sent successfully",
+      "inviteResent": "Invitation resent successfully",
+      "inviteCancelled": "Invitation cancelled",
+      "workoutDeleted": "Workout deleted successfully"
     }
   },
   "trainee": {
@@ -78,11 +84,14 @@
       "ratingRange": "Rating must be between 1 and 10",
       "painRequired": "Please indicate if you experienced pain or discomfort",
       "templateRequired": "This field is required",
-      "exerciseRequired": "At least one exercise is required"
+      "exerciseRequired": "At least one exercise is required",
+      "inviteNotFound": "Invitation not found"
     },
     "messages": {
       "logSuccess": "Workout logged successfully",
-      "metricSuccess": "Body metrics saved successfully"
+      "metricSuccess": "Body metrics saved successfully",
+      "inviteAccepted": "You are now connected with your coach.",
+      "inviteRejected": "Invitation declined."
     }
   }
 }

@@ -29,8 +29,13 @@ describe('pt-validation', () => {
     expect(schema.safeParse({ name: 'Day 1', sessionType: 'strength' }).success).toBe(false);
   });
 
-  it('requires exercises in add schema', () => {
+  it('requires exercise blocks in add schema', () => {
     const schema = createAddExercisesSchema(t);
-    expect(schema.safeParse({ exercises: [] }).success).toBe(false);
+    expect(schema.safeParse({ blocks: [] }).success).toBe(false);
+    expect(
+      schema.safeParse({
+        blocks: [{ blockType: 'normal', exercises: [{ exerciseName: 'Squat' }] }],
+      }).success
+    ).toBe(true);
   });
 });

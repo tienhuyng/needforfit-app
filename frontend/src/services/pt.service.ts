@@ -120,4 +120,24 @@ export const ptApi = {
     );
     return res.data.data;
   },
+
+  deleteSession: async (programId: string, sessionId: string): Promise<void> => {
+    await api.delete(`/pt/programs/${programId}/sessions/${sessionId}`);
+  },
+
+  inviteTrainee: async (email: string) => {
+    const res = await api.post<ApiSuccessResponse<unknown>>('/pt/trainees/invite', { email });
+    return res.data;
+  },
+
+  resendInvite: async (assignmentId: string) => {
+    const res = await api.post<ApiSuccessResponse<unknown>>(
+      `/pt/trainees/assignments/${assignmentId}/resend-invite`
+    );
+    return res.data;
+  },
+
+  cancelInvite: async (assignmentId: string) => {
+    await api.delete(`/pt/trainees/assignments/${assignmentId}`);
+  },
 };

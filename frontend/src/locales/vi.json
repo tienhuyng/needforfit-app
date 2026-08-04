@@ -1,4 +1,7 @@
 {
+  "common": {
+    "back": "Quay lại"
+  },
   "auth": {
     "common": {
       "showPassword": "Hiện",
@@ -143,8 +146,18 @@
         "age": "Tuổi",
         "goal": "Mục tiêu",
         "programs": "Chương trình",
-        "status": "Trạng thái"
+        "status": "Trạng thái",
+        "actions": "Thao tác"
       }
+    },
+    "invite": {
+      "open": "Mời học viên",
+      "title": "Mời học viên",
+      "subtitle": "Tìm học viên theo email và gửi lời mời huấn luyện.",
+      "email": "Email học viên",
+      "submit": "Gửi lời mời",
+      "cancel": "Hủy",
+      "resend": "Gửi lại lời mời"
     },
     "tabs": {
       "profile": "Hồ sơ",
@@ -178,8 +191,8 @@
       "submitting": "Đang tạo..."
     },
     "exercises": {
-      "title": "Thêm bài tập",
-      "subtitle": "Thêm một hoặc nhiều bài tập vào buổi tập này.",
+      "title": "Bài tập",
+      "subtitle": "Chỉnh sửa bài tập của buổi tập",
       "exerciseNumber": "Bài tập {{number}}",
       "name": "Tên bài tập",
       "sets": "Hiệp",
@@ -187,8 +200,19 @@
       "weight": "Tạ (kg)",
       "rest": "Nghỉ (giây)",
       "notes": "Ghi chú",
-      "addAnother": "Thêm bài tập khác",
+      "blockType": "Loại block",
+      "blockTypes": {
+        "normal": "Standard",
+        "superset": "Superset",
+        "dropset": "Drop set",
+        "supersetDrop": "Superset / Drop set"
+      },
+      "addBlock": "Thêm block",
+      "addAnother": "Thêm block thường",
+      "addExerciseToBlock": "Thêm bài vào block",
+      "removeBlock": "Xóa block",
       "remove": "Xóa bài tập",
+      "reorderBlock": "Kéo để đổi thứ tự block",
       "submit": "Lưu bài tập",
       "submitting": "Đang lưu..."
     },
@@ -215,7 +239,9 @@
     "statuses": {
       "active": "Đang hoạt động",
       "paused": "Tạm dừng",
-      "ended": "Đã kết thúc"
+      "ended": "Đã kết thúc",
+      "invite_pending": "Đã gửi lời mời",
+      "invite_rejected": "Từ chối lời mời"
     },
     "programTypes": {
       "strength": "Sức mạnh",
@@ -238,7 +264,50 @@
     "messages": {
       "programCreated": "Tạo chương trình thành công.",
       "sessionCreated": "Tạo buổi tập thành công.",
-      "exercisesAdded": "Thêm bài tập thành công."
+      "exercisesAdded": "Thêm bài tập thành công.",
+      "programUpdated": "Cập nhật chương trình thành công.",
+      "programAssigned": "Gán chương trình thành công.",
+      "sessionUpdated": "Cập nhật buổi tập thành công.",
+      "inviteSent": "Đã gửi lời mời.",
+      "inviteResent": "Đã gửi lại lời mời.",
+      "inviteCancelled": "Đã hủy lời mời.",
+      "workoutDeleted": "Đã xóa buổi tập."
+    },
+    "programList": {
+      "title": "Chương trình",
+      "subtitle": "Quản lý chương trình tập.",
+      "create": "Chương trình mới",
+      "empty": "Chưa có chương trình.",
+      "sessions": "Buổi tập"
+    },
+    "programDetail": {
+      "edit": "Chi tiết chương trình",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "sessions": "Buổi tập",
+      "noSessions": "Chưa có buổi tập.",
+      "exercises": "bài tập",
+      "editSession": "Sửa",
+      "addExercises": "Bài tập",
+      "addSession": "Thêm buổi tập",
+      "deleteWorkout": "Xóa buổi tập",
+      "deleteWorkoutConfirm": "Xóa buổi tập \"{{name}}\"? Không thể hoàn tác.",
+      "assignedTrainees": "Học viên được gán",
+      "noAssignees": "Chưa gán cho học viên nào."
+    },
+    "assign": {
+      "title": "Gán chương trình",
+      "desc": "Chọn học viên để gán chương trình này.",
+      "trainee": "Học viên",
+      "selectTrainee": "Chọn học viên",
+      "submit": "Gán chương trình",
+      "open": "Gán cho học viên"
+    },
+    "editSession": {
+      "title": "Sửa buổi tập",
+      "subtitle": "Lưu sẽ tạo phiên bản {{version}}. Nhật ký cũ giữ phiên bản trước.",
+      "submit": "Lưu buổi tập",
+      "submitting": "Đang lưu..."
     },
     "errors": {
       "unauthorized": "Bạn cần đăng nhập để truy cập trang này.",
@@ -254,7 +323,10 @@
       "exerciseNameRequired": "Cần ít nhất một tên bài tập.",
       "positiveNumber": "Phải là số dương.",
       "loadFailed": "Không thể tải dữ liệu. Vui lòng thử lại.",
-      "createFailed": "Không thể lưu. Vui lòng thử lại."
+      "createFailed": "Không thể lưu. Vui lòng thử lại.",
+      "inviteFailed": "Không gửi được lời mời. Vui lòng thử lại.",
+      "alreadyAssigned": "Chương trình đã được gán cho học viên này.",
+      "traineeIdRequired": "Cần chọn học viên."
     }
   },
   "trainee": {
@@ -275,6 +347,10 @@
       "title": "Trang chủ",
       "todayWorkout": "Buổi tập hôm nay",
       "todayWorkoutDesc": "Ghi nhận buổi tập trong vòng 24 giờ.",
+      "invitesTitle": "Lời mời từ PT",
+      "invitesDesc": "Chấp nhận để kết nối với huấn luyện viên.",
+      "acceptInvite": "Chấp nhận",
+      "declineInvite": "Từ chối",
       "logWorkout": "Ghi nhận buổi tập",
       "viewLog": "Xem nhật ký",
       "locked": "Đã hết thời gian ghi nhận",
@@ -361,7 +437,9 @@
     },
     "messages": {
       "logSuccess": "Ghi nhận buổi tập thành công.",
-      "metricSuccess": "Lưu chỉ số thành công."
+      "metricSuccess": "Lưu chỉ số thành công.",
+      "inviteAccepted": "Đã chấp nhận lời mời.",
+      "inviteDeclined": "Đã từ chối lời mời."
     },
     "errors": {
       "loadFailed": "Không thể tải dữ liệu. Vui lòng thử lại.",

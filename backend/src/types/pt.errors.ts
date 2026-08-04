@@ -8,6 +8,8 @@ export const PT_ERROR_CODES = {
   SESSION_NOT_FOUND: 'SESSION_NOT_FOUND',
   ALREADY_ASSIGNED: 'ALREADY_ASSIGNED',
   TRAINEE_ID_REQUIRED: 'TRAINEE_ID_REQUIRED',
+  TRAINEE_NOT_FOUND: 'TRAINEE_NOT_FOUND',
+  INVITE_ALREADY_PENDING: 'INVITE_ALREADY_PENDING',
 } as const;
 
 export const PT_I18N_KEYS = {
@@ -18,6 +20,8 @@ export const PT_I18N_KEYS = {
   programNotFound: 'pt.errors.programNotFound',
   sessionNotFound: 'pt.errors.sessionNotFound',
   alreadyAssigned: 'pt.errors.alreadyAssigned',
+  traineeNotFound: 'pt.errors.traineeNotFound',
+  inviteAlreadyPending: 'pt.errors.inviteAlreadyPending',
   traineeIdRequired: 'pt.errors.traineeIdRequired',
   nameRequired: 'pt.errors.nameRequired',
   programTypeInvalid: 'pt.errors.programTypeInvalid',
@@ -31,4 +35,8 @@ export const PT_I18N_KEYS = {
   programUpdated: 'pt.messages.programUpdated',
   programAssigned: 'pt.messages.programAssigned',
   sessionUpdated: 'pt.messages.sessionUpdated',
+  inviteSent: 'pt.messages.inviteSent',
+  inviteResent: 'pt.messages.inviteResent',
+  inviteCancelled: 'pt.messages.inviteCancelled',
+  workoutDeleted: 'pt.messages.workoutDeleted',
 } as const;

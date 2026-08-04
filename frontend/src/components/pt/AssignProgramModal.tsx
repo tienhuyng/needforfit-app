@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '@/components/common/Modal';
 import { Alert } from '@/components/common/Alert';
 import { Button } from '@/components/template';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { ptApi, getApiErrorMessage } from '@/services/pt.service';
 import { TraineeListItem } from '@/types/pt';
 
@@ -66,7 +66,9 @@ export const AssignProgramModal: React.FC<AssignProgramModalProps> = ({
       <div className="space-y-4">
         <p className="text-sm text-muted-foreground">{t('pt.assign.desc')}</p>
         <div>
-          <Label htmlFor="trainee-select">{t('pt.assign.trainee')}</Label>
+          <FormLabel htmlFor="trainee-select" required>
+            {t('pt.assign.trainee')}
+          </FormLabel>
           <select
             id="trainee-select"
             className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"

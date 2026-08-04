@@ -38,13 +38,27 @@ export const exerciseItemSchema = z.object({
   notes: z.string().optional(),
 });
 
-export const addExercisesSchema = z.object({
+export const exerciseBlockSchema = z.object({
+  blockType: z.enum(['normal', 'superset', 'dropset']).default('normal'),
   exercises: z.array(exerciseItemSchema).min(1, PT_I18N_KEYS.exerciseNameRequired),
+});
+
+export const addExercisesSchema = z
+  .object({
+    exercises: z.array(exerciseItemSchema).min(1, PT_I18N_KEYS.exerciseNameRequired).optional(),
+    blocks: z.array(exerciseBlockSchema).min(1, PT_I18N_KEYS.exerciseNameRequired).optional(),
+  })
+  .refine((data) => (data.exercises?.length ?? 0) > 0 || (data.blocks?.length ?? 0) > 0, {
+    message: PT_I18N_KEYS.exerciseNameRequired,
+  });
+
+export const inviteTraineeSchema = z.object({
+  email: z.string().email(),
 });
 
 export const traineeListQuerySchema = z.object({
   search: z.string().optional(),
-  status: z.enum(['active', 'paused', 'ended']).optional(),
+  status: z.enum(['active', 'paused', 'ended', 'invite_pending', 'invite_rejected']).optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(10),
 });
@@ -68,4 +82,5 @@ export type AssignProgramInput = z.infer<typeof assignProgramSchema>;
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
 export type UpdateSessionInput = z.infer<typeof updateSessionSchema>;
 export type AddExercisesInput = z.infer<typeof addExercisesSchema>;
+export type InviteTraineeInput = z.infer<typeof inviteTraineeSchema>;
 export type TraineeListQuery = z.infer<typeof traineeListQuerySchema>;

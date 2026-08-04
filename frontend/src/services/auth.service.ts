@@ -51,7 +51,7 @@ export const authApi = {
     return res.data.data;
   },
 
-  register: async (data: RegisterFormData): Promise<RegisterResponse> => {
+  register: async (data: Omit<RegisterFormData, 'confirmPassword'>): Promise<RegisterResponse> => {
     const res = await api.post<ApiSuccessResponse<RegisterResponse>>('/auth/register', data);
     return res.data.data;
   },

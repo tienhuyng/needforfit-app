@@ -77,7 +77,7 @@ export const TraineeLayout: React.FC<TraineeLayoutProps> = ({
         )}
       </header>
 
-      <main className="mx-auto max-w-lg p-4 sm:max-w-2xl">{children}</main>
+      <main className="mx-auto max-w-lg p-4 sm:max-w-2xl [--page-sticky-top:5.25rem]">{children}</main>
 
       {!hideNav && (
         <nav className="fixed bottom-0 left-0 right-0 z-40 border-t bg-card sm:hidden">

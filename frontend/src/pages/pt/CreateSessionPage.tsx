@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { PTLayout } from '@/components/pt/PTLayout';
 import { Alert } from '@/components/common/Alert';
 import {
@@ -14,7 +15,7 @@ import {
   CardTitle,
   Input,
 } from '@/components/template';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { ptApi, getApiErrorMessage } from '@/services/pt.service';
 import { createSessionSchema, CreateSessionFormData } from '@/utils/pt-validation';
 import { cn } from '@/lib/utils';
@@ -53,15 +54,13 @@ export const CreateSessionPage: React.FC = () => {
 
   return (
     <PTLayout>
-      <div className="mx-auto max-w-2xl space-y-6">
-        <div>
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/pt/programs/new">{t('pt.common.back')}</Link>
-          </Button>
-          <h2 className="text-2xl font-bold tracking-tight">{t('pt.sessions.createTitle')}</h2>
-          <p className="text-muted-foreground">{t('pt.sessions.createSubtitle')}</p>
-        </div>
+      <PageStickyHeader
+        backTo={programId ? `/pt/programs/${programId}` : '/pt/programs'}
+        title={t('pt.sessions.createTitle')}
+        subtitle={t('pt.sessions.createSubtitle')}
+      />
 
+      <div className="mx-auto max-w-2xl space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>{t('pt.sessions.createTitle')}</CardTitle>
@@ -73,12 +72,15 @@ export const CreateSessionPage: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
               <Input
                 label={t('pt.sessions.name')}
+                labelRequired
                 error={errors.name?.message}
                 {...register('name')}
               />
 
               <div className="space-y-2">
-                <Label htmlFor="sessionType">{t('pt.sessions.type')}</Label>
+                <FormLabel htmlFor="sessionType" required>
+                  {t('pt.sessions.type')}
+                </FormLabel>
                 <select
                   id="sessionType"
                   className={cn(
@@ -100,6 +102,7 @@ export const CreateSessionPage: React.FC = () => {
 
               <Input
                 label={t('pt.sessions.scheduledDate')}
+                labelRequired
                 type="date"
                 error={errors.scheduledDate?.message}
                 {...register('scheduledDate')}
@@ -114,7 +117,7 @@ export const CreateSessionPage: React.FC = () => {
               />
 
               <div className="space-y-2">
-                <Label htmlFor="notes">{t('pt.sessions.notes')}</Label>
+                <FormLabel htmlFor="notes">{t('pt.sessions.notes')}</FormLabel>
                 <textarea
                   id="notes"
                   rows={3}

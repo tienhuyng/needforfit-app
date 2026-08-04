@@ -129,7 +129,7 @@ export const PTLayout: React.FC<PTLayoutProps> = ({ children }) => {
           </div>
         </header>
 
-        <main className="p-4 sm:p-6">{children}</main>
+        <main className="p-4 sm:p-6 [--page-sticky-top:4rem]">{children}</main>
       </div>
 
       <LogoutConfirmModal

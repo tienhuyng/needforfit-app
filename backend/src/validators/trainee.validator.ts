@@ -60,7 +60,12 @@ export const metricsHistoryQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(30),
 });
 
+export const respondPtInviteSchema = z.object({
+  accept: z.boolean(),
+});
+
 export type LogWorkoutInput = z.infer<typeof logWorkoutSchema>;
 export type WorkoutHistoryQuery = z.infer<typeof workoutHistoryQuerySchema>;
 export type LogMetricInput = z.infer<typeof logMetricSchema>;
 export type MetricsHistoryQuery = z.infer<typeof metricsHistoryQuerySchema>;
+export type RespondPtInviteInput = z.infer<typeof respondPtInviteSchema>;

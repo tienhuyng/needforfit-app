@@ -1,5 +1,6 @@
 import {
   AssignmentStatus,
+  ExerciseBlockType,
   Prisma,
   ProgramStatus,
   SessionStatus,
@@ -15,6 +16,7 @@ import {
   AssignProgramInput,
   CreateProgramInput,
   CreateSessionInput,
+  InviteTraineeInput,
   TraineeListQuery,
   UpdateProgramInput,
   UpdateSessionInput,
@@ -34,6 +36,40 @@ import {
   TraineeListItem,
 } from '../types/pt';
 import { getCurrentVersionExercises } from '../utils/session-exercises';
+import { createUserNotification, formatUserName } from '../utils/user-notifications';
+
+type FlatExerciseInput = {
+  exerciseName: string;
+  plannedSets?: number;
+  plannedReps?: number;
+  plannedWeightKg?: number;
+  restSeconds?: number;
+  notes?: string;
+  blockIndex: number;
+  blockType: ExerciseBlockType;
+};
+
+function flattenExerciseInput(input: AddExercisesInput): FlatExerciseInput[] {
+  if (input.blocks?.length) {
+    const flat: FlatExerciseInput[] = [];
+    input.blocks.forEach((block, blockIndex) => {
+      block.exercises.forEach((exercise) => {
+        flat.push({
+          ...exercise,
+          blockIndex,
+          blockType: block.blockType as ExerciseBlockType,
+        });
+      });
+    });
+    return flat;
+  }
+
+  return (input.exercises ?? []).map((exercise) => ({
+    ...exercise,
+    blockIndex: 0,
+    blockType: ExerciseBlockType.normal,
+  }));
+}
 
 function calcAge(dateOfBirth: Date | null | undefined): number | null {
   if (!dateOfBirth) return null;
@@ -80,7 +116,7 @@ export class PtService {
   async getDashboard(ptId: string): Promise<PtDashboardResponse> {
     const weekStart = startOfWeek();
 
-    const [traineeCount, programCount, workoutsThisWeek, assignments, recentLogs, recentPrograms] =
+    const [traineeCount, programCount, workoutsThisWeek, assignments, recentLogs, recentPrograms, recentNotifications] =
       await Promise.all([
         prisma.ptTraineeAssignment.count({
           where: { ptId, status: AssignmentStatus.active },
@@ -114,6 +150,11 @@ export class PtService {
           orderBy: { createdAt: 'desc' },
           take: 3,
         }),
+        prisma.userNotification.findMany({
+          where: { userId: ptId },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        }),
       ]);
 
     const trainees: PtDashboardTraineeRow[] = assignments.map((a) => ({
@@ -140,6 +181,13 @@ export class PtService {
         title: p.name,
         subtitle: p.programType,
         occurredAt: p.createdAt.toISOString(),
+      })),
+      ...recentNotifications.map((n) => ({
+        id: n.id,
+        type: 'assignment' as const,
+        title: n.title,
+        subtitle: n.body,
+        occurredAt: n.createdAt.toISOString(),
       })),
     ]
       .sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime())
@@ -204,6 +252,7 @@ export class PtService {
     const countMap = new Map(programCounts.map((p) => [p.traineeId, p._count._all]));
 
     const items: TraineeListItem[] = rows.map((row) => ({
+      assignmentId: row.id,
       id: row.trainee.id,
       firstName: row.trainee.firstName,
       lastName: row.trainee.lastName,
@@ -400,25 +449,47 @@ export class PtService {
       throw new AppError(PT_ERROR_CODES.SESSION_NOT_FOUND, PT_I18N_KEYS.sessionNotFound, 404);
     }
 
-    const startIndex = session.exercises.length;
+    const currentExercises = getCurrentVersionExercises(session.sessionVersion, session.exercises);
+    const flatExercises = flattenExerciseInput(input);
+    const logCount = await prisma.workoutLog.count({ where: { sessionId } });
 
-    const created = await prisma.$transaction(
-      input.exercises.map((exercise, index) =>
-        prisma.workoutSessionExercise.create({
-          data: {
-            sessionId,
-            exerciseName: exercise.exerciseName,
-            plannedSets: exercise.plannedSets,
-            plannedReps: exercise.plannedReps,
-            plannedWeightKg: exercise.plannedWeightKg,
-            restSeconds: exercise.restSeconds,
-            notes: exercise.notes,
-            orderIndex: startIndex + index,
-            sessionVersion: session.sessionVersion,
-          },
-        })
-      )
-    );
+    let targetVersion = session.sessionVersion;
+
+    const created = await prisma.$transaction(async (tx) => {
+      if (currentExercises.length > 0) {
+        if (logCount > 0) {
+          targetVersion = session.sessionVersion + 1;
+          await tx.workoutSession.update({
+            where: { id: sessionId },
+            data: { sessionVersion: targetVersion },
+          });
+        } else {
+          await tx.workoutSessionExercise.deleteMany({
+            where: { sessionId, sessionVersion: session.sessionVersion },
+          });
+        }
+      }
+
+      return Promise.all(
+        flatExercises.map((exercise, index) =>
+          tx.workoutSessionExercise.create({
+            data: {
+              sessionId,
+              exerciseName: exercise.exerciseName,
+              plannedSets: exercise.plannedSets,
+              plannedReps: exercise.plannedReps,
+              plannedWeightKg: exercise.plannedWeightKg,
+              restSeconds: exercise.restSeconds,
+              notes: exercise.notes,
+              orderIndex: index,
+              blockIndex: exercise.blockIndex,
+              blockType: exercise.blockType,
+              sessionVersion: targetVersion,
+            },
+          })
+        )
+      );
+    });
 
     if (session.status === SessionStatus.draft) {
       await prisma.workoutSession.update({
@@ -605,6 +676,8 @@ export class PtService {
         restSeconds: e.restSeconds,
         notes: e.notes,
         orderIndex: e.orderIndex,
+        blockIndex: e.blockIndex,
+        blockType: e.blockType,
       })),
     };
   }
@@ -684,6 +757,159 @@ export class PtService {
     return {
       session: updated,
       message: t(PT_I18N_KEYS.sessionUpdated, lng),
+    };
+  }
+
+  async deleteSession(
+    ptId: string,
+    programId: string,
+    sessionId: string,
+    lng: SupportedLanguage
+  ) {
+    await assertProgramOwned(ptId, programId);
+
+    const session = await prisma.workoutSession.findFirst({
+      where: { id: sessionId, programId },
+    });
+
+    if (!session) {
+      throw new AppError(PT_ERROR_CODES.SESSION_NOT_FOUND, PT_I18N_KEYS.sessionNotFound, 404);
+    }
+
+    await prisma.workoutSession.delete({ where: { id: sessionId } });
+
+    return {
+      message: t(PT_I18N_KEYS.workoutDeleted, lng),
+    };
+  }
+
+  async inviteTrainee(ptId: string, input: InviteTraineeInput, lng: SupportedLanguage) {
+    const trainee = await prisma.user.findUnique({
+      where: { email: input.email.toLowerCase() },
+    });
+
+    if (!trainee || trainee.role !== UserRole.trainee) {
+      throw new AppError(PT_ERROR_CODES.TRAINEE_NOT_FOUND, PT_I18N_KEYS.traineeNotFound, 404);
+    }
+
+    if (trainee.status === UserStatus.inactive || trainee.status === UserStatus.deleted) {
+      throw new AppError(PT_ERROR_CODES.TRAINEE_NOT_FOUND, PT_I18N_KEYS.traineeNotFound, 404);
+    }
+
+    const existing = await prisma.ptTraineeAssignment.findFirst({
+      where: { ptId, traineeId: trainee.id },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (existing?.status === AssignmentStatus.active) {
+      throw new AppError(PT_ERROR_CODES.ALREADY_ASSIGNED, PT_I18N_KEYS.alreadyAssigned, 409);
+    }
+
+    if (existing?.status === AssignmentStatus.invite_pending) {
+      throw new AppError(
+        PT_ERROR_CODES.INVITE_ALREADY_PENDING,
+        PT_I18N_KEYS.inviteAlreadyPending,
+        409
+      );
+    }
+
+    let assignment;
+    if (existing?.status === AssignmentStatus.invite_rejected) {
+      assignment = await prisma.ptTraineeAssignment.update({
+        where: { id: existing.id },
+        data: {
+          status: AssignmentStatus.invite_pending,
+          assignedAt: new Date(),
+          endedAt: null,
+        },
+      });
+    } else if (existing) {
+      assignment = await prisma.ptTraineeAssignment.update({
+        where: { id: existing.id },
+        data: {
+          status: AssignmentStatus.invite_pending,
+          assignedAt: new Date(),
+        },
+      });
+    } else {
+      assignment = await prisma.ptTraineeAssignment.create({
+        data: {
+          ptId,
+          traineeId: trainee.id,
+          status: AssignmentStatus.invite_pending,
+        },
+      });
+    }
+
+    const pt = await prisma.user.findUnique({ where: { id: ptId } });
+    if (pt) {
+      await createUserNotification(
+        trainee.id,
+        'pt_invite',
+        'Training invitation',
+        `${formatUserName(pt.firstName, pt.lastName, pt.email)} invited you to join as a trainee.`,
+        { assignmentId: assignment.id, ptId }
+      );
+    }
+
+    return {
+      assignmentId: assignment.id,
+      traineeId: trainee.id,
+      status: assignment.status,
+      message: t(PT_I18N_KEYS.inviteSent, lng),
+    };
+  }
+
+  async resendInvite(ptId: string, assignmentId: string, lng: SupportedLanguage) {
+    const assignment = await prisma.ptTraineeAssignment.findFirst({
+      where: { id: assignmentId, ptId },
+      include: { trainee: true, pt: true },
+    });
+
+    if (!assignment || assignment.status !== AssignmentStatus.invite_rejected) {
+      throw new AppError(PT_ERROR_CODES.NOT_FOUND, PT_I18N_KEYS.notFound, 404);
+    }
+
+    const updated = await prisma.ptTraineeAssignment.update({
+      where: { id: assignment.id },
+      data: {
+        status: AssignmentStatus.invite_pending,
+        assignedAt: new Date(),
+      },
+    });
+
+    await createUserNotification(
+      assignment.traineeId,
+      'pt_invite',
+      'Training invitation',
+      `${formatUserName(assignment.pt.firstName, assignment.pt.lastName, assignment.pt.email)} invited you again.`,
+      { assignmentId: updated.id, ptId }
+    );
+
+    return {
+      assignmentId: updated.id,
+      status: updated.status,
+      message: t(PT_I18N_KEYS.inviteResent, lng),
+    };
+  }
+
+  async cancelInvite(ptId: string, assignmentId: string, lng: SupportedLanguage) {
+    const assignment = await prisma.ptTraineeAssignment.findFirst({
+      where: {
+        id: assignmentId,
+        ptId,
+        status: { in: [AssignmentStatus.invite_pending, AssignmentStatus.invite_rejected] },
+      },
+    });
+
+    if (!assignment) {
+      throw new AppError(PT_ERROR_CODES.NOT_FOUND, PT_I18N_KEYS.notFound, 404);
+    }
+
+    await prisma.ptTraineeAssignment.delete({ where: { id: assignment.id } });
+
+    return {
+      message: t(PT_I18N_KEYS.inviteCancelled, lng),
     };
   }
 }

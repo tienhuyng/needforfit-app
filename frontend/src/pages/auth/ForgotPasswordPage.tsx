@@ -78,6 +78,7 @@ export const ForgotPasswordPage: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <Input
               label={t('auth.forgotPassword.email')}
+              labelRequired
               type="email"
               autoComplete="email"
               placeholder="your@email.com"

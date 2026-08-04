@@ -31,6 +31,7 @@ export interface PtDashboardResponse {
 }
 
 export interface TraineeListItem {
+  assignmentId: string;
   id: string;
   firstName: string | null;
   lastName: string | null;
@@ -141,4 +142,6 @@ export interface ExerciseSummary {
   restSeconds: number | null;
   notes: string | null;
   orderIndex: number;
+  blockIndex: number;
+  blockType: 'normal' | 'superset' | 'dropset';
 }

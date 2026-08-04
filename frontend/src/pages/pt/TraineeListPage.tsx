@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { PTLayout } from '@/components/pt/PTLayout';
+import { InviteTraineeModal } from '@/components/pt/InviteTraineeModal';
 import { TraineeTable } from '@/components/pt/TraineeTable';
 import { Alert } from '@/components/common/Alert';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@/components/template';
@@ -17,6 +19,8 @@ export const TraineeListPage: React.FC = () => {
   const [data, setData] = useState<PaginatedResponse<TraineeListItem> | null>(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [actionMessage, setActionMessage] = useState('');
 
   const limit = 10;
 
@@ -52,11 +56,18 @@ export const TraineeListPage: React.FC = () => {
 
   return (
     <PTLayout>
+      <PageStickyHeader
+        title={t('pt.trainees.title')}
+        subtitle={t('pt.trainees.subtitle')}
+        actions={
+          <Button type="button" variant="primary" onClick={() => setInviteOpen(true)}>
+            {t('pt.invite.open')}
+          </Button>
+        }
+      />
+
       <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">{t('pt.trainees.title')}</h2>
-          <p className="text-muted-foreground">{t('pt.trainees.subtitle')}</p>
-        </div>
+        {actionMessage && <Alert type="success" message={actionMessage} />}
 
         {error && <Alert type="error" message={error} />}
 
@@ -91,6 +102,8 @@ export const TraineeListPage: React.FC = () => {
                   <option value="active">{t('pt.statuses.active')}</option>
                   <option value="paused">{t('pt.statuses.paused')}</option>
                   <option value="ended">{t('pt.statuses.ended')}</option>
+                  <option value="invite_pending">{t('pt.statuses.invite_pending')}</option>
+                  <option value="invite_rejected">{t('pt.statuses.invite_rejected')}</option>
                 </select>
               </div>
               <Button type="submit" variant="primary">
@@ -106,7 +119,20 @@ export const TraineeListPage: React.FC = () => {
               <p className="text-muted-foreground">{t('pt.common.loading')}</p>
             ) : data ? (
               <>
-                <TraineeTable trainees={data.items} showPrograms />
+                <TraineeTable
+                  trainees={data.items}
+                  showPrograms
+                  onResendInvite={async (assignmentId) => {
+                    await ptApi.resendInvite(assignmentId);
+                    setActionMessage(t('pt.messages.inviteResent'));
+                    void loadTrainees();
+                  }}
+                  onCancelInvite={async (assignmentId) => {
+                    await ptApi.cancelInvite(assignmentId);
+                    setActionMessage(t('pt.messages.inviteCancelled'));
+                    void loadTrainees();
+                  }}
+                />
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-sm text-muted-foreground">
                     {t('pt.trainees.pagination', {
@@ -139,6 +165,15 @@ export const TraineeListPage: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      <InviteTraineeModal
+        open={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+        onInvited={() => {
+          setActionMessage(t('pt.messages.inviteSent'));
+          void loadTrainees();
+        }}
+      />
     </PTLayout>
   );
 };

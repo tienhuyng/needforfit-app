@@ -31,4 +31,7 @@ export const TRAINEE_I18N_KEYS = {
   exerciseRequired: 'trainee.errors.exerciseRequired',
   logSuccess: 'trainee.messages.logSuccess',
   metricSuccess: 'trainee.messages.metricSuccess',
+  inviteNotFound: 'trainee.errors.inviteNotFound',
+  inviteAccepted: 'trainee.messages.inviteAccepted',
+  inviteRejected: 'trainee.messages.inviteRejected',
 } as const;

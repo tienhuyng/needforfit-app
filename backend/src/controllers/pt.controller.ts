@@ -8,6 +8,7 @@ import {
   AssignProgramInput,
   CreateProgramInput,
   CreateSessionInput,
+  InviteTraineeInput,
   TraineeListQuery,
   UpdateProgramInput,
   UpdateSessionInput,
@@ -109,4 +110,38 @@ export const addExercises = asyncHandler(async (req: Request, res: Response) => 
     req.language
   );
   res.status(201).json(buildSuccessResponse({ exercises: result.exercises }, result.message));
+});
+
+export const deleteSession = asyncHandler(async (req: Request, res: Response) => {
+  const result = await ptService.deleteSession(
+    getPtId(req),
+    req.params.id,
+    req.params.sessionId,
+    req.language
+  );
+  res.json(buildSuccessResponse(null, result.message));
+});
+
+export const inviteTrainee = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as InviteTraineeInput;
+  const result = await ptService.inviteTrainee(getPtId(req), input, req.language);
+  res.status(201).json(buildSuccessResponse(result, result.message));
+});
+
+export const resendInvite = asyncHandler(async (req: Request, res: Response) => {
+  const result = await ptService.resendInvite(
+    getPtId(req),
+    req.params.assignmentId,
+    req.language
+  );
+  res.json(buildSuccessResponse(result, result.message));
+});
+
+export const cancelInvite = asyncHandler(async (req: Request, res: Response) => {
+  const result = await ptService.cancelInvite(
+    getPtId(req),
+    req.params.assignmentId,
+    req.language
+  );
+  res.json(buildSuccessResponse(null, result.message));
 });

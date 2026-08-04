@@ -72,6 +72,7 @@ export const ResetPasswordPage: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <Input
               label={t('auth.resetPassword.email')}
+              labelRequired
               type="email"
               autoComplete="email"
               placeholder="your@email.com"
@@ -81,6 +82,7 @@ export const ResetPasswordPage: React.FC = () => {
 
             <PasswordInput
               label={t('auth.resetPassword.newPassword')}
+              labelRequired
               autoComplete="new-password"
               placeholder="••••••••"
               error={errors.newPassword?.message}
@@ -89,6 +91,7 @@ export const ResetPasswordPage: React.FC = () => {
 
             <PasswordInput
               label={t('auth.resetPassword.confirmPassword')}
+              labelRequired
               autoComplete="new-password"
               placeholder="••••••••"
               error={errors.confirmPassword?.message}

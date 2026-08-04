@@ -1,16 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { AuthLayout } from '@/components/layout/AuthLayout';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { Alert } from '@/components/common/Alert';
 import { Button, Card, CardContent, CardHeader, CardTitle, Input } from '@/components/template';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { authApi, getApiErrorMessage } from '@/services/auth.service';
 import { AuthUser } from '@/types/auth';
-import { getAuthUser, getPostLoginPath, storeAuthUser } from '@/utils/auth-storage';
+import { getAuthUser, storeAuthUser } from '@/utils/auth-storage';
 import { SUPPORTED_LANGUAGES } from '@/config/i18n';
 
 const languageOptions = [
@@ -92,16 +93,13 @@ export const ProfileSettingsPage: React.FC = () => {
 
   return (
     <AuthLayout>
-      <div className="mx-auto w-full max-w-sm space-y-4">
-        <div className="text-center">
-          {user && (
-            <Button variant="ghost" size="sm" className="mb-2" asChild>
-              <Link to={getPostLoginPath(user.role)}>{t('auth.profile.back')}</Link>
-            </Button>
-          )}
-          <h2 className="text-xl font-semibold">{t('auth.profile.title')}</h2>
-          <p className="text-sm text-muted-foreground">{t('auth.profile.subtitle')}</p>
-        </div>
+      <div className="mx-auto w-full max-w-sm space-y-4 [--page-sticky-top:0px]">
+        <PageStickyHeader
+          className="-mx-0 px-0 sm:px-0"
+          back={<BackButton labelKey="common.back" className="mb-0" />}
+          title={t('auth.profile.title')}
+          subtitle={t('auth.profile.subtitle')}
+        />
         {error && <Alert type="error" message={error} />}
         {success && <Alert type="success" message={success} />}
 
@@ -112,25 +110,29 @@ export const ProfileSettingsPage: React.FC = () => {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <Label htmlFor="firstName">{t('auth.register.firstName')}</Label>
+                <FormLabel htmlFor="firstName" required>
+                  {t('auth.register.firstName')}
+                </FormLabel>
                 <Input id="firstName" {...register('firstName')} />
                 {errors.firstName && (
                   <p className="text-xs text-destructive">{errors.firstName.message}</p>
                 )}
               </div>
               <div>
-                <Label htmlFor="lastName">{t('auth.register.lastName')}</Label>
+                <FormLabel htmlFor="lastName" required>
+                  {t('auth.register.lastName')}
+                </FormLabel>
                 <Input id="lastName" {...register('lastName')} />
                 {errors.lastName && (
                   <p className="text-xs text-destructive">{errors.lastName.message}</p>
                 )}
               </div>
               <div>
-                <Label htmlFor="phone">{t('auth.profile.phone')}</Label>
+                <FormLabel htmlFor="phone">{t('auth.profile.phone')}</FormLabel>
                 <Input id="phone" {...register('phone')} />
               </div>
               <div>
-                <Label htmlFor="preferredLanguage">{t('auth.profile.language')}</Label>
+                <FormLabel htmlFor="preferredLanguage">{t('auth.profile.language')}</FormLabel>
                 <select
                   id="preferredLanguage"
                   className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"

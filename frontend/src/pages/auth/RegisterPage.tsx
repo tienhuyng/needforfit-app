@@ -13,7 +13,7 @@ import {
   Input,
 } from '@/components/template';
 import { PasswordInput } from '@/components/common/PasswordInput';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { Alert } from '@/components/common/Alert';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { authApi, getApiErrorMessage } from '@/services/auth.service';
@@ -68,12 +68,14 @@ export const RegisterPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label={t('auth.register.firstName')}
+                labelRequired
                 autoComplete="given-name"
                 error={errors.firstName?.message}
                 {...register('firstName')}
               />
               <Input
                 label={t('auth.register.lastName')}
+                labelRequired
                 autoComplete="family-name"
                 error={errors.lastName?.message}
                 {...register('lastName')}
@@ -82,6 +84,7 @@ export const RegisterPage: React.FC = () => {
 
             <Input
               label={t('auth.register.email')}
+              labelRequired
               type="email"
               autoComplete="email"
               placeholder="your@email.com"
@@ -91,6 +94,7 @@ export const RegisterPage: React.FC = () => {
 
             <PasswordInput
               label={t('auth.register.password')}
+              labelRequired
               autoComplete="new-password"
               placeholder="••••••••"
               error={errors.password?.message}
@@ -99,6 +103,7 @@ export const RegisterPage: React.FC = () => {
 
             <PasswordInput
               label={t('auth.register.confirmPassword')}
+              labelRequired
               autoComplete="new-password"
               placeholder="••••••••"
               error={errors.confirmPassword?.message}
@@ -106,7 +111,9 @@ export const RegisterPage: React.FC = () => {
             />
 
             <div className="space-y-2">
-              <Label htmlFor="role">{t('auth.register.role')}</Label>
+              <FormLabel htmlFor="role" required>
+                {t('auth.register.role')}
+              </FormLabel>
               <select
                 id="role"
                 className={cn(

@@ -43,7 +43,14 @@ export function createExerciseItemSchema(t: TFunction) {
 export function createAddExercisesSchema(t: TFunction) {
   const exerciseItemSchema = createExerciseItemSchema(t);
   return z.object({
-    exercises: z.array(exerciseItemSchema).min(1, t('pt.errors.exerciseNameRequired')),
+    blocks: z
+      .array(
+        z.object({
+          blockType: z.enum(['normal', 'superset', 'dropset']),
+          exercises: z.array(exerciseItemSchema).min(1, t('pt.errors.exerciseNameRequired')),
+        })
+      )
+      .min(1, t('pt.errors.exerciseNameRequired')),
   });
 }
 

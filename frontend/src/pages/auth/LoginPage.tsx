@@ -64,6 +64,7 @@ export const LoginPage: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <Input
               label={t('auth.login.email')}
+              labelRequired
               type="email"
               autoComplete="email"
               placeholder="your@email.com"
@@ -73,6 +74,7 @@ export const LoginPage: React.FC = () => {
 
             <PasswordInput
               label={t('auth.login.password')}
+              labelRequired
               autoComplete="current-password"
               placeholder="••••••••"
               error={errors.password?.message}

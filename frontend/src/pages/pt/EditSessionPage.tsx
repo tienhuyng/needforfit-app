@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { PTLayout } from '@/components/pt/PTLayout';
 import { Alert } from '@/components/common/Alert';
 import {
   Button,
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
   Input,
 } from '@/components/template';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { ptApi, getApiErrorMessage } from '@/services/pt.service';
 import { SessionDetailResponse } from '@/types/pt';
 import { createSessionSchema, CreateSessionFormData } from '@/utils/pt-validation';
@@ -75,34 +73,36 @@ export const EditSessionPage: React.FC = () => {
 
   return (
     <PTLayout>
-      <div className="mx-auto max-w-lg space-y-4">
-        <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link to={`/pt/programs/${programId}`}>{t('pt.common.back')}</Link>
-        </Button>
+      <PageStickyHeader
+        backTo={`/pt/programs/${programId}`}
+        title={t('pt.editSession.title')}
+        subtitle={
+          session
+            ? t('pt.editSession.subtitle', { version: session.sessionVersion + 1 })
+            : undefined
+        }
+      />
 
+      <div className="mx-auto max-w-lg space-y-4">
         {error && <Alert type="error" message={error} />}
 
         {isLoading ? (
           <p className="text-muted-foreground">{t('pt.common.loading')}</p>
         ) : session ? (
           <Card>
-            <CardHeader>
-              <CardTitle>{t('pt.editSession.title')}</CardTitle>
-              <CardDescription>
-                {t('pt.editSession.subtitle', { version: session.sessionVersion + 1 })}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div>
-                  <Label htmlFor="name">{t('pt.sessions.name')}</Label>
+                  <FormLabel htmlFor="name" required>
+                    {t('pt.sessions.name')}
+                  </FormLabel>
                   <Input id="name" {...register('name')} />
                   {errors.name && (
                     <p className="text-xs text-destructive">{errors.name.message}</p>
                   )}
                 </div>
                 <div>
-                  <Label>{t('pt.sessions.type')}</Label>
+                  <FormLabel required>{t('pt.sessions.type')}</FormLabel>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {(['strength', 'cardio', 'flexibility'] as const).map((type) => (
                       <label
@@ -124,11 +124,13 @@ export const EditSessionPage: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="scheduledDate">{t('pt.sessions.scheduledDate')}</Label>
+                  <FormLabel htmlFor="scheduledDate" required>
+                    {t('pt.sessions.scheduledDate')}
+                  </FormLabel>
                   <Input id="scheduledDate" type="date" {...register('scheduledDate')} />
                 </div>
                 <div>
-                  <Label htmlFor="duration">{t('pt.sessions.duration')}</Label>
+                  <FormLabel htmlFor="duration">{t('pt.sessions.duration')}</FormLabel>
                   <Input
                     id="duration"
                     type="number"
@@ -136,7 +138,7 @@ export const EditSessionPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="notes">{t('pt.sessions.notes')}</Label>
+                  <FormLabel htmlFor="notes">{t('pt.sessions.notes')}</FormLabel>
                   <Input id="notes" {...register('notes')} />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>

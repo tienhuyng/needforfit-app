@@ -22,6 +22,14 @@ export const traineeApi = {
     return res.data.data;
   },
 
+  respondToPtInvite: async (assignmentId: string, accept: boolean) => {
+    const res = await api.post<ApiSuccessResponse<{ status: string }>>(
+      `/trainee/invites/${assignmentId}/respond`,
+      { accept }
+    );
+    return res.data;
+  },
+
   getPrograms: async (): Promise<TraineeProgramItem[]> => {
     const res = await api.get<ApiSuccessResponse<TraineeProgramItem[]>>('/trainee/programs');
     return res.data.data;

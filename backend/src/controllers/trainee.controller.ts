@@ -6,6 +6,7 @@ import {
   LogMetricInput,
   LogWorkoutInput,
   MetricsHistoryQuery,
+  RespondPtInviteInput,
   WorkoutHistoryQuery,
 } from '../validators/trainee.validator';
 
@@ -17,6 +18,17 @@ function getTraineeId(req: Request): string {
 export const getHome = asyncHandler(async (req: Request, res: Response) => {
   const data = await traineeService.getHome(getTraineeId(req));
   res.json(buildSuccessResponse(data));
+});
+
+export const respondToPtInvite = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as RespondPtInviteInput;
+  const result = await traineeService.respondToPtInvite(
+    getTraineeId(req),
+    req.params.assignmentId,
+    input.accept,
+    req.language
+  );
+  res.json(buildSuccessResponse({ status: result.status }, result.message));
 });
 
 export const listPrograms = asyncHandler(async (req: Request, res: Response) => {

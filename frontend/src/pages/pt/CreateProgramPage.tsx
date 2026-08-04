@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { PTLayout } from '@/components/pt/PTLayout';
 import { Alert } from '@/components/common/Alert';
 import {
@@ -14,7 +15,7 @@ import {
   CardTitle,
   Input,
 } from '@/components/template';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { ptApi, getApiErrorMessage } from '@/services/pt.service';
 import { createProgramSchema, CreateProgramFormData } from '@/utils/pt-validation';
 import { cn } from '@/lib/utils';
@@ -51,15 +52,13 @@ export const CreateProgramPage: React.FC = () => {
 
   return (
     <PTLayout>
-      <div className="mx-auto max-w-2xl space-y-6">
-        <div>
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/pt/dashboard">{t('pt.common.back')}</Link>
-          </Button>
-          <h2 className="text-2xl font-bold tracking-tight">{t('pt.programs.createTitle')}</h2>
-          <p className="text-muted-foreground">{t('pt.programs.createSubtitle')}</p>
-        </div>
+      <PageStickyHeader
+        backTo="/pt/dashboard"
+        title={t('pt.programs.createTitle')}
+        subtitle={t('pt.programs.createSubtitle')}
+      />
 
+      <div className="mx-auto max-w-2xl space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>{t('pt.programs.createTitle')}</CardTitle>
@@ -71,6 +70,7 @@ export const CreateProgramPage: React.FC = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
               <Input
                 label={t('pt.programs.name')}
+                labelRequired
                 error={errors.name?.message}
                 {...register('name')}
               />
@@ -82,7 +82,9 @@ export const CreateProgramPage: React.FC = () => {
               />
 
               <div className="space-y-2">
-                <Label htmlFor="programType">{t('pt.programs.type')}</Label>
+                <FormLabel htmlFor="programType" required>
+                  {t('pt.programs.type')}
+                </FormLabel>
                 <select
                   id="programType"
                   className={cn(
@@ -112,7 +114,7 @@ export const CreateProgramPage: React.FC = () => {
               />
 
               <div className="space-y-2">
-                <Label htmlFor="notes">{t('pt.programs.notes')}</Label>
+                <FormLabel htmlFor="notes">{t('pt.programs.notes')}</FormLabel>
                 <textarea
                   id="notes"
                   rows={3}

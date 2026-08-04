@@ -6,6 +6,7 @@ import {
   logMetricSchema,
   logWorkoutSchema,
   metricsHistoryQuerySchema,
+  respondPtInviteSchema,
   workoutHistoryQuerySchema,
 } from '../validators/trainee.validator';
 
@@ -14,6 +15,11 @@ const router = Router();
 router.use(authenticate, requireRoles('trainee'));
 
 router.get('/home', traineeController.getHome);
+router.post(
+  '/invites/:assignmentId/respond',
+  validateBody(respondPtInviteSchema),
+  traineeController.respondToPtInvite
+);
 router.get('/programs', traineeController.listPrograms);
 router.get('/programs/:programId/sessions', traineeController.getProgramSessions);
 router.get('/programs/:programId/sessions/:sessionId', traineeController.getProgramSessionDetail);

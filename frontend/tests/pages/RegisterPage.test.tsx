@@ -31,18 +31,19 @@ describe('RegisterPage', () => {
   it('renders registration form fields', () => {
     renderRegister();
     expect(screen.getByRole('heading', { name: /đăng ký/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/^tên$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^họ$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/tên/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/họ/i)).toBeInTheDocument();
   });
 
   it('shows validation error for short password', async () => {
     const user = userEvent.setup();
     renderRegister();
 
-    await user.type(screen.getByLabelText(/^tên$/i), 'Test');
-    await user.type(screen.getByLabelText(/^họ$/i), 'User');
+    await user.type(screen.getByLabelText(/tên/i), 'Test');
+    await user.type(screen.getByLabelText(/họ/i), 'User');
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
-    await user.type(screen.getByLabelText(/^mật khẩu$/i), 'short');
+    await user.type(document.getElementById('password')!, 'short');
+    await user.type(document.getElementById('confirmPassword')!, 'short');
     await user.click(screen.getByRole('button', { name: /đăng ký/i }));
 
     expect(await screen.findByText(/ít nhất 8/i)).toBeInTheDocument();

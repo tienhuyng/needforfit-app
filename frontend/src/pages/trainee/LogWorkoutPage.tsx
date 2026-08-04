@@ -4,6 +4,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { Lock } from 'lucide-react';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
 import {
@@ -15,6 +17,7 @@ import {
   CardTitle,
   Input,
 } from '@/components/template';
+import { FormLabel } from '@/components/common/FormLabel';
 import { Label } from '@/components/ui/label';
 import { traineeApi, getApiErrorMessage } from '@/services/trainee.service';
 import { SessionDetailResponse } from '@/types/trainee';
@@ -105,11 +108,21 @@ export const LogWorkoutPage: React.FC = () => {
 
   return (
     <TraineeLayout title={t('trainee.log.title')} hideNav>
-      <div className="space-y-4">
-        <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link to="/trainee/home">{t('trainee.common.back')}</Link>
-        </Button>
+      <PageStickyHeader
+        back={
+          <BackButton
+            to="/trainee/home"
+            labelKey="trainee.common.back"
+            className="mb-0"
+          />
+        }
+        title={session?.sessionName ?? t('trainee.log.title')}
+        subtitle={
+          session ? `${session.programName} · ${session.scheduledDate}` : undefined
+        }
+      />
 
+      <div className="space-y-4">
         {error && <Alert type="error" message={error} />}
         {success && <Alert type="success" message={success} />}
 
@@ -117,13 +130,6 @@ export const LogWorkoutPage: React.FC = () => {
           <p className="text-muted-foreground">{t('trainee.common.loading')}</p>
         ) : session ? (
           <>
-            <div>
-              <h2 className="text-xl font-bold">{session.sessionName}</h2>
-              <p className="text-sm text-muted-foreground">
-                {session.programName} · {session.scheduledDate}
-              </p>
-            </div>
-
             {isLocked ? (
               <Card>
                 <CardContent className="flex items-center gap-3 py-6">
@@ -217,9 +223,9 @@ export const LogWorkoutPage: React.FC = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <Label htmlFor="difficulty">
+                      <FormLabel htmlFor="difficulty" required>
                         {t('trainee.log.difficulty')} ({t('trainee.log.ratingHint')})
-                      </Label>
+                      </FormLabel>
                       <Controller
                         name="feedback.difficultyRating"
                         control={control}
@@ -243,7 +249,9 @@ export const LogWorkoutPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="fatigue">{t('trainee.log.fatigue')}</Label>
+                      <FormLabel htmlFor="fatigue" required>
+                        {t('trainee.log.fatigue')}
+                      </FormLabel>
                       <Controller
                         name="feedback.fatigueRating"
                         control={control}
@@ -267,7 +275,7 @@ export const LogWorkoutPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <Label>{t('trainee.log.pain')}</Label>
+                      <FormLabel required>{t('trainee.log.pain')}</FormLabel>
                       <div className="mt-2 flex gap-4">
                         <label className="flex items-center gap-2 text-sm">
                           <input type="radio" value="yes" {...register('feedback.painOrDiscomfort')} />
@@ -286,7 +294,9 @@ export const LogWorkoutPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="q1">{t('trainee.log.templateQ1')}</Label>
+                      <FormLabel htmlFor="q1" required>
+                        {t('trainee.log.templateQ1')}
+                      </FormLabel>
                       <Input id="q1" {...register('feedback.templateResponses.q1')} />
                       {errors.feedback?.templateResponses?.q1 && (
                         <p className="text-xs text-destructive">
@@ -295,7 +305,9 @@ export const LogWorkoutPage: React.FC = () => {
                       )}
                     </div>
                     <div>
-                      <Label htmlFor="q2">{t('trainee.log.templateQ2')}</Label>
+                      <FormLabel htmlFor="q2" required>
+                        {t('trainee.log.templateQ2')}
+                      </FormLabel>
                       <Input id="q2" {...register('feedback.templateResponses.q2')} />
                       {errors.feedback?.templateResponses?.q2 && (
                         <p className="text-xs text-destructive">
@@ -304,7 +316,9 @@ export const LogWorkoutPage: React.FC = () => {
                       )}
                     </div>
                     <div>
-                      <Label htmlFor="q3">{t('trainee.log.templateQ3')}</Label>
+                      <FormLabel htmlFor="q3" required>
+                        {t('trainee.log.templateQ3')}
+                      </FormLabel>
                       <Input id="q3" {...register('feedback.templateResponses.q3')} />
                       {errors.feedback?.templateResponses?.q3 && (
                         <p className="text-xs text-destructive">
@@ -314,7 +328,7 @@ export const LogWorkoutPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="notes">{t('trainee.log.notes')}</Label>
+                      <FormLabel htmlFor="notes">{t('trainee.log.notes')}</FormLabel>
                       <Input id="notes" {...register('feedback.traineeNotes')} />
                     </div>
                   </CardContent>

@@ -8,6 +8,7 @@ import {
   createProgramSchema,
   createSessionSchema,
   traineeListQuerySchema,
+  inviteTraineeSchema,
   updateProgramSchema,
   updateSessionSchema,
 } from '../validators/pt.validator';
@@ -18,6 +19,9 @@ router.use(authenticate, requireRoles('pt', 'admin'));
 
 router.get('/dashboard', ptController.getDashboard);
 router.get('/trainees', validateQuery(traineeListQuerySchema), ptController.listTrainees);
+router.post('/trainees/invite', validateBody(inviteTraineeSchema), ptController.inviteTrainee);
+router.post('/trainees/assignments/:assignmentId/resend-invite', ptController.resendInvite);
+router.delete('/trainees/assignments/:assignmentId', ptController.cancelInvite);
 router.get('/trainees/:id', ptController.getTraineeDetail);
 
 router.get('/programs', ptController.listPrograms);
@@ -34,6 +38,7 @@ router.put(
   validateBody(updateSessionSchema),
   ptController.updateSession
 );
+router.delete('/programs/:id/sessions/:sessionId', ptController.deleteSession);
 router.post(
   '/programs/:id/sessions/:sessionId/exercises',
   validateBody(addExercisesSchema),

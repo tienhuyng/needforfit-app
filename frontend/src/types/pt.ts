@@ -7,7 +7,12 @@ export type TraineeGoal =
   | 'increase_strength'
   | 'improve_posture';
 
-export type AssignmentStatus = 'active' | 'paused' | 'ended';
+export type AssignmentStatus =
+  | 'active'
+  | 'paused'
+  | 'ended'
+  | 'invite_pending'
+  | 'invite_rejected';
 
 export type ProgramType = 'strength' | 'cardio' | 'flexibility' | 'mixed';
 
@@ -64,6 +69,7 @@ export interface TraineeListQuery {
 }
 
 export interface TraineeListItem {
+  assignmentId: string;
   id: string;
   firstName: string | null;
   lastName: string | null;
@@ -215,7 +221,7 @@ export interface CreateSessionInput {
 
 export interface WorkoutSessionExercise {
   id: string;
-  sessionId: string;
+  sessionId?: string;
   exerciseName: string;
   plannedSets: number | null;
   plannedReps: number | null;
@@ -223,9 +229,11 @@ export interface WorkoutSessionExercise {
   restSeconds: number | null;
   notes: string | null;
   orderIndex: number;
-  sessionVersion: number;
-  createdAt: string;
-  updatedAt: string;
+  blockIndex?: number;
+  blockType?: 'normal' | 'superset' | 'dropset';
+  sessionVersion?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ExerciseItemInput {
@@ -237,8 +245,14 @@ export interface ExerciseItemInput {
   notes?: string;
 }
 
-export interface AddExercisesInput {
+export interface ExerciseBlockInput {
+  blockType: 'normal' | 'superset' | 'dropset';
   exercises: ExerciseItemInput[];
+}
+
+export interface AddExercisesInput {
+  exercises?: ExerciseItemInput[];
+  blocks?: ExerciseBlockInput[];
 }
 
 export interface AddExercisesResponse {

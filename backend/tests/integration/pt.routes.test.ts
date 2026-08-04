@@ -31,6 +31,7 @@ describe('PT Routes', () => {
       prismaMock.ptTraineeAssignment.findMany.mockResolvedValue([]);
       prismaMock.workoutLog.findMany.mockResolvedValue([]);
       prismaMock.trainingProgram.findMany.mockResolvedValue([]);
+      prismaMock.userNotification.findMany.mockResolvedValue([]);
 
       const res = await request(app)
         .get('/api/pt/dashboard')

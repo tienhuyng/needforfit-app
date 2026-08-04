@@ -4,6 +4,15 @@ export interface TraineeHomeResponse {
   recentHistory: WorkoutHistorySummary[];
   weightTrend: WeightTrendPoint[];
   activePrograms: ActiveProgramItem[];
+  ptInvites: TraineePtInviteItem[];
+}
+
+export interface TraineePtInviteItem {
+  assignmentId: string;
+  ptId: string;
+  ptName: string;
+  ptEmail: string;
+  invitedAt: string;
 }
 
 export interface TodayWorkoutWidget {

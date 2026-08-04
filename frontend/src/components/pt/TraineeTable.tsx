@@ -10,9 +10,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/template';
 import { AssignmentStatus, TraineeGoal, TraineeListItem } from '@/types/pt';
 
 export interface TraineeTableRow {
+  assignmentId?: string;
   id: string;
   firstName: string | null;
   lastName: string | null;
@@ -27,15 +29,20 @@ interface TraineeTableProps {
   trainees: TraineeTableRow[];
   showPrograms?: boolean;
   emptyMessage?: string;
+  onResendInvite?: (assignmentId: string) => Promise<void>;
+  onCancelInvite?: (assignmentId: string) => Promise<void>;
 }
 
 function formatName(firstName: string | null, lastName: string | null): string {
   return [firstName, lastName].filter(Boolean).join(' ') || '—';
 }
 
-function statusVariant(status: AssignmentStatus): 'success' | 'warning' | 'secondary' {
+function statusVariant(
+  status: AssignmentStatus
+): 'success' | 'warning' | 'secondary' | 'default' {
   if (status === 'active') return 'success';
   if (status === 'paused') return 'warning';
+  if (status === 'invite_pending') return 'default';
   return 'secondary';
 }
 
@@ -43,8 +50,11 @@ export const TraineeTable: React.FC<TraineeTableProps> = ({
   trainees,
   showPrograms = false,
   emptyMessage,
+  onResendInvite,
+  onCancelInvite,
 }) => {
   const { t } = useTranslation();
+  const showActions = Boolean(onResendInvite || onCancelInvite);
 
   if (trainees.length === 0) {
     return (
@@ -69,11 +79,12 @@ export const TraineeTable: React.FC<TraineeTableProps> = ({
               </TableHead>
             )}
             <TableHead>{t('pt.trainees.columns.status')}</TableHead>
+            {showActions && <TableHead>{t('pt.trainees.columns.actions')}</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
           {trainees.map((trainee) => (
-            <TableRow key={trainee.id}>
+            <TableRow key={trainee.assignmentId ?? trainee.id}>
               <TableCell>
                 <Link
                   to={`/pt/trainees/${trainee.id}`}
@@ -86,9 +97,7 @@ export const TraineeTable: React.FC<TraineeTableProps> = ({
                 </span>
               </TableCell>
               <TableCell className="hidden sm:table-cell">{trainee.email}</TableCell>
-              <TableCell className="hidden md:table-cell">
-                {trainee.age ?? '—'}
-              </TableCell>
+              <TableCell className="hidden md:table-cell">{trainee.age ?? '—'}</TableCell>
               <TableCell className="hidden lg:table-cell">
                 {trainee.goal ? t(`pt.goals.${trainee.goal}`) : '—'}
               </TableCell>
@@ -102,6 +111,42 @@ export const TraineeTable: React.FC<TraineeTableProps> = ({
                   {t(`pt.statuses.${trainee.status}`)}
                 </Badge>
               </TableCell>
+              {showActions && (
+                <TableCell>
+                  {trainee.status === 'invite_rejected' && trainee.assignmentId && onResendInvite && (
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => void onResendInvite(trainee.assignmentId!)}
+                      >
+                        {t('pt.invite.resend')}
+                      </Button>
+                      {onCancelInvite && (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => void onCancelInvite(trainee.assignmentId!)}
+                        >
+                          {t('pt.invite.cancel')}
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  {trainee.status === 'invite_pending' && trainee.assignmentId && onCancelInvite && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => void onCancelInvite(trainee.assignmentId!)}
+                    >
+                      {t('pt.invite.cancel')}
+                    </Button>
+                  )}
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

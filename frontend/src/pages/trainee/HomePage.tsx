@@ -21,21 +21,36 @@ export const HomePage: React.FC = () => {
   const [data, setData] = useState<TraineeHomeResponse | null>(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [inviteActionId, setInviteActionId] = useState<string | null>(null);
+
+  const loadHome = async () => {
+    setError('');
+    setIsLoading(true);
+    try {
+      setData(await traineeApi.getHome());
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'trainee.errors.loadFailed'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const load = async () => {
-      setError('');
-      setIsLoading(true);
-      try {
-        setData(await traineeApi.getHome());
-      } catch (err) {
-        setError(getApiErrorMessage(err, 'trainee.errors.loadFailed'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    void load();
+    void loadHome();
   }, []);
+
+  const handleInviteResponse = async (assignmentId: string, accept: boolean) => {
+    setInviteActionId(assignmentId);
+    setError('');
+    try {
+      await traineeApi.respondToPtInvite(assignmentId, accept);
+      await loadHome();
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'trainee.errors.loadFailed'));
+    } finally {
+      setInviteActionId(null);
+    }
+  };
 
   return (
     <TraineeLayout title={t('trainee.home.title')}>
@@ -46,6 +61,45 @@ export const HomePage: React.FC = () => {
           <p className="text-muted-foreground">{t('trainee.common.loading')}</p>
         ) : data ? (
           <>
+            {((data.ptInvites ?? []).length > 0) && (
+              <Card className="border-amber-200 bg-amber-50/80">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">{t('trainee.home.invitesTitle')}</CardTitle>
+                  <CardDescription>{t('trainee.home.invitesDesc')}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {(data.ptInvites ?? []).map((invite) => (
+                    <div
+                      key={invite.assignmentId}
+                      className="flex flex-col gap-3 rounded-md border bg-card p-3 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="font-semibold">{invite.ptName}</p>
+                        <p className="text-sm text-muted-foreground">{invite.ptEmail}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          disabled={inviteActionId === invite.assignmentId}
+                          onClick={() => void handleInviteResponse(invite.assignmentId, true)}
+                        >
+                          {t('trainee.home.acceptInvite')}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={inviteActionId === invite.assignmentId}
+                          onClick={() => void handleInviteResponse(invite.assignmentId, false)}
+                        >
+                          {t('trainee.home.declineInvite')}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+
             <Card className="border-primary/30 bg-primary/5">
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">{t('trainee.home.todayWorkout')}</CardTitle>

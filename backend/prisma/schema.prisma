@@ -37,9 +37,17 @@ enum TraineeGoal {
 }
 
 enum AssignmentStatus {
+  invite_pending
+  invite_rejected
   active
   paused
   ended
+}
+
+enum ExerciseBlockType {
+  normal
+  superset
+  dropset
 }
 
 enum ProgramType {
@@ -103,8 +111,25 @@ model User {
   workoutLogsAsTrainee WorkoutLog[]        @relation("TraineeLogs")
   workoutLogsAsPt      WorkoutLog[]        @relation("PtLogs")
   bodyMeasurements   BodyMeasurementLog[]
+  notifications      UserNotification[]
 
   @@map("users")
+}
+
+model UserNotification {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  type      String
+  title     String
+  body      String
+  readAt    DateTime? @map("read_at")
+  payload   Json?
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("user_notifications")
 }
 
 model PasswordResetToken {
@@ -236,8 +261,10 @@ model WorkoutSessionExercise {
   plannedWeightKg Decimal? @map("planned_weight_kg") @db.Decimal(6, 2)
   restSeconds     Int?     @map("rest_seconds")
   notes           String?
-  orderIndex      Int      @default(0) @map("order_index")
-  sessionVersion  Int      @default(1) @map("session_version")
+  orderIndex      Int               @default(0) @map("order_index")
+  blockIndex      Int               @default(0) @map("block_index")
+  blockType       ExerciseBlockType @default(normal) @map("block_type")
+  sessionVersion  Int               @default(1) @map("session_version")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 

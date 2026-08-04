@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { PTLayout } from '@/components/pt/PTLayout';
 import { Alert } from '@/components/common/Alert';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +15,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -54,23 +54,22 @@ export const TraineeDetailPage: React.FC = () => {
 
   return (
     <PTLayout>
-      <div className="space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/pt/trainees">{t('pt.trainees.backToList')}</Link>
-            </Button>
-            <h2 className="text-2xl font-bold tracking-tight">
-              {trainee ? formatName(trainee.firstName, trainee.lastName) : t('pt.trainees.detail')}
-            </h2>
-          </div>
-          {trainee && (
+      <PageStickyHeader
+        backTo="/pt/trainees"
+        backLabelKey="pt.trainees.backToList"
+        title={
+          trainee ? formatName(trainee.firstName, trainee.lastName) : t('pt.trainees.detail')
+        }
+        trailing={
+          trainee ? (
             <Badge variant={trainee.assignmentStatus === 'active' ? 'success' : 'secondary'}>
               {t(`pt.statuses.${trainee.assignmentStatus}`)}
             </Badge>
-          )}
-        </div>
+          ) : undefined
+        }
+      />
 
+      <div className="space-y-6">
         {error && <Alert type="error" message={error} />}
 
         {isLoading ? (

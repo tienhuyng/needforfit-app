@@ -2,22 +2,23 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input as ShadcnInput } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { InputProps } from '@/components/template/Input';
 import { cn } from '@/lib/utils';
 
 export const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, helperText, className = '', id, name, ...props }, ref) => {
+  ({ label, error, helperText, labelRequired, className = '', id, name, required, ...props }, ref) => {
     const { t } = useTranslation();
     const [visible, setVisible] = useState(false);
     const inputId = id ?? name;
+    const showRequired = labelRequired ?? required;
 
     return (
       <div className="space-y-2">
         {label && (
-          <Label htmlFor={inputId} className="text-sm font-semibold">
+          <FormLabel htmlFor={inputId} required={showRequired}>
             {label}
-          </Label>
+          </FormLabel>
         )}
 
         <div className="relative">
@@ -26,6 +27,8 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             name={name}
             type={visible ? 'text' : 'password'}
+            required={required}
+            aria-required={showRequired ? true : undefined}
             aria-invalid={error ? 'true' : undefined}
             aria-describedby={error ? `${inputId}-error` : undefined}
             className={cn(

@@ -51,6 +51,10 @@ jest.mock('../src/config/database', () => ({
     bodyMeasurementLog: {
       findMany: jest.fn(),
     },
+    userNotification: {
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
     $transaction: jest.fn(),
   },
   disconnectDatabase: jest.fn(),

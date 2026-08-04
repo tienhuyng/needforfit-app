@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { Trash2 } from 'lucide-react';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { PTLayout } from '@/components/pt/PTLayout';
 import { AssignProgramModal } from '@/components/pt/AssignProgramModal';
 import { Alert } from '@/components/common/Alert';
@@ -14,7 +16,7 @@ import {
   CardTitle,
   Input,
 } from '@/components/template';
-import { Label } from '@/components/ui/label';
+import { FormLabel } from '@/components/common/FormLabel';
 import { Badge } from '@/components/ui/badge';
 import { ptApi, getApiErrorMessage } from '@/services/pt.service';
 import { ProgramDetailResponse } from '@/types/pt';
@@ -77,13 +79,50 @@ export const ProgramDetailPage: React.FC = () => {
     }
   };
 
+  const handleDeleteWorkout = async (sessionId: string, sessionName: string) => {
+    if (!programId) return;
+    if (!window.confirm(t('pt.programDetail.deleteWorkoutConfirm', { name: sessionName }))) return;
+    setError('');
+    try {
+      await ptApi.deleteSession(programId, sessionId);
+      setSuccess(t('pt.messages.workoutDeleted'));
+      await load();
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'pt.errors.createFailed'));
+    }
+  };
+
   return (
     <PTLayout>
-      <div className="space-y-6">
-        <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link to="/pt/programs">{t('pt.common.back')}</Link>
-        </Button>
+      <PageStickyHeader
+        backTo="/pt/programs"
+        title={
+          program ? (
+            <>
+              {program.name}
+              <Badge className="ml-2 align-middle" variant="secondary">
+                {t(`pt.programStatuses.${program.status}`)}
+              </Badge>
+            </>
+          ) : (
+            t('pt.programList.title')
+          )
+        }
+        actions={
+          program ? (
+            <>
+              <Button onClick={() => setAssignOpen(true)}>{t('pt.assign.open')}</Button>
+              <Button asChild variant="secondary">
+                <Link to={`/pt/programs/${programId}/sessions/new`}>
+                  {t('pt.programDetail.addSession')}
+                </Link>
+              </Button>
+            </>
+          ) : undefined
+        }
+      />
 
+      <div className="space-y-6">
         {error && <Alert type="error" message={error} />}
         {success && <Alert type="success" message={success} />}
 
@@ -91,23 +130,6 @@ export const ProgramDetailPage: React.FC = () => {
           <p className="text-muted-foreground">{t('pt.common.loading')}</p>
         ) : program ? (
           <>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">{program.name}</h2>
-                <Badge className="mt-2" variant="secondary">
-                  {t(`pt.programStatuses.${program.status}`)}
-                </Badge>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={() => setAssignOpen(true)}>{t('pt.assign.open')}</Button>
-                <Button asChild variant="secondary">
-                  <Link to={`/pt/programs/${programId}/sessions/new`}>
-                    {t('pt.programDetail.addSession')}
-                  </Link>
-                </Button>
-              </div>
-            </div>
-
             <Card>
               <CardHeader>
                 <CardTitle>{t('pt.programDetail.edit')}</CardTitle>
@@ -115,15 +137,19 @@ export const ProgramDetailPage: React.FC = () => {
               <CardContent>
                 <form onSubmit={handleSubmit(onSave)} className="grid gap-4 sm:grid-cols-2">
                   <div className="sm:col-span-2">
-                    <Label htmlFor="name">{t('pt.programs.name')}</Label>
+                    <FormLabel htmlFor="name" required>
+                      {t('pt.programs.name')}
+                    </FormLabel>
                     <Input id="name" {...register('name')} />
                   </div>
                   <div className="sm:col-span-2">
-                    <Label htmlFor="objective">{t('pt.programs.objective')}</Label>
+                    <FormLabel htmlFor="objective">{t('pt.programs.objective')}</FormLabel>
                     <Input id="objective" {...register('objective')} />
                   </div>
                   <div>
-                    <Label htmlFor="programType">{t('pt.programs.type')}</Label>
+                    <FormLabel htmlFor="programType" required>
+                      {t('pt.programs.type')}
+                    </FormLabel>
                     <select
                       id="programType"
                       className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -137,11 +163,11 @@ export const ProgramDetailPage: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <Label htmlFor="durationWeeks">{t('pt.programs.durationWeeks')}</Label>
+                    <FormLabel htmlFor="durationWeeks">{t('pt.programs.durationWeeks')}</FormLabel>
                     <Input id="durationWeeks" type="number" {...register('durationWeeks')} />
                   </div>
                   <div className="sm:col-span-2">
-                    <Label htmlFor="notes">{t('pt.programs.notes')}</Label>
+                    <FormLabel htmlFor="notes">{t('pt.programs.notes')}</FormLabel>
                     <Input id="notes" {...register('notes')} />
                   </div>
                   <Button type="submit" disabled={isSubmitting}>
@@ -170,7 +196,7 @@ export const ProgramDetailPage: React.FC = () => {
                           {s.scheduledDate} · {s.exerciseCount} {t('pt.programDetail.exercises')}
                         </p>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <Button asChild variant="secondary" size="sm">
                           <Link to={`/pt/programs/${programId}/sessions/${s.id}/edit`}>
                             {t('pt.programDetail.editSession')}
@@ -180,6 +206,15 @@ export const ProgramDetailPage: React.FC = () => {
                           <Link to={`/pt/programs/${programId}/sessions/${s.id}/exercises`}>
                             {t('pt.programDetail.addExercises')}
                           </Link>
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="danger"
+                          aria-label={t('pt.programDetail.deleteWorkout')}
+                          onClick={() => void handleDeleteWorkout(s.id, s.name)}
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>

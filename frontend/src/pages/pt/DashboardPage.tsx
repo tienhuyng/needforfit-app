@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Users, Dumbbell, CalendarCheck } from 'lucide-react';
 import { PTLayout } from '@/components/pt/PTLayout';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { StatCard } from '@/components/pt/StatCard';
 import { TraineeTable } from '@/components/pt/TraineeTable';
 import { Alert } from '@/components/common/Alert';
@@ -45,12 +46,12 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <PTLayout>
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">{t('pt.dashboard.title')}</h2>
-          <p className="text-muted-foreground">{t('pt.dashboard.subtitle')}</p>
-        </div>
+      <PageStickyHeader
+        title={t('pt.dashboard.title')}
+        subtitle={t('pt.dashboard.subtitle')}
+      />
 
+      <div className="space-y-6">
         {error && <Alert type="error" message={error} />}
 
         {isLoading ? (
@@ -62,11 +63,13 @@ export const DashboardPage: React.FC = () => {
                 title={t('pt.dashboard.kpi.trainees')}
                 value={data.kpis.trainees}
                 icon={Users}
+                href="/pt/trainees"
               />
               <StatCard
                 title={t('pt.dashboard.kpi.programs')}
                 value={data.kpis.programs}
                 icon={Dumbbell}
+                href="/pt/programs"
               />
               <StatCard
                 title={t('pt.dashboard.kpi.workoutsThisWeek')}
