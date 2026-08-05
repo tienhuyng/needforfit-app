@@ -23,6 +23,7 @@ import {
   WorkoutHistoryQuery,
 } from '../validators/trainee.validator';
 import { getCurrentVersionExercises } from '../utils/session-exercises';
+import { parseSetDetails, totalVolumeKg } from '../utils/workout-volume';
 import { createUserNotification, formatUserName } from '../utils/user-notifications';
 import {
   ActiveProgramItem,
@@ -164,8 +165,9 @@ export class TraineeService {
       prisma.workoutLog.findMany({
         where: { traineeId },
         include: {
-          session: { include: { program: true, exercises: true } },
+          session: { include: { program: true } },
           feedback: true,
+          exercises: true,
         },
         orderBy: { workoutDate: 'desc' },
         take: 5,
@@ -210,15 +212,9 @@ export class TraineeService {
         exerciseCount: s.exercises.length,
       }));
 
-    const recentHistory: WorkoutHistorySummary[] = recentLogs.map((log) => ({
-      id: log.id,
-      workoutDate: formatDate(log.workoutDate),
-      programName: log.session.program.name,
-      sessionName: log.session.name,
-      exerciseCount: log.session.exercises.length,
-      difficultyRating: log.feedback?.difficultyRating ?? null,
-      status: log.status,
-    }));
+    const recentHistory: WorkoutHistorySummary[] = recentLogs.map((log) =>
+      this.mapWorkoutHistorySummary(log)
+    );
 
     const weightTrend: WeightTrendPoint[] = weightLogs
       .slice()
@@ -308,6 +304,55 @@ export class TraineeService {
     return {
       status: AssignmentStatus.invite_rejected,
       message: t(TRAINEE_I18N_KEYS.inviteRejected, lng),
+    };
+  }
+
+  private mapWorkoutHistorySummary(
+    log: Prisma.WorkoutLogGetPayload<{
+      include: { session: { include: { program: true } }; feedback: true; exercises: true };
+    }>
+  ): WorkoutHistorySummary {
+    const templateResponses = log.feedback?.templateResponses as { q1?: string } | null;
+    return {
+      id: log.id,
+      workoutDate: formatDate(log.workoutDate),
+      programName: log.session.program.name,
+      sessionName: log.session.name,
+      exerciseCount: log.exercises.length,
+      feedbackSummary: templateResponses?.q1?.trim() ? templateResponses.q1 : null,
+      difficultyRating: log.feedback?.difficultyRating ?? null,
+      status: log.status,
+    };
+  }
+
+  private normalizeLoggedExercise(e: LogWorkoutInput['exercises'][number]) {
+    const setEntries = e.setEntries ?? [];
+    const setDetails =
+      setEntries.length > 0
+        ? setEntries.map((s) => ({
+            reps: s.reps,
+            weightKg: s.weightKg,
+          }))
+        : undefined;
+    const actualSets = setEntries.length > 0 ? setEntries.length : e.actualSets;
+    const repsWithValues = setEntries.filter((s) => s.reps != null).map((s) => s.reps!);
+    const actualReps =
+      repsWithValues.length > 0
+        ? Math.round(repsWithValues.reduce((a, b) => a + b, 0) / repsWithValues.length)
+        : e.actualReps;
+    const weights = setEntries.filter((s) => s.weightKg != null).map((s) => s.weightKg!);
+    const actualWeightKg =
+      weights.length > 0
+        ? Math.round((weights.reduce((a, b) => a + b, 0) / weights.length) * 10) / 10
+        : e.actualWeightKg;
+
+    return {
+      exerciseName: e.exerciseName,
+      actualSets,
+      actualReps,
+      actualWeightKg,
+      setDetails,
+      notes: e.notes,
     };
   }
 
@@ -411,13 +456,17 @@ export class TraineeService {
         workoutDate: session.scheduledDate,
         status: WorkoutLogStatus.completed,
         exercises: {
-          create: input.exercises.map((e) => ({
-            exerciseName: e.exerciseName,
-            actualSets: e.actualSets,
-            actualReps: e.actualReps,
-            actualWeightKg: e.actualWeightKg,
-            notes: e.notes,
-          })),
+          create: input.exercises.map((e) => {
+            const normalized = this.normalizeLoggedExercise(e);
+            return {
+              exerciseName: normalized.exerciseName,
+              actualSets: normalized.actualSets,
+              actualReps: normalized.actualReps,
+              actualWeightKg: normalized.actualWeightKg,
+              setDetails: normalized.setDetails,
+              notes: normalized.notes,
+            };
+          }),
         },
         feedback: {
           create: {
@@ -460,8 +509,9 @@ export class TraineeService {
       prisma.workoutLog.findMany({
         where,
         include: {
-          session: { include: { program: true, exercises: true } },
+          session: { include: { program: true } },
           feedback: true,
+          exercises: true,
         },
         orderBy: { workoutDate: 'desc' },
         skip,
@@ -470,15 +520,7 @@ export class TraineeService {
     ]);
 
     return {
-      items: logs.map((log) => ({
-        id: log.id,
-        workoutDate: formatDate(log.workoutDate),
-        programName: log.session.program.name,
-        sessionName: log.session.name,
-        exerciseCount: log.session.exercises.length,
-        difficultyRating: log.feedback?.difficultyRating ?? null,
-        status: log.status,
-      })),
+      items: logs.map((log) => this.mapWorkoutHistorySummary(log)),
       total,
       page: query.page,
       limit: query.limit,
@@ -506,6 +548,15 @@ export class TraineeService {
       | { q1: string; q2: string; q3: string }
       | null;
 
+    const exercises = log.exercises.map((e) => ({
+      exerciseName: e.exerciseName,
+      actualSets: e.actualSets,
+      actualReps: e.actualReps,
+      actualWeightKg: decimalToNumber(e.actualWeightKg),
+      setDetails: parseSetDetails(e.setDetails),
+      notes: e.notes,
+    }));
+
     return {
       id: log.id,
       workoutDate: formatDate(log.workoutDate),
@@ -514,13 +565,8 @@ export class TraineeService {
       programName: log.session.program.name,
       sessionName: log.session.name,
       scheduledDate: formatDate(log.session.scheduledDate),
-      exercises: log.exercises.map((e) => ({
-        exerciseName: e.exerciseName,
-        actualSets: e.actualSets,
-        actualReps: e.actualReps,
-        actualWeightKg: decimalToNumber(e.actualWeightKg),
-        notes: e.notes,
-      })),
+      totalVolumeKg: totalVolumeKg(exercises),
+      exercises,
       feedback: log.feedback
         ? {
             difficultyRating: log.feedback.difficultyRating,

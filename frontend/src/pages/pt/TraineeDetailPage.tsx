@@ -182,7 +182,9 @@ export const TraineeDetailPage: React.FC = () => {
                             <TableHead>{t('pt.history.session')}</TableHead>
                             <TableHead>{t('pt.history.program')}</TableHead>
                             <TableHead>{t('pt.history.date')}</TableHead>
-                            <TableHead>{t('pt.history.completion')}</TableHead>
+                            <TableHead title={t('pt.history.completionHint')}>
+                              {t('pt.history.completion')}
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>

@@ -201,8 +201,14 @@ export const HomePage: React.FC = () => {
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-base">{t('trainee.home.weightTrend')}</CardTitle>
+                <Link
+                  to="/trainee/metrics"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  {t('trainee.home.openMetrics')}
+                </Link>
               </CardHeader>
               <CardContent>
                 <LineChart

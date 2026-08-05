@@ -52,6 +52,14 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
+const traineeGoalSchema = z.enum([
+  'lose_weight',
+  'gain_muscle',
+  'improve_health',
+  'increase_strength',
+  'improve_posture',
+]);
+
 export const updateProfileSchema = z.object({
   firstName: z
     .string({ required_error: AUTH_I18N_KEYS.firstNameRequired })
@@ -63,6 +71,11 @@ export const updateProfileSchema = z.object({
     .optional(),
   phone: z.string().optional(),
   preferredLanguage: z.enum(['vi', 'en', 'zh', 'ja', 'es']).optional(),
+  dateOfBirth: z.string().optional(),
+  heightCm: z.coerce.number().positive().optional(),
+  currentWeightKg: z.coerce.number().positive().optional(),
+  goal: traineeGoalSchema.optional().or(z.literal('')),
+  injuryHistory: z.string().optional(),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

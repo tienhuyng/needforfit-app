@@ -1,6 +1,7 @@
 {
   "common": {
-    "back": "Back"
+    "back": "Back",
+    "loading": "Loading..."
   },
   "auth": {
     "common": {
@@ -70,13 +71,23 @@
       "registerFailed": "Registration failed. Please try again.",
       "forgotFailed": "Could not send reset link. Please try again.",
       "resetFailed": "Password reset failed. Please try again.",
-      "generic": "An error occurred. Please try again."
+      "generic": "An error occurred. Please try again.",
+      "positiveNumber": "Must be a positive number.",
+      "dateOfBirthFuture": "Date of birth cannot be in the future."
     },
     "profile": {
       "title": "Profile Settings",
       "subtitle": "Update your personal information and language preference.",
       "phone": "Phone",
       "language": "Language",
+      "traineeSectionTitle": "Fitness profile",
+      "traineeSectionDesc": "Your PT sees this information on your trainee profile.",
+      "dateOfBirth": "Date of birth",
+      "height": "Height (cm)",
+      "weight": "Current weight (kg)",
+      "goal": "Training goal",
+      "goalUnset": "Not set",
+      "injuryHistory": "Injury history / limitations",
       "submit": "Save changes",
       "submitting": "Saving...",
       "success": "Profile updated successfully.",
@@ -162,7 +173,7 @@
     "tabs": {
       "profile": "Profile",
       "programs": "Programs",
-      "history": "History",
+      "history": "Workout History",
       "metrics": "Metrics"
     },
     "programs": {
@@ -221,7 +232,8 @@
       "session": "Workout",
       "program": "Program",
       "date": "Date",
-      "completion": "Completion"
+      "completion": "Completion",
+      "completionHint": "Logged exercises ÷ planned exercises (current workout version), rounded to %."
     },
     "metrics": {
       "empty": "No body metrics recorded.",
@@ -333,7 +345,7 @@
     "nav": {
       "home": "Home",
       "programs": "Programs",
-      "history": "History",
+      "history": "Workout History",
       "metrics": "Metrics"
     },
     "layout": {
@@ -347,7 +359,7 @@
     "home": {
       "title": "Home",
       "todayWorkout": "Today's Workout",
-      "todayWorkoutDesc": "Log your workout while the 24-hour window is open.",
+      "todayWorkoutDesc": "Log your workout on the scheduled day or the day after.",
       "invitesTitle": "PT invitations",
       "invitesDesc": "Accept to connect with your coach.",
       "acceptInvite": "Accept",
@@ -361,6 +373,7 @@
       "recentHistory": "Recent History",
       "viewAll": "View all",
       "weightTrend": "Weight Trend",
+      "openMetrics": "Body metrics",
       "activePrograms": "Active Programs",
       "noPrograms": "No active programs assigned.",
       "exercises": "exercises",
@@ -386,7 +399,10 @@
       "exercisesDesc": "Compare planned vs actual performance.",
       "planned": "Planned",
       "sets": "Sets",
+      "set": "Set",
       "reps": "Reps",
+      "addSet": "Add set",
+      "removeSet": "Remove set",
       "actualSets": "Actual sets",
       "actualReps": "Actual reps",
       "actualWeight": "Weight (kg)",
@@ -406,7 +422,7 @@
       "submit": "Submit Workout Log",
       "submitting": "Submitting...",
       "lockedTitle": "Workout locked",
-      "lockedDesc": "This session can no longer be logged (24-hour window expired)."
+      "lockedDesc": "This session can no longer be logged (logging window expired)."
     },
     "history": {
       "title": "Workout History",
@@ -425,6 +441,9 @@
     "detail": {
       "title": "Workout Detail",
       "exercises": "Exercises",
+      "totalVolume": "Total volume",
+      "exerciseVolume": "Volume",
+      "noSetData": "No set details recorded.",
       "feedback": "Feedback",
       "locked": "This log is locked and read-only."
     },
@@ -463,7 +482,8 @@
       "templateRequired": "This field is required.",
       "weightRequired": "Weight is required.",
       "positiveNumber": "Must be a positive number.",
-      "dateRequired": "Date is required."
+      "dateRequired": "Date is required.",
+      "setRequired": "Add at least one set per exercise."
     }
   }
 }

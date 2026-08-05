@@ -34,4 +34,5 @@ export const AUTH_I18N_KEYS = {
   forgotPasswordSuccess: 'auth.messages.forgotPasswordSuccess',
   resetPasswordSuccess: 'auth.messages.resetPasswordSuccess',
   profileUpdated: 'auth.messages.profileUpdated',
+  dateOfBirthFuture: 'auth.errors.dateOfBirthFuture',
 } as const;

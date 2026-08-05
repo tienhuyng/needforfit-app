@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Lock } from 'lucide-react';
+import { Lock, Plus, Trash2 } from 'lucide-react';
 import { PageStickyHeader } from '@/components/common/PageStickyHeader';
 import { BackButton } from '@/components/common/BackButton';
+import { RatingScale } from '@/components/common/RatingScale';
 import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
 import {
@@ -18,14 +19,98 @@ import {
   Input,
 } from '@/components/template';
 import { FormLabel } from '@/components/common/FormLabel';
-import { Label } from '@/components/ui/label';
 import { traineeApi, getApiErrorMessage } from '@/services/trainee.service';
-import { SessionDetailResponse } from '@/types/trainee';
+import { SessionDetailResponse, SessionExerciseItem } from '@/types/trainee';
 import {
   createLogWorkoutSchema,
   LogWorkoutFormData,
   toLogWorkoutPayload,
 } from '@/utils/trainee-validation';
+
+function buildSetEntries(ex: SessionExerciseItem) {
+  const count = Math.max(1, ex.plannedSets ?? 1);
+  return Array.from({ length: count }, () => ({
+    reps: ex.plannedReps ?? undefined,
+    weightKg: ex.plannedWeightKg ?? undefined,
+  }));
+}
+
+type ExerciseSetFieldsProps = {
+  exerciseIndex: number;
+  plannedWeightKg: number | null;
+  register: ReturnType<typeof useForm<LogWorkoutFormData>>['register'];
+  control: ReturnType<typeof useForm<LogWorkoutFormData>>['control'];
+};
+
+const ExerciseSetFields: React.FC<ExerciseSetFieldsProps> = ({
+  exerciseIndex,
+  plannedWeightKg,
+  register,
+  control,
+}) => {
+  const { t } = useTranslation();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: `exercises.${exerciseIndex}.setEntries`,
+  });
+
+  return (
+    <div className="space-y-2">
+      <div className="grid grid-cols-[auto_1fr_1fr_auto] gap-2 text-xs font-medium text-muted-foreground">
+        <span className="w-8">{t('trainee.log.set')}</span>
+        <span>{t('trainee.log.reps')}</span>
+        <span>{t('trainee.log.actualWeight')}</span>
+        <span className="w-8" />
+      </div>
+      {fields.map((field, setIndex) => (
+        <div key={field.id} className="grid grid-cols-[auto_1fr_1fr_auto] items-center gap-2">
+          <span className="w-8 text-sm tabular-nums text-muted-foreground">{setIndex + 1}</span>
+          <Input
+            type="number"
+            min={1}
+            {...register(`exercises.${exerciseIndex}.setEntries.${setIndex}.reps`, {
+              valueAsNumber: true,
+            })}
+          />
+          <Input
+            type="number"
+            min={0}
+            step="0.5"
+            {...register(`exercises.${exerciseIndex}.setEntries.${setIndex}.weightKg`, {
+              valueAsNumber: true,
+            })}
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 shrink-0"
+            disabled={fields.length <= 1}
+            onClick={() => remove(setIndex)}
+            aria-label={t('trainee.log.removeSet')}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ))}
+      <Button
+        type="button"
+        variant="secondary"
+        size="sm"
+        className="w-full"
+        onClick={() => append({ reps: undefined, weightKg: undefined })}
+      >
+        <Plus className="mr-2 h-4 w-4" />
+        {t('trainee.log.addSet')}
+      </Button>
+      {plannedWeightKg != null && (
+        <p className="text-xs text-muted-foreground">
+          {t('trainee.log.plannedWeight')}: {plannedWeightKg} kg
+        </p>
+      )}
+    </div>
+  );
+};
 
 export const LogWorkoutPage: React.FC = () => {
   const { t } = useTranslation();
@@ -69,9 +154,7 @@ export const LogWorkoutPage: React.FC = () => {
         reset({
           exercises: detail.exercises.map((e) => ({
             exerciseName: e.exerciseName,
-            actualSets: e.plannedSets ?? undefined,
-            actualReps: e.plannedReps ?? undefined,
-            actualWeightKg: e.plannedWeightKg ?? undefined,
+            setEntries: buildSetEntries(e),
             notes: '',
           })),
           feedback: {
@@ -159,56 +242,20 @@ export const LogWorkoutPage: React.FC = () => {
                     {session.exercises.map((ex, index) => (
                       <div key={ex.id} className="space-y-3 rounded-lg border p-3">
                         <p className="font-medium">{ex.exerciseName}</p>
-                        <div className="grid grid-cols-3 gap-2 text-center text-xs text-muted-foreground">
-                          <span>{t('trainee.log.planned')}</span>
-                          <span>{t('trainee.log.sets')}</span>
-                          <span>{t('trainee.log.reps')}</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 text-center text-sm">
-                          <span className="text-muted-foreground">—</span>
-                          <span>{ex.plannedSets ?? '—'}</span>
-                          <span>{ex.plannedReps ?? '—'}</span>
-                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {t('trainee.log.planned')}: {ex.plannedSets ?? '—'} {t('trainee.log.sets')} ×{' '}
+                          {ex.plannedReps ?? '—'} {t('trainee.log.reps')}
+                        </p>
                         <input type="hidden" {...register(`exercises.${index}.exerciseName`)} />
-                        <div className="grid grid-cols-3 gap-2">
-                          <div>
-                            <Label htmlFor={`sets-${index}`} className="text-xs">
-                              {t('trainee.log.actualSets')}
-                            </Label>
-                            <Input
-                              id={`sets-${index}`}
-                              type="number"
-                              min={1}
-                              {...register(`exercises.${index}.actualSets`)}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor={`reps-${index}`} className="text-xs">
-                              {t('trainee.log.actualReps')}
-                            </Label>
-                            <Input
-                              id={`reps-${index}`}
-                              type="number"
-                              min={1}
-                              {...register(`exercises.${index}.actualReps`)}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor={`weight-${index}`} className="text-xs">
-                              {t('trainee.log.actualWeight')}
-                            </Label>
-                            <Input
-                              id={`weight-${index}`}
-                              type="number"
-                              min={0}
-                              step="0.5"
-                              {...register(`exercises.${index}.actualWeightKg`)}
-                            />
-                          </div>
-                        </div>
-                        {ex.plannedWeightKg != null && (
-                          <p className="text-xs text-muted-foreground">
-                            {t('trainee.log.plannedWeight')}: {ex.plannedWeightKg} kg
+                        <ExerciseSetFields
+                          exerciseIndex={index}
+                          plannedWeightKg={ex.plannedWeightKg}
+                          register={register}
+                          control={control}
+                        />
+                        {errors.exercises?.[index]?.setEntries && (
+                          <p className="text-xs text-destructive">
+                            {errors.exercises[index]?.setEntries?.message}
                           </p>
                         )}
                       </div>
@@ -230,14 +277,11 @@ export const LogWorkoutPage: React.FC = () => {
                         name="feedback.difficultyRating"
                         control={control}
                         render={({ field }) => (
-                          <input
+                          <RatingScale
                             id="difficulty"
-                            type="range"
-                            min={1}
-                            max={10}
-                            className="mt-2 w-full"
                             value={field.value}
-                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            onChange={field.onChange}
+                            className="mt-2"
                           />
                         )}
                       />
@@ -250,20 +294,17 @@ export const LogWorkoutPage: React.FC = () => {
 
                     <div>
                       <FormLabel htmlFor="fatigue" required>
-                        {t('trainee.log.fatigue')}
+                        {t('trainee.log.fatigue')} ({t('trainee.log.ratingHint')})
                       </FormLabel>
                       <Controller
                         name="feedback.fatigueRating"
                         control={control}
                         render={({ field }) => (
-                          <input
+                          <RatingScale
                             id="fatigue"
-                            type="range"
-                            min={1}
-                            max={10}
-                            className="mt-2 w-full"
                             value={field.value}
-                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            onChange={field.onChange}
+                            className="mt-2"
                           />
                         )}
                       />

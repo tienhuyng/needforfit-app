@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
 import { Button, Input } from '@/components/template';
@@ -54,6 +56,13 @@ export const WorkoutHistoryPage: React.FC = () => {
 
   return (
     <TraineeLayout title={t('trainee.history.title')}>
+      <PageStickyHeader
+        back={
+          <BackButton to="/trainee/home" labelKey="trainee.common.back" className="mb-0" />
+        }
+        title={t('trainee.history.title')}
+      />
+
       <div className="space-y-4">
         {error && <Alert type="error" message={error} />}
 
@@ -123,10 +132,8 @@ export const WorkoutHistoryPage: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.programName}</TableCell>
                     <TableCell>{row.exerciseCount}</TableCell>
-                    <TableCell>
-                      {row.difficultyRating != null
-                        ? `${row.difficultyRating}/10`
-                        : t('trainee.history.noFeedback')}
+                    <TableCell className="max-w-[200px] truncate">
+                      {row.feedbackSummary ?? t('trainee.history.noFeedback')}
                     </TableCell>
                   </TableRow>
                 ))}

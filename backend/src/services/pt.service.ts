@@ -328,7 +328,10 @@ export class PtService {
         assignedAt: p.assignedAt.toISOString(),
       })),
       workoutHistory: logs.map((log) => {
-        const planned = log.session.exercises.length;
+        const planned = getCurrentVersionExercises(
+          log.session.sessionVersion,
+          log.session.exercises
+        ).length;
         const completed = log.exercises.length;
         return {
           id: log.id,

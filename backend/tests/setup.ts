@@ -55,6 +55,10 @@ jest.mock('../src/config/database', () => ({
       findMany: jest.fn(),
       create: jest.fn(),
     },
+    traineeProfile: {
+      update: jest.fn(),
+      updateMany: jest.fn(),
+    },
     $transaction: jest.fn(),
   },
   disconnectDatabase: jest.fn(),

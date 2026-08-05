@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
+import { BackButton } from '@/components/common/BackButton';
+import { RatingBar } from '@/components/common/RatingBar';
 import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/template';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/template';
 import { traineeApi, getApiErrorMessage } from '@/services/trainee.service';
 import { WorkoutLogDetail } from '@/types/trainee';
+import { exerciseVolumeKg } from '@/utils/workout-volume';
 
 export const WorkoutDetailPage: React.FC = () => {
   const { t } = useTranslation();
@@ -38,42 +36,72 @@ export const WorkoutDetailPage: React.FC = () => {
 
   return (
     <TraineeLayout title={t('trainee.detail.title')} hideNav>
-      <div className="space-y-4">
-        <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link to="/trainee/history">{t('trainee.common.back')}</Link>
-        </Button>
+      <PageStickyHeader
+        back={
+          <BackButton to="/trainee/history" labelKey="trainee.common.back" className="mb-0" />
+        }
+        title={detail?.sessionName ?? t('trainee.detail.title')}
+        subtitle={
+          detail ? `${detail.programName} · ${detail.workoutDate}` : undefined
+        }
+      />
 
+      <div className="space-y-4">
         {error && <Alert type="error" message={error} />}
 
         {isLoading ? (
           <p className="text-muted-foreground">{t('trainee.common.loading')}</p>
         ) : detail ? (
           <>
-            <div>
-              <h2 className="text-xl font-bold">{detail.sessionName}</h2>
-              <p className="text-sm text-muted-foreground">
-                {detail.programName} · {detail.workoutDate}
-              </p>
-              {detail.isLocked && (
-                <p className="mt-1 text-xs text-muted-foreground">{t('trainee.detail.locked')}</p>
-              )}
-            </div>
+            {detail.isLocked && (
+              <p className="text-xs text-muted-foreground">{t('trainee.detail.locked')}</p>
+            )}
 
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-base">{t('trainee.detail.exercises')}</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  {t('trainee.detail.totalVolume')}:{' '}
+                  <span className="font-semibold text-foreground">{detail.totalVolumeKg} kg</span>
+                </p>
               </CardHeader>
               <CardContent className="space-y-3">
-                {detail.exercises.map((ex) => (
-                  <div key={ex.exerciseName} className="rounded-md border p-3 text-sm">
-                    <p className="font-medium">{ex.exerciseName}</p>
-                    <p className="text-muted-foreground">
-                      {t('trainee.log.sets')}: {ex.actualSets ?? '—'} · {t('trainee.log.reps')}:{' '}
-                      {ex.actualReps ?? '—'} · {t('trainee.log.actualWeight')}:{' '}
-                      {ex.actualWeightKg ?? '—'} kg
-                    </p>
-                  </div>
-                ))}
+                {detail.exercises.map((ex) => {
+                  const vol = exerciseVolumeKg(ex);
+                  const sets = ex.setDetails?.length
+                    ? ex.setDetails
+                    : ex.actualSets
+                      ? Array.from({ length: ex.actualSets }, () => ({
+                          reps: ex.actualReps ?? undefined,
+                          weightKg: ex.actualWeightKg ?? undefined,
+                        }))
+                      : [];
+
+                  return (
+                    <div key={ex.exerciseName} className="rounded-md border p-3 text-sm">
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <p className="font-medium">{ex.exerciseName}</p>
+                        {vol > 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {t('trainee.detail.exerciseVolume')}: {vol} kg
+                          </p>
+                        )}
+                      </div>
+                      {sets.length > 0 ? (
+                        <ul className="mt-2 space-y-1 text-muted-foreground">
+                          {sets.map((s, i) => (
+                            <li key={i}>
+                              {t('trainee.log.set')} {i + 1}: {s.reps ?? '—'} {t('trainee.log.reps')} ·{' '}
+                              {s.weightKg ?? '—'} kg
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="mt-1 text-muted-foreground">{t('trainee.detail.noSetData')}</p>
+                      )}
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
 
@@ -82,26 +110,43 @@ export const WorkoutDetailPage: React.FC = () => {
                 <CardHeader>
                   <CardTitle className="text-base">{t('trainee.detail.feedback')}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2 text-sm">
-                  <p>
-                    {t('trainee.log.difficulty')}: {detail.feedback.difficultyRating}/10
-                  </p>
-                  <p>
-                    {t('trainee.log.fatigue')}: {detail.feedback.fatigueRating}/10
-                  </p>
+                <CardContent className="space-y-4 text-sm">
+                  <RatingBar
+                    label={t('trainee.log.difficulty')}
+                    value={detail.feedback.difficultyRating}
+                  />
+                  <RatingBar label={t('trainee.log.fatigue')} value={detail.feedback.fatigueRating} />
                   <p>
                     {t('trainee.log.pain')}:{' '}
                     {detail.feedback.painOrDiscomfort ? t('trainee.log.yes') : t('trainee.log.no')}
                   </p>
                   {detail.feedback.templateResponses && (
-                    <>
-                      <p>{detail.feedback.templateResponses.q1}</p>
-                      <p>{detail.feedback.templateResponses.q2}</p>
-                      <p>{detail.feedback.templateResponses.q3}</p>
-                    </>
+                    <div className="space-y-3 border-t pt-3">
+                      <div>
+                        <p className="font-medium">{t('trainee.log.templateQ1')}</p>
+                        <p className="text-muted-foreground">
+                          {detail.feedback.templateResponses.q1}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="font-medium">{t('trainee.log.templateQ2')}</p>
+                        <p className="text-muted-foreground">
+                          {detail.feedback.templateResponses.q2}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="font-medium">{t('trainee.log.templateQ3')}</p>
+                        <p className="text-muted-foreground">
+                          {detail.feedback.templateResponses.q3}
+                        </p>
+                      </div>
+                    </div>
                   )}
                   {detail.feedback.traineeNotes && (
-                    <p className="text-muted-foreground">{detail.feedback.traineeNotes}</p>
+                    <div>
+                      <p className="font-medium">{t('trainee.log.notes')}</p>
+                      <p className="text-muted-foreground">{detail.feedback.traineeNotes}</p>
+                    </div>
                   )}
                 </CardContent>
               </Card>

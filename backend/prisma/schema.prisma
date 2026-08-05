@@ -304,6 +304,7 @@ model WorkoutLogExercise {
   actualSets      Int?     @map("actual_sets")
   actualReps      Int?     @map("actual_reps")
   actualWeightKg  Decimal? @map("actual_weight_kg") @db.Decimal(6, 2)
+  setDetails      Json?    @map("set_details")
   notes           String?
   createdAt       DateTime @default(now()) @map("created_at")
 

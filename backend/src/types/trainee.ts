@@ -42,6 +42,7 @@ export interface WorkoutHistorySummary {
   programName: string;
   sessionName: string;
   exerciseCount: number;
+  feedbackSummary: string | null;
   difficultyRating: number | null;
   status: string;
 }
@@ -113,6 +114,7 @@ export interface WorkoutLogDetail {
   programName: string;
   sessionName: string;
   scheduledDate: string;
+  totalVolumeKg: number;
   exercises: WorkoutLogExerciseItem[];
   feedback: WorkoutLogFeedbackItem | null;
 }
@@ -122,6 +124,7 @@ export interface WorkoutLogExerciseItem {
   actualSets: number | null;
   actualReps: number | null;
   actualWeightKg: number | null;
+  setDetails: { reps?: number; weightKg?: number }[] | null;
   notes: string | null;
 }
 

@@ -22,9 +22,14 @@ export function createLogWorkoutSchema(t: TFunction) {
     exercises: z.array(
       z.object({
         exerciseName: z.string().min(1),
-        actualSets: optionalPositiveInt,
-        actualReps: optionalPositiveInt,
-        actualWeightKg: optionalPositiveFloat,
+        setEntries: z
+          .array(
+            z.object({
+              reps: optionalPositiveInt,
+              weightKg: optionalPositiveFloat,
+            })
+          )
+          .min(1, t('trainee.errors.setRequired')),
         notes: z.string().optional(),
       })
     ),
@@ -73,9 +78,10 @@ export function toLogWorkoutPayload(
     sessionId,
     exercises: data.exercises.map((e) => ({
       exerciseName: e.exerciseName,
-      actualSets: e.actualSets,
-      actualReps: e.actualReps,
-      actualWeightKg: e.actualWeightKg,
+      setEntries: e.setEntries.map((s) => ({
+        reps: s.reps,
+        weightKg: s.weightKg,
+      })),
       notes: e.notes,
     })),
     feedback: {

@@ -17,7 +17,15 @@ describe('trainee-validation', () => {
   it('builds log workout payload', () => {
     const schema = createLogWorkoutSchema(t);
     const parsed = schema.parse({
-      exercises: [{ exerciseName: 'Squat', actualSets: 3 }],
+      exercises: [
+        {
+          exerciseName: 'Squat',
+          setEntries: [
+            { reps: 10, weightKg: 60 },
+            { reps: 8, weightKg: 62.5 },
+          ],
+        },
+      ],
       feedback: {
         difficultyRating: 5,
         fatigueRating: 4,
@@ -27,6 +35,7 @@ describe('trainee-validation', () => {
     });
     const payload = toLogWorkoutPayload('session-1', parsed);
     expect(payload.sessionId).toBe('session-1');
+    expect(payload.exercises[0].setEntries).toHaveLength(2);
     expect(payload.feedback.painOrDiscomfort).toBe(false);
   });
 

@@ -16,6 +16,7 @@ router.post('/register', validateBody(registerSchema), authController.register);
 router.post('/login', validateBody(loginSchema), authController.login);
 router.post('/forgot-password', validateBody(forgotPasswordSchema), authController.forgotPassword);
 router.post('/reset-password', validateBody(resetPasswordSchema), authController.resetPassword);
+router.get('/profile', authenticate, authController.getProfile);
 router.put('/profile', authenticate, validateBody(updateProfileSchema), authController.updateProfile);
 
 export default router;

@@ -1,6 +1,7 @@
 {
   "common": {
-    "back": "Quay lại"
+    "back": "Quay lại",
+    "loading": "Đang tải..."
   },
   "auth": {
     "common": {
@@ -70,13 +71,23 @@
       "registerFailed": "Đăng ký thất bại. Vui lòng thử lại.",
       "forgotFailed": "Không thể gửi liên kết. Vui lòng thử lại.",
       "resetFailed": "Đặt lại mật khẩu thất bại. Vui lòng thử lại.",
-      "generic": "Đã xảy ra lỗi. Vui lòng thử lại."
+      "generic": "Đã xảy ra lỗi. Vui lòng thử lại.",
+      "positiveNumber": "Phải là số dương.",
+      "dateOfBirthFuture": "Ngày sinh không được ở tương lai."
     },
     "profile": {
       "title": "Cài đặt hồ sơ",
       "subtitle": "Cập nhật thông tin cá nhân và ngôn ngữ.",
       "phone": "Số điện thoại",
       "language": "Ngôn ngữ",
+      "traineeSectionTitle": "Hồ sơ tập luyện",
+      "traineeSectionDesc": "PT sẽ thấy các thông tin này trên hồ sơ học viên của bạn.",
+      "dateOfBirth": "Ngày sinh",
+      "height": "Chiều cao (cm)",
+      "weight": "Cân nặng hiện tại (kg)",
+      "goal": "Mục tiêu tập",
+      "goalUnset": "Chưa chọn",
+      "injuryHistory": "Tiền sử chấn thương / hạn chế",
       "submit": "Lưu thay đổi",
       "submitting": "Đang lưu...",
       "success": "Cập nhật hồ sơ thành công.",
@@ -162,7 +173,7 @@
     "tabs": {
       "profile": "Hồ sơ",
       "programs": "Chương trình",
-      "history": "Lịch sử",
+      "history": "Lịch sử buổi tập",
       "metrics": "Chỉ số"
     },
     "programs": {
@@ -221,7 +232,8 @@
       "session": "Buổi tập",
       "program": "Chương trình",
       "date": "Ngày",
-      "completion": "Hoàn thành"
+      "completion": "Hoàn thành",
+      "completionHint": "Số bài đã ghi ÷ số bài kế hoạch (phiên bản buổi tập hiện tại), làm tròn %."
     },
     "metrics": {
       "empty": "Chưa có chỉ số cơ thể.",
@@ -332,7 +344,7 @@
   "trainee": {
     "nav": {
       "home": "Trang chủ",
-      "history": "Lịch sử",
+      "history": "Lịch sử buổi tập",
       "metrics": "Chỉ số"
     },
     "layout": {
@@ -346,7 +358,7 @@
     "home": {
       "title": "Trang chủ",
       "todayWorkout": "Buổi tập hôm nay",
-      "todayWorkoutDesc": "Ghi nhận buổi tập trong vòng 24 giờ.",
+      "todayWorkoutDesc": "Ghi nhận trong ngày lên lịch hoặc ngày hôm sau.",
       "invitesTitle": "Lời mời từ PT",
       "invitesDesc": "Chấp nhận để kết nối với huấn luyện viên.",
       "acceptInvite": "Chấp nhận",
@@ -360,6 +372,7 @@
       "recentHistory": "Lịch sử gần đây",
       "viewAll": "Xem tất cả",
       "weightTrend": "Xu hướng cân nặng",
+      "openMetrics": "Chỉ số cơ thể",
       "activePrograms": "Chương trình đang hoạt động",
       "noPrograms": "Chưa có chương trình được gán.",
       "exercises": "bài tập",
@@ -371,7 +384,10 @@
       "exercisesDesc": "So sánh kế hoạch và thực tế.",
       "planned": "Kế hoạch",
       "sets": "Hiệp",
+      "set": "Hiệp",
       "reps": "Lần",
+      "addSet": "Thêm hiệp",
+      "removeSet": "Xóa hiệp",
       "actualSets": "Hiệp thực tế",
       "actualReps": "Lần thực tế",
       "actualWeight": "Tạ (kg)",
@@ -391,7 +407,7 @@
       "submit": "Gửi nhật ký",
       "submitting": "Đang gửi...",
       "lockedTitle": "Buổi tập đã khóa",
-      "lockedDesc": "Không thể ghi nhận (đã quá 24 giờ)."
+      "lockedDesc": "Không thể ghi nhận (đã hết thời gian cho phép)."
     },
     "history": {
       "title": "Lịch sử tập",
@@ -410,6 +426,9 @@
     "detail": {
       "title": "Chi tiết buổi tập",
       "exercises": "Bài tập",
+      "totalVolume": "Tổng volume",
+      "exerciseVolume": "Volume",
+      "noSetData": "Chưa có chi tiết từng hiệp.",
       "feedback": "Phản hồi",
       "locked": "Nhật ký đã khóa, chỉ xem."
     },
@@ -450,7 +469,8 @@
       "templateRequired": "Trường này là bắt buộc.",
       "weightRequired": "Cân nặng là bắt buộc.",
       "positiveNumber": "Phải là số dương.",
-      "dateRequired": "Ngày là bắt buộc."
+      "dateRequired": "Ngày là bắt buộc.",
+      "setRequired": "Mỗi bài cần ít nhất một hiệp."
     }
   }
 }

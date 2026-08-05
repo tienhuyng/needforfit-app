@@ -1,8 +1,8 @@
-/** Log window: from start of scheduled_date until scheduled_date + 24 hours. */
+/** Log window: from start of scheduled day through end of the following calendar day (48h). */
 export function getLogWindowDeadline(scheduledDate: Date): Date {
   const start = new Date(scheduledDate);
   start.setHours(0, 0, 0, 0);
-  return new Date(start.getTime() + 24 * 60 * 60 * 1000);
+  return new Date(start.getTime() + 48 * 60 * 60 * 1000);
 }
 
 export function isWithinLogWindow(scheduledDate: Date, now = new Date()): boolean {

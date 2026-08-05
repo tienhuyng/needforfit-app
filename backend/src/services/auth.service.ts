@@ -1,4 +1,4 @@
-import { UserStatus } from '@prisma/client';
+import { Prisma, TraineeGoal, UserRole, UserStatus } from '@prisma/client';
 import { prisma } from '../config/database';
 import { SupportedLanguage, t } from '../config/i18n';
 import {
@@ -23,8 +23,11 @@ import { env, isProduction } from '../config/env';
 import {
   LoginResponse,
   MessageResponse,
+  ProfileResponse,
   RegisterResponse,
+  TraineeProfileSettings,
 } from '../types/auth';
+import { startOfDay } from '../utils/workout-window';
 
 export class AuthService {
   async register(input: RegisterInput, lng: SupportedLanguage): Promise<RegisterResponse> {
@@ -222,12 +225,52 @@ export class AuthService {
     };
   }
 
+  private mapTraineeProfile(profile: Prisma.TraineeProfileGetPayload<object> | null): TraineeProfileSettings | null {
+    if (!profile) return null;
+    return {
+      dateOfBirth: profile.dateOfBirth
+        ? profile.dateOfBirth.toISOString().slice(0, 10)
+        : null,
+      heightCm: profile.heightCm != null ? Number(profile.heightCm) : null,
+      currentWeightKg:
+        profile.currentWeightKg != null ? Number(profile.currentWeightKg) : null,
+      goal: profile.goal,
+      injuryHistory: profile.injuryHistory,
+    };
+  }
+
+  async getProfile(userId: string): Promise<ProfileResponse> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { traineeProfile: true },
+    });
+
+    if (!user) {
+      throw new AppError(AUTH_ERROR_CODES.INVALID_CREDENTIALS, AUTH_I18N_KEYS.emailNotFound, 404);
+    }
+
+    return {
+      user: toAuthUser(user),
+      traineeProfile:
+        user.role === UserRole.trainee ? this.mapTraineeProfile(user.traineeProfile) : null,
+    };
+  }
+
   async updateProfile(
     userId: string,
     input: UpdateProfileInput,
     lng: SupportedLanguage
-  ): Promise<{ user: ReturnType<typeof toAuthUser> }> {
-    const user = await prisma.user.update({
+  ): Promise<ProfileResponse> {
+    const existing = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { traineeProfile: true },
+    });
+
+    if (!existing) {
+      throw new AppError(AUTH_ERROR_CODES.INVALID_CREDENTIALS, AUTH_I18N_KEYS.emailNotFound, 404);
+    }
+
+    await prisma.user.update({
       where: { id: userId },
       data: {
         ...(input.firstName !== undefined ? { firstName: input.firstName } : {}),
@@ -239,9 +282,45 @@ export class AuthService {
       },
     });
 
-    return {
-      user: toAuthUser(user),
-    };
+    if (existing.role === UserRole.trainee) {
+      const traineeData: Prisma.TraineeProfileUpdateInput = {};
+
+      if (input.dateOfBirth !== undefined) {
+        if (input.dateOfBirth === '') {
+          traineeData.dateOfBirth = null;
+        } else {
+          const dob = new Date(input.dateOfBirth);
+          if (startOfDay(dob) > startOfDay(new Date())) {
+            throw new AppError(
+              AUTH_ERROR_CODES.VALIDATION_ERROR,
+              AUTH_I18N_KEYS.dateOfBirthFuture,
+              400
+            );
+          }
+          traineeData.dateOfBirth = dob;
+        }
+      }
+      if (input.heightCm !== undefined) traineeData.heightCm = input.heightCm;
+      if (input.currentWeightKg !== undefined) {
+        traineeData.currentWeightKg = input.currentWeightKg;
+      }
+      if (input.goal !== undefined) {
+        traineeData.goal =
+          input.goal === '' ? null : (input.goal as TraineeGoal);
+      }
+      if (input.injuryHistory !== undefined) {
+        traineeData.injuryHistory = input.injuryHistory.trim() || null;
+      }
+
+      if (Object.keys(traineeData).length > 0) {
+        await prisma.traineeProfile.update({
+          where: { userId },
+          data: traineeData,
+        });
+      }
+    }
+
+    return this.getProfile(userId);
   }
 }
 

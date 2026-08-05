@@ -84,6 +84,7 @@ export const prismaMock = prisma as unknown as {
   };
   traineeProfile: {
     updateMany: jest.Mock;
+    update: jest.Mock;
   };
   $transaction: jest.Mock;
 };

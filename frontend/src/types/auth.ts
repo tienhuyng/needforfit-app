@@ -11,6 +11,19 @@ export interface AuthUser {
   preferredLanguage: string;
 }
 
+export interface TraineeProfileSettings {
+  dateOfBirth: string | null;
+  heightCm: number | null;
+  currentWeightKg: number | null;
+  goal: string | null;
+  injuryHistory: string | null;
+}
+
+export interface ProfileResponse {
+  user: AuthUser;
+  traineeProfile: TraineeProfileSettings | null;
+}
+
 export interface ApiErrorDetail {
   field?: string;
   i18nKey: string;

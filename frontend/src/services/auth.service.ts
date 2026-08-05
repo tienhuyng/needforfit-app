@@ -81,10 +81,22 @@ export const authApi = {
     lastName?: string;
     phone?: string;
     preferredLanguage?: string;
-  }): Promise<{ user: import('@/types/auth').AuthUser }> => {
-    const res = await api.put<ApiSuccessResponse<{ user: import('@/types/auth').AuthUser }>>(
+    dateOfBirth?: string;
+    heightCm?: number;
+    currentWeightKg?: number;
+    goal?: string;
+    injuryHistory?: string;
+  }): Promise<import('@/types/auth').ProfileResponse> => {
+    const res = await api.put<ApiSuccessResponse<import('@/types/auth').ProfileResponse>>(
       '/auth/profile',
       data
+    );
+    return res.data.data;
+  },
+
+  getProfile: async (): Promise<import('@/types/auth').ProfileResponse> => {
+    const res = await api.get<ApiSuccessResponse<import('@/types/auth').ProfileResponse>>(
+      '/auth/profile'
     );
     return res.data.data;
   },

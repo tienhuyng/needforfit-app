@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
+import { PageStickyHeader } from '@/components/common/PageStickyHeader';
+import { BackButton } from '@/components/common/BackButton';
 import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
 import {
@@ -88,6 +90,13 @@ export const BodyMetricsPage: React.FC = () => {
 
   return (
     <TraineeLayout title={t('trainee.metrics.title')}>
+      <PageStickyHeader
+        back={
+          <BackButton to="/trainee/home" labelKey="trainee.common.back" className="mb-0" />
+        }
+        title={t('trainee.metrics.title')}
+      />
+
       <Tabs defaultValue="log" className="space-y-4">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="log">{t('trainee.metrics.logTab')}</TabsTrigger>

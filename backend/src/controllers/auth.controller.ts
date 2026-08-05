@@ -54,3 +54,12 @@ export const updateProfile = asyncHandler(async (req: Request, res: Response) =>
     )
   );
 });
+
+export const getProfile = asyncHandler(async (req: Request, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ status: 'error', code: 'UNAUTHORIZED', message: 'Unauthorized' });
+    return;
+  }
+  const result = await authService.getProfile(req.user.sub);
+  res.json(buildSuccessResponse(result));
+});

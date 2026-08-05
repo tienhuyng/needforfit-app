@@ -7,15 +7,25 @@ const ratingSchema = z.coerce
   .min(1, TRAINEE_I18N_KEYS.ratingRange)
   .max(10, TRAINEE_I18N_KEYS.ratingRange);
 
-const logExerciseSchema = z.object({
-  exerciseName: z
-    .string({ required_error: TRAINEE_I18N_KEYS.exerciseRequired })
-    .min(1, TRAINEE_I18N_KEYS.exerciseRequired),
-  actualSets: z.coerce.number().int().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
-  actualReps: z.coerce.number().int().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
-  actualWeightKg: z.coerce.number().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
-  notes: z.string().optional(),
+const setEntrySchema = z.object({
+  reps: z.coerce.number().int().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
+  weightKg: z.coerce.number().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
 });
+
+const logExerciseSchema = z
+  .object({
+    exerciseName: z
+      .string({ required_error: TRAINEE_I18N_KEYS.exerciseRequired })
+      .min(1, TRAINEE_I18N_KEYS.exerciseRequired),
+    setEntries: z.array(setEntrySchema).min(1).optional(),
+    actualSets: z.coerce.number().int().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
+    actualReps: z.coerce.number().int().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
+    actualWeightKg: z.coerce.number().positive(TRAINEE_I18N_KEYS.positiveNumber).optional(),
+    notes: z.string().optional(),
+  })
+  .refine((e) => (e.setEntries && e.setEntries.length > 0) || e.actualSets != null, {
+    message: TRAINEE_I18N_KEYS.exerciseRequired,
+  });
 
 export const logWorkoutSchema = z.object({
   sessionId: z.string().uuid(),

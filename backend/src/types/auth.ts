@@ -59,3 +59,16 @@ export interface JwtSignResult {
   token: string;
   expiresAt: Date;
 }
+
+export interface TraineeProfileSettings {
+  dateOfBirth: string | null;
+  heightCm: number | null;
+  currentWeightKg: number | null;
+  goal: string | null;
+  injuryHistory: string | null;
+}
+
+export interface ProfileResponse {
+  user: AuthUser;
+  traineeProfile: TraineeProfileSettings | null;
+}
