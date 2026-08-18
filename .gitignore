@@ -1,36 +1,82 @@
-# Environment files
+# =============================================================================
+# Environment files (may contain secrets)
+# =============================================================================
 .env
 .env.local
 .env.*.local
+backend/.env
+frontend/.env
 
+# Safe templates / public build config (keep tracked)
+!.env.example
+!**/.env.example
+!frontend/.env.production
+
+# =============================================================================
 # Dependencies
+# =============================================================================
 node_modules/
 npm-debug.log
 yarn-error.log
 
+# =============================================================================
 # Build outputs
+# =============================================================================
 dist/
 build/
 coverage/
 *.tsbuildinfo
 
-# OS
+# =============================================================================
+# OS & IDE
+# =============================================================================
 .DS_Store
 Thumbs.db
-
-# IDE
 .vscode/
 .idea/
 *.swp
 
-# Prisma
+# =============================================================================
+# Prisma local DB
+# =============================================================================
 backend/prisma/*.db
 backend/prisma/*.db-journal
 
+# =============================================================================
 # Temp clones
+# =============================================================================
 temp/
 
-# IAM setup output (contains AWS secrets)
+# =============================================================================
+# AWS deploy scripts — secret & key outputs (NEVER COMMIT)
+# =============================================================================
 scripts/github-secrets-setup.txt
+scripts/aws-secrets.txt
 scripts/phase-1-secrets.txt
 scripts/route53-nameservers.txt
+scripts/*-secrets.txt
+scripts/*secrets*.txt
+
+# =============================================================================
+# SSH / TLS private keys (NEVER COMMIT)
+# =============================================================================
+*.pem
+*.ppk
+*.key
+needforfit-key.pem
+fithub-key.pem
+id_rsa
+id_rsa.*
+*.p12
+*.pfx
+
+# =============================================================================
+# Misc credential dumps
+# =============================================================================
+aws-secrets.txt
+github-secrets.txt
+*credentials*.txt
+*secrets*.txt
+!scripts/generate-aws-secrets.sh
+!scripts/github-secrets-updater.sh
+!scripts/phase-1-4-secrets.sh

@@ -12,7 +12,8 @@
 # Reads:
 #   scripts/setup-vars.sh          — S3 buckets, EC2 IP, domain, etc.
 #   scripts/github-secrets-setup.txt (optional) — AWS IAM keys from setup-github-iam.sh
-#   scripts/phase-1-secrets.txt    (optional) — JWT_SECRET, DB_PASSWORD
+#   scripts/aws-secrets.txt        (optional) — pre-generated JWT/DB (generate-aws-secrets.sh)
+#   scripts/phase-1-secrets.txt    (optional) — JWT_SECRET, DB_PASSWORD from Phase 1
 #   needforfit-key.pem                   (optional) — EC2_SSH_KEY source file
 # =============================================================================
 
@@ -21,6 +22,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETUP_VARS="${SCRIPT_DIR}/setup-vars.sh"
 IAM_SECRETS_FILE="${SCRIPT_DIR}/github-secrets-setup.txt"
+AWS_SECRETS_FILE="${SCRIPT_DIR}/aws-secrets.txt"
 PHASE1_SECRETS="${SCRIPT_DIR}/phase-1-secrets.txt"
 EC2_KEY_FILE="${EC2_KEY_FILE:-${SCRIPT_DIR}/../needforfit-key.pem}"
 OUTPUT_FILE="${SCRIPT_DIR}/github-secrets-setup.txt"
@@ -90,7 +92,9 @@ fi
 JWT_SECRET="${JWT_SECRET:-}"
 DB_PASSWORD="${DB_PASSWORD:-}"
 
-if [[ -f "${PHASE1_SECRETS}" ]]; then
+load_secrets_file() {
+  local file="$1"
+  [[ -f "${file}" ]] || return 0
   while IFS='=' read -r key value; do
     [[ "${key}" =~ ^#.*$ || -z "${key}" ]] && continue
     key="$(echo "${key}" | tr -d '[:space:]')"
@@ -98,13 +102,17 @@ if [[ -f "${PHASE1_SECRETS}" ]]; then
     case "${key}" in
       JWT_SECRET) [[ -z "${JWT_SECRET}" ]] && JWT_SECRET="${value}" ;;
       DB_PASSWORD) [[ -z "${DB_PASSWORD}" ]] && DB_PASSWORD="${value}" ;;
+      DATABASE_URL) [[ -z "${DATABASE_URL:-}" ]] && DATABASE_URL="${value}" ;;
     esac
-  done < "${PHASE1_SECRETS}"
-fi
+  done < "${file}"
+}
+
+load_secrets_file "${AWS_SECRETS_FILE}"
+load_secrets_file "${PHASE1_SECRETS}"
 
 # Suggested DATABASE_URL for EC2-local PostgreSQL
-DATABASE_URL=""
-if [[ -n "${DB_PASSWORD}" ]]; then
+DATABASE_URL="${DATABASE_URL:-}"
+if [[ -z "${DATABASE_URL}" && -n "${DB_PASSWORD}" ]]; then
   DATABASE_URL="postgresql://postgres:${DB_PASSWORD}@localhost:5432/needforfit_db"
 fi
 
