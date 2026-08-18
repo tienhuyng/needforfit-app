@@ -27,7 +27,7 @@
     },
     "emails": {
       "resetPassword": {
-        "subject": "Reset your FitHub password",
+        "subject": "Reset your Needforfit password",
         "greeting": "Hello {{name}},",
         "body": "We received a request to reset your password. Use the link below to choose a new password.",
         "cta": "Reset password",

@@ -13,9 +13,12 @@ export function createApp() {
   app.use(express.json());
   app.use(i18nMiddleware);
 
-  app.get('/health', (_req, res) => {
+  const healthHandler = (_req: express.Request, res: express.Response) => {
     res.json({ status: 'ok' });
-  });
+  };
+
+  app.get('/health', healthHandler);
+  app.get('/api/health', healthHandler);
 
   app.use('/api/auth', authRoutes);
   app.use('/api/pt', ptRoutes);

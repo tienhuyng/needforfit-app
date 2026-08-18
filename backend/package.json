@@ -1,7 +1,7 @@
 {
-  "name": "fithub-backend",
+  "name": "needforfit-backend",
   "version": "1.0.0",
-  "description": "Fithub App Backend API",
+  "description": "Needforfit App Backend API",
   "main": "dist/main.js",
   "scripts": {
     "dev": "tsx watch src/main.ts",

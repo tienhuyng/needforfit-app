@@ -1,8 +1,8 @@
 {
-  "name": "fithub-app",
+  "name": "needforfit-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Fithub App — Gym Management & Coaching Platform",
+  "description": "Needforfit App — Gym Management & Coaching Platform",
   "scripts": {
     "setup": "npm run setup:backend && npm run setup:frontend",
     "setup:backend": "npm install --prefix backend",

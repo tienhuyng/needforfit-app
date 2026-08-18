@@ -61,13 +61,13 @@ export async function sendPasswordResetEmail(input: PasswordResetEmailInput): Pr
   }
 
   if (!isProduction) {
-    console.info('[FitHub][email:dev] Password reset link generated');
+    console.info('[Needforfit][email:dev] Password reset link generated');
     console.info(`  To: ${input.to}`);
     console.info(`  Link: ${input.resetUrl}`);
     return;
   }
 
-  console.warn('[FitHub][email] SMTP is not configured. Password reset email was not sent.');
+  console.warn('[Needforfit][email] SMTP is not configured. Password reset email was not sent.');
 }
 
 export const emailService = {

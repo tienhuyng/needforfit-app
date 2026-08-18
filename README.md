@@ -1,11 +1,11 @@
-# Fithub App
+# Needforfit App
 
 Gym Management & Coaching Platform — Phase 1 POC (Auth)
 
 ## Structure
 
 ```
-fitHub/
+needforfit/
 ├── backend/     Express + TypeScript + Prisma + JWT + bcrypt
 └── frontend/    React + Vite + Tailwind + Shadcn UI + React Hook Form + Zod
 ```
@@ -15,8 +15,8 @@ fitHub/
 ### New machine (Mac / Windows)
 
 ```bash
-git clone https://github.com/tienhuyng/fithub-app.git
-cd fithub-app
+git clone https://github.com/tienhuyng/needforfit-app.git
+cd needforfit-app
 
 # Install backend + frontend dependencies
 npm run setup

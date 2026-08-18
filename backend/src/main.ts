@@ -5,7 +5,7 @@ import { disconnectDatabase } from './config/database';
 const app = createApp();
 
 const server = app.listen(env.port, () => {
-  console.log(`Fithub API running on port ${env.port}`);
+  console.log(`Needforfit API running on port ${env.port}`);
 });
 
 process.on('SIGTERM', async () => {

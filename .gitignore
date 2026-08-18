@@ -1,25 +1,26 @@
-# Dependencies
-node_modules/
-
-# Build output
-dist/
-build/
-*.tsbuildinfo
-
-# Environment & secrets
+# Environment files
 .env
 .env.local
 .env.*.local
 
-# Logs & coverage
-*.log
-coverage/
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
 
-# OS & IDE
+# Build outputs
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# OS
 .DS_Store
 Thumbs.db
-.idea/
+
+# IDE
 .vscode/
+.idea/
 *.swp
 
 # Prisma
@@ -28,3 +29,8 @@ backend/prisma/*.db-journal
 
 # Temp clones
 temp/
+
+# IAM setup output (contains AWS secrets)
+scripts/github-secrets-setup.txt
+scripts/phase-1-secrets.txt
+scripts/route53-nameservers.txt

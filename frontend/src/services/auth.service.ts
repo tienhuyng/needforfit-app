@@ -18,7 +18,7 @@ import { getAuthToken } from '@/utils/auth-storage';
 export { getAuthToken, storeAuthToken, clearAuthToken, storeAuthUser, getAuthUser, clearAuth, getPostLoginPath } from '@/utils/auth-storage';
 
 export const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL ?? '/api',
   headers: { 'Content-Type': 'application/json' },
 });
 

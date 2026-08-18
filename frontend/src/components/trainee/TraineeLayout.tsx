@@ -45,7 +45,7 @@ export const TraineeLayout: React.FC<TraineeLayoutProps> = ({
           <div className="flex items-center gap-2">
             <Dumbbell className="h-5 w-5 text-primary" />
             <div>
-              <p className="text-xs text-muted-foreground">FitHub</p>
+              <p className="text-xs text-muted-foreground">Needforfit</p>
               <h1 className="text-base font-semibold leading-tight">
                 {title ?? t('trainee.layout.title')}
               </h1>

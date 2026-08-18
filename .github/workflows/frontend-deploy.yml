@@ -1,0 +1,104 @@
+# Deploy Needforfit frontend (Vite/React) to S3 static hosting.
+#
+# Required GitHub secrets:
+#   AWS_ACCESS_KEY_ID      - IAM user/role access key with S3 write permissions
+#   AWS_SECRET_ACCESS_KEY    - IAM secret key
+#   S3_STATIC_BUCKET         - Target S3 bucket name (e.g. needforfit-app-static)
+#
+# Optional: configure CloudFront invalidation in a follow-up step if used.
+
+name: Frontend Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-deploy.yml'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-southeast-1
+  VITE_API_URL: https://needforfit-app.withkris.life/api
+  DEPLOY_URL: https://needforfit-app.withkris.life/
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Frontend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        continue-on-error: true
+        run: npm run lint
+
+      - name: Build React app
+        env:
+          VITE_API_URL: ${{ env.VITE_API_URL }}
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Sync static assets to S3
+        env:
+          S3_BUCKET: ${{ secrets.S3_STATIC_BUCKET }}
+        run: |
+          # Upload all files except index.html with long-term cache (1 year)
+          aws s3 sync dist/ "s3://${S3_BUCKET}" \
+            --delete \
+            --exclude "index.html" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      - name: Upload index.html with no-cache headers
+        env:
+          S3_BUCKET: ${{ secrets.S3_STATIC_BUCKET }}
+        run: |
+          aws s3 cp dist/index.html "s3://${S3_BUCKET}/index.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --metadata-directive REPLACE
+
+      - name: Deployment summary
+        env:
+          S3_BUCKET: ${{ secrets.S3_STATIC_BUCKET }}
+        run: |
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          {
+            echo "## Frontend Deployment"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| **Version** | \`${SHORT_SHA}\` |"
+            echo "| **Full SHA** | \`${GITHUB_SHA}\` |"
+            echo "| **Deployed to** | \`s3://${S3_BUCKET}\` |"
+            echo "| **Region** | \`${AWS_REGION}\` |"
+            echo "| **API URL** | \`${VITE_API_URL}\` |"
+            echo "| **Live URL** | [${DEPLOY_URL}](${DEPLOY_URL}) |"
+            echo ""
+            echo "### Cache policy"
+            echo "- \`index.html\` → \`no-cache, no-store, must-revalidate\` (metadata REPLACE)"
+            echo "- Static assets → \`max-age=31536000, immutable\`"
+          } >> "$GITHUB_STEP_SUMMARY"

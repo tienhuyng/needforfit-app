@@ -51,7 +51,7 @@ export const PTLayout: React.FC<PTLayoutProps> = ({ children }) => {
         )}
       >
         <div className="flex h-16 items-center justify-between border-b px-4">
-          <span className="text-lg font-bold text-primary">FitHub PT</span>
+          <span className="text-lg font-bold text-primary">Needforfit PT</span>
           <Button
             variant="ghost"
             size="icon"

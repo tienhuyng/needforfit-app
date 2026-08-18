@@ -1,0 +1,37 @@
+# Dependencies (reinstalled in container)
+node_modules/
+
+# Build output (rebuilt in container)
+dist/
+
+# Environment & secrets
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Test files & coverage
+coverage/
+tests/
+**/*.test.ts
+**/*.spec.ts
+jest.config.js
+
+# OS & editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Docs (not needed for build)
+*.md
+README.md

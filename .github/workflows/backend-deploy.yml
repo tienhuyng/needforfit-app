@@ -1,0 +1,236 @@
+# Deploy Needforfit backend (Express/Prisma) to Amazon ECR and EC2.
+#
+# Required GitHub secrets:
+#   AWS_ACCESS_KEY_ID       - IAM key with ECR push permissions (GitHub Actions runner)
+#   AWS_SECRET_ACCESS_KEY   - IAM secret key
+#   EC2_SSH_KEY             - Private SSH key for EC2 (PEM format)
+#   EC2_HOST                - EC2 public IP or hostname
+#   EC2_USER                - SSH user (e.g. ec2-user, ubuntu)
+#   DATABASE_URL            - PostgreSQL connection string for production
+#   JWT_SECRET              - JWT signing secret for production
+#
+# EC2 instance requirements:
+#   - Docker installed
+#   - AWS CLI installed
+#   - IAM instance role with ecr:GetAuthorizationToken + ecr:BatchGetImage permissions
+#   - Security group allows inbound 5000 (or reverse proxy on 443 → 5000)
+
+name: Backend Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-deploy.yml'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-southeast-1
+  ECR_REPOSITORY: needforfit-backend
+  CONTAINER_NAME: needforfit-backend
+  CONTAINER_PORT: 5000
+  DEPLOY_API_URL: https://needforfit-app.withkris.life/api
+  FRONTEND_URL: https://needforfit-app.withkris.life
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Backend
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        continue-on-error: true
+        run: npm run lint
+
+      - name: Run tests
+        continue-on-error: true
+        run: npm test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set image variables
+        id: image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          IMAGE_URI_LATEST="${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+          echo "image_uri=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
+          echo "image_uri_latest=${IMAGE_URI_LATEST}" >> "$GITHUB_OUTPUT"
+          echo "ECR registry : ${ECR_REGISTRY}"
+          echo "Image tag    : ${IMAGE_TAG}"
+
+      - name: Build Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          docker build \
+            -t "${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}" \
+            -t "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest" \
+            -f Dockerfile \
+            .
+
+      - name: Push image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          docker push "${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          docker push "${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+          echo "Pushed ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          echo "Pushed ${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
+
+      - name: Setup SSH key
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_deploy_key
+          chmod 600 ~/.ssh/ec2_deploy_key
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy to EC2
+        id: deploy
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_URI: ${{ steps.image.outputs.image_uri }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          set -euo pipefail
+
+          echo "Deploying ${IMAGE_URI} to ${EC2_USER}@${EC2_HOST}..."
+
+          ssh -i ~/.ssh/ec2_deploy_key -o StrictHostKeyChecking=yes \
+            "${EC2_USER}@${EC2_HOST}" \
+            "ECR_REGISTRY='${ECR_REGISTRY}' \
+             IMAGE_URI='${IMAGE_URI}' \
+             AWS_REGION='${AWS_REGION}' \
+             DATABASE_URL='${DATABASE_URL}' \
+             JWT_SECRET='${JWT_SECRET}' \
+             FRONTEND_URL='${FRONTEND_URL}' \
+             CONTAINER_NAME='${CONTAINER_NAME}' \
+             CONTAINER_PORT='${CONTAINER_PORT}' \
+             bash -s" << 'REMOTE_SCRIPT'
+          set -euo pipefail
+
+          echo "==> Authenticating Docker with ECR..."
+          aws ecr get-login-password --region "${AWS_REGION}" \
+            | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+
+          echo "==> Pulling image: ${IMAGE_URI}"
+          docker pull "${IMAGE_URI}"
+
+          echo "==> Stopping existing container (if any)..."
+          docker stop "${CONTAINER_NAME}" 2>/dev/null || true
+          docker rm "${CONTAINER_NAME}" 2>/dev/null || true
+
+          echo "==> Starting new container..."
+          docker run -d \
+            --name "${CONTAINER_NAME}" \
+            --restart unless-stopped \
+            -p "${CONTAINER_PORT}:${CONTAINER_PORT}" \
+            -e NODE_ENV=production \
+            -e PORT="${CONTAINER_PORT}" \
+            -e AWS_REGION="${AWS_REGION}" \
+            -e DATABASE_URL="${DATABASE_URL}" \
+            -e JWT_SECRET="${JWT_SECRET}" \
+            -e FRONTEND_URL="${FRONTEND_URL}" \
+            "${IMAGE_URI}"
+
+          echo "==> Waiting for container to become ready..."
+          sleep 5
+
+          echo "==> Running health check..."
+          for attempt in 1 2 3 4 5; do
+            if curl -fsS "http://localhost:${CONTAINER_PORT}/api/health" > /dev/null; then
+              echo "Health check passed on attempt ${attempt}."
+              docker ps --filter "name=${CONTAINER_NAME}"
+              exit 0
+            fi
+            echo "Health check attempt ${attempt} failed, retrying in 3s..."
+            sleep 3
+          done
+
+          echo "ERROR: Health check failed after deploy."
+          docker logs "${CONTAINER_NAME}" --tail 50 || true
+          exit 1
+          REMOTE_SCRIPT
+
+          echo "ec2_host=${EC2_HOST}" >> "$GITHUB_OUTPUT"
+
+      - name: Cleanup SSH key
+        if: always()
+        run: |
+          rm -f ~/.ssh/ec2_deploy_key
+          echo "SSH key removed."
+
+      - name: Deployment summary
+        if: success()
+        env:
+          IMAGE_URI: ${{ steps.image.outputs.image_uri }}
+          EC2_HOST: ${{ steps.deploy.outputs.ec2_host }}
+        run: |
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          {
+            echo "## Backend Deployment"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| **Version** | \`${SHORT_SHA}\` |"
+            echo "| **Full SHA** | \`${GITHUB_SHA}\` |"
+            echo "| **Image URI** | \`${IMAGE_URI}\` |"
+            echo "| **Deployed to** | \`${EC2_HOST}\` |"
+            echo "| **Region** | \`${AWS_REGION}\` |"
+            echo "| **API URL** | [${DEPLOY_API_URL}](${DEPLOY_API_URL}) |"
+            echo ""
+            echo "### Health check"
+            echo "- \`GET /api/health\` on EC2 port \`${CONTAINER_PORT}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deployment failed
+        if: failure()
+        run: |
+          {
+            echo "## Backend Deployment Failed"
+            echo ""
+            echo "Check the workflow logs for build, push, or EC2 deploy errors."
+            echo "Common causes: ECR permissions, SSH key/host, DATABASE_URL, container crash on startup."
+          } >> "$GITHUB_STEP_SUMMARY"

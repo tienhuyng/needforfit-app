@@ -27,7 +27,7 @@
     },
     "emails": {
       "resetPassword": {
-        "subject": "Đặt lại mật khẩu FitHub",
+        "subject": "Đặt lại mật khẩu Needforfit",
         "greeting": "Xin chào {{name}},",
         "body": "Chúng tôi nhận được yêu cầu đặt lại mật khẩu. Dùng liên kết bên dưới để chọn mật khẩu mới.",
         "cta": "Đặt lại mật khẩu",

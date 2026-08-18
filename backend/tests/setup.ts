@@ -1,6 +1,6 @@
 process.env.JWT_SECRET = 'test-jwt-secret';
 process.env.NODE_ENV = 'test';
-process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/fithub_test';
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/needforfit_test';
 
 jest.mock('../src/config/database', () => ({
   prisma: {

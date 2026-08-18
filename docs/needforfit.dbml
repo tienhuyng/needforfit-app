@@ -1,0 +1,363 @@
+// Needforfit PostgreSQL — import at https://dbdiagram.io
+// File → Import → paste this file, or drag needforfit.dbml into the editor
+
+Project needforfit {
+  database_type: 'PostgreSQL'
+  Note: '''
+    Source: backend/prisma/schema.prisma
+    program_trainee_assignments.trainee_id has no Prisma FK; ref shown for documentation.
+  '''
+}
+
+Enum user_role {
+  admin
+  pt
+  trainee
+}
+
+Enum user_status {
+  pending
+  active
+  inactive
+  deleted
+}
+
+Enum supported_language {
+  vi
+  en
+  zh
+  ja
+  es
+}
+
+Enum trainee_goal {
+  lose_weight
+  gain_muscle
+  improve_health
+  increase_strength
+  improve_posture
+}
+
+Enum assignment_status {
+  invite_pending
+  invite_rejected
+  active
+  paused
+  ended
+}
+
+Enum exercise_block_type {
+  normal
+  superset
+  dropset
+}
+
+Enum program_type {
+  strength
+  cardio
+  flexibility
+  mixed
+}
+
+Enum program_status {
+  draft
+  active
+  paused
+  completed
+  archived
+}
+
+Enum session_type {
+  strength
+  cardio
+  flexibility
+}
+
+Enum session_status {
+  draft
+  active
+  paused
+  completed
+}
+
+Enum workout_log_status {
+  completed
+  locked
+}
+
+Enum body_metric_status {
+  completed
+  locked
+}
+
+Table users {
+  id uuid [pk, default: `gen_random_uuid()`]
+  email varchar [unique, not null]
+  password_hash varchar [not null]
+  first_name varchar
+  last_name varchar
+  phone varchar
+  avatar_url varchar
+  role user_role [not null, default: 'trainee']
+  status user_status [not null, default: 'active']
+  preferred_language supported_language [not null, default: 'vi']
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+
+  Note: 'Core identity; role admin | pt | trainee'
+}
+
+Table password_reset_tokens {
+  id uuid [pk]
+  user_id uuid [not null]
+  token varchar [unique, not null]
+  expires_at timestamptz [not null]
+  used_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table user_notifications {
+  id uuid [pk]
+  user_id uuid [not null]
+  type varchar [not null]
+  title varchar [not null]
+  body varchar [not null]
+  read_at timestamptz
+  payload jsonb
+  created_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (user_id, created_at)
+  }
+}
+
+Table trainee_profiles {
+  id uuid [pk]
+  user_id uuid [unique, not null]
+  date_of_birth date
+  height_cm decimal(5,2)
+  current_weight_kg decimal(5,2)
+  goal trainee_goal
+  injury_history text
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+}
+
+Table pt_profiles {
+  id uuid [pk]
+  user_id uuid [unique, not null]
+  bio text
+  specialization varchar
+  years_experience int
+  certifications text
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+}
+
+Table pt_trainee_assignments {
+  id uuid [pk]
+  pt_id uuid [not null]
+  trainee_id uuid [not null]
+  status assignment_status [not null, default: 'active']
+  assigned_at timestamptz [not null, default: `now()`]
+  paused_at timestamptz
+  ended_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (pt_id, status)
+    (trainee_id, status)
+  }
+}
+
+Table training_programs {
+  id uuid [pk]
+  pt_id uuid [not null]
+  name varchar [not null]
+  objective text
+  program_type program_type [not null]
+  duration_weeks int
+  status program_status [not null, default: 'draft']
+  start_date date
+  end_date date
+  notes text
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (pt_id, status)
+  }
+}
+
+Table program_trainee_assignments {
+  id uuid [pk]
+  program_id uuid [not null]
+  trainee_id uuid [not null]
+  assigned_at timestamptz [not null, default: `now()`]
+  created_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (program_id, trainee_id) [unique]
+    trainee_id
+  }
+}
+
+Table workout_sessions {
+  id uuid [pk]
+  program_id uuid [not null]
+  name varchar [not null]
+  session_type session_type [not null]
+  scheduled_date date [not null]
+  estimated_duration_minutes int
+  notes text
+  status session_status [not null, default: 'draft']
+  session_version int [not null, default: 1]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (program_id, scheduled_date)
+  }
+}
+
+Table workout_session_exercises {
+  id uuid [pk]
+  session_id uuid [not null]
+  exercise_name varchar [not null]
+  planned_sets int
+  planned_reps int
+  planned_weight_kg decimal(6,2)
+  rest_seconds int
+  notes text
+  order_index int [not null, default: 0]
+  block_index int [not null, default: 0]
+  block_type exercise_block_type [not null, default: 'normal']
+  session_version int [not null, default: 1]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (session_id, order_index)
+  }
+}
+
+Table workout_logs {
+  id uuid [pk]
+  session_id uuid [not null]
+  trainee_id uuid [not null]
+  pt_id uuid [not null]
+  workout_date date [not null]
+  status workout_log_status [not null, default: 'completed']
+  locked_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (session_id, trainee_id) [unique]
+    (trainee_id, workout_date)
+    (pt_id, created_at)
+  }
+}
+
+Table workout_log_exercises {
+  id uuid [pk]
+  log_id uuid [not null]
+  exercise_name varchar [not null]
+  actual_sets int
+  actual_reps int
+  actual_weight_kg decimal(6,2)
+  notes text
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table workout_log_feedback {
+  id uuid [pk]
+  log_id uuid [unique, not null]
+  difficulty_rating int [not null]
+  fatigue_rating int [not null]
+  pain_or_discomfort boolean [not null]
+  template_responses jsonb
+  trainee_notes text
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table body_measurement_logs {
+  id uuid [pk]
+  trainee_id uuid [not null]
+  measurement_date date [not null]
+  weight_kg decimal(5,2) [not null]
+  body_fat_percent decimal(5,2)
+  muscle_mass_kg decimal(5,2)
+  measurements_json jsonb
+  notes text
+  status body_metric_status [not null, default: 'completed']
+  locked_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (trainee_id, measurement_date)
+  }
+}
+
+// --- Relationships ---
+
+Ref: password_reset_tokens.user_id > users.id [delete: cascade]
+
+Ref: user_notifications.user_id > users.id [delete: cascade]
+
+Ref: trainee_profiles.user_id - users.id [delete: cascade]
+
+Ref: pt_profiles.user_id - users.id [delete: cascade]
+
+Ref: pt_trainee_assignments.pt_id > users.id [delete: cascade]
+
+Ref: pt_trainee_assignments.trainee_id > users.id [delete: cascade]
+
+Ref: training_programs.pt_id > users.id [delete: cascade]
+
+Ref: program_trainee_assignments.program_id > training_programs.id [delete: cascade]
+
+Ref: program_trainee_assignments.trainee_id > users.id [delete: cascade]
+
+Ref: workout_sessions.program_id > training_programs.id [delete: cascade]
+
+Ref: workout_session_exercises.session_id > workout_sessions.id [delete: cascade]
+
+Ref: workout_logs.session_id > workout_sessions.id [delete: cascade]
+
+Ref: workout_logs.trainee_id > users.id [delete: cascade]
+
+Ref: workout_logs.pt_id > users.id [delete: cascade]
+
+Ref: workout_log_exercises.log_id > workout_logs.id [delete: cascade]
+
+Ref: workout_log_feedback.log_id - workout_logs.id [delete: cascade]
+
+Ref: body_measurement_logs.trainee_id > users.id [delete: cascade]
+
+TableGroup auth_and_users {
+  users
+  password_reset_tokens
+  user_notifications
+  trainee_profiles
+  pt_profiles
+}
+
+TableGroup coaching {
+  pt_trainee_assignments
+  training_programs
+  program_trainee_assignments
+}
+
+TableGroup workouts {
+  workout_sessions
+  workout_session_exercises
+  workout_logs
+  workout_log_exercises
+  workout_log_feedback
+}
+
+TableGroup metrics {
+  body_measurement_logs
+}
