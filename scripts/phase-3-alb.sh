@@ -6,7 +6,7 @@
 #
 # Usage:
 #   ./scripts/phase-3-alb.sh
-#   DOMAIN_NAME=needforfit-app.withkris.life ./scripts/phase-3-alb.sh
+#   DOMAIN_NAME=training.withkris.life ./scripts/phase-3-alb.sh
 #
 # Prerequisites: Phase 1 (phase-1-all.sh) + Phase 2 (phase-2-1-ec2.sh)
 # =============================================================================
@@ -48,13 +48,13 @@ require_phase_prereqs() {
 }
 
 prompt_domain() {
-  if [[ -n "${DOMAIN_NAME:-}" && "${DOMAIN_NAME}" != "needforfit-app.withkris.life" ]]; then
+  if [[ -n "${DOMAIN_NAME:-}" && "${DOMAIN_NAME}" != "training.withkris.life" ]]; then
     echo "  Domain (from setup-vars): ${DOMAIN_NAME}"
     return
   fi
-  if [[ -z "${DOMAIN_NAME:-}" || "${DOMAIN_NAME}" == "needforfit-app.withkris.life" ]]; then
-    read -rp "Domain name for SSL & DNS [${DOMAIN_NAME:-needforfit-app.withkris.life}]: " DOMAIN_INPUT
-    DOMAIN_NAME="${DOMAIN_INPUT:-${DOMAIN_NAME:-needforfit-app.withkris.life}}"
+  if [[ -z "${DOMAIN_NAME:-}" || "${DOMAIN_NAME}" == "training.withkris.life" ]]; then
+    read -rp "Domain name for SSL & DNS [${DOMAIN_NAME:-training.withkris.life}]: " DOMAIN_INPUT
+    DOMAIN_NAME="${DOMAIN_INPUT:-${DOMAIN_NAME:-training.withkris.life}}"
     export DOMAIN_NAME
     append_setup_var "DOMAIN_NAME" "${DOMAIN_NAME}"
   fi

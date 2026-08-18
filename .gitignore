@@ -79,4 +79,3 @@ github-secrets.txt
 *secrets*.txt
 !scripts/generate-aws-secrets.sh
 !scripts/github-secrets-updater.sh
-!scripts/phase-1-4-secrets.sh
