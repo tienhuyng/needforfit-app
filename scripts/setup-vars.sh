@@ -12,7 +12,7 @@
 # Export overrides before sourcing:
 #   export AWS_REGION=ap-southeast-1
 #   export APP_NAME=needforfit
-#   export DOMAIN_NAME=needforfit-app.withkris.life
+#   export DOMAIN_NAME=training.withkris.life
 #   source scripts/setup-vars.sh
 #
 # Run directly to print current configuration:
@@ -45,7 +45,7 @@
 export AWS_REGION="${AWS_REGION:-ap-southeast-1}"
 export APP_NAME="${APP_NAME:-needforfit}"
 export PROJECT_NAME="${APP_NAME}"                       # legacy alias used by phase scripts
-export DOMAIN_NAME="${DOMAIN_NAME:-needforfit-app.withkris.life}"
+export DOMAIN_NAME="${DOMAIN_NAME:-training.withkris.life}"
 export ENV_NAME="${ENV_NAME:-prod}"
 export TIMESTAMP="${TIMESTAMP:-$(date +%s)}"
 

@@ -13,7 +13,7 @@
 #
 # Optional env (skip prompts):
 #   SSH_CIDR=203.0.113.10/32
-#   DOMAIN_NAME=needforfit-app.withkris.life
+#   DOMAIN_NAME=training.withkris.life
 #   DOMAIN_REGISTRAR="Namecheap"
 #   AWS_REGION=ap-southeast-1
 #
@@ -88,7 +88,7 @@ Targets:
 Examples:
   bash scripts/setup-all.sh all
   bash scripts/setup-all.sh 1
-  SSH_CIDR=1.2.3.4/32 DOMAIN_NAME=needforfit-app.withkris.life bash scripts/setup-all.sh all
+  SSH_CIDR=1.2.3.4/32 DOMAIN_NAME=training.withkris.life bash scripts/setup-all.sh all
 
 Prerequisites:
   AWS CLI, jq, openssl, python3
@@ -427,8 +427,8 @@ print_instructions() {
   echo "   aws acm describe-certificate --certificate-arn ${CERT_ARN:-<CERT_ARN>} --query Certificate.Status"
   echo ""
   echo "3. Test deployment"
-  echo "   curl -I https://${DOMAIN_NAME:-needforfit-app.withkris.life}/"
-  echo "   curl https://${DOMAIN_NAME:-needforfit-app.withkris.life}/api/health"
+  echo "   curl -I https://${DOMAIN_NAME:-training.withkris.life}/"
+  echo "   curl https://${DOMAIN_NAME:-training.withkris.life}/api/health"
   if [[ -n "${EC2_PUBLIC_IP:-}" ]]; then
     echo "   ssh -i needforfit-key.pem ubuntu@${EC2_PUBLIC_IP}"
   fi

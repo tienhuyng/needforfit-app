@@ -20,8 +20,8 @@ on:
 
 env:
   AWS_REGION: ap-southeast-1
-  VITE_API_URL: https://needforfit-app.withkris.life/api
-  DEPLOY_URL: https://needforfit-app.withkris.life/
+  VITE_API_URL: https://training.withkris.life/api
+  DEPLOY_URL: https://training.withkris.life/
 
 jobs:
   build-and-deploy:
@@ -35,6 +35,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Verify deploy secrets
+        run: |
+          set -euo pipefail
+          missing=()
+          [[ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]] && missing+=("AWS_ACCESS_KEY_ID")
+          [[ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]] && missing+=("AWS_SECRET_ACCESS_KEY")
+          [[ -z "${{ secrets.S3_STATIC_BUCKET }}" ]] && missing+=("S3_STATIC_BUCKET")
+          if [[ ${#missing[@]} -gt 0 ]]; then
+            echo "::error::Missing GitHub secrets: ${missing[*]}"
+            echo "Run AWS deploy first: bash scripts/setup-all.sh all"
+            echo "Then: bash scripts/github-secrets-updater.sh"
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

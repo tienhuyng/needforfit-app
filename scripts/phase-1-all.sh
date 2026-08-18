@@ -9,7 +9,7 @@
 #   ./scripts/phase-1-all.sh
 #
 # Optional env (skip prompts):
-#   SSH_CIDR=203.0.113.10/32 DOMAIN_NAME=needforfit-app.withkris.life ./scripts/phase-1-all.sh
+#   SSH_CIDR=203.0.113.10/32 DOMAIN_NAME=training.withkris.life ./scripts/phase-1-all.sh
 #
 # Outputs:
 #   - Appends resource IDs to scripts/setup-vars.sh

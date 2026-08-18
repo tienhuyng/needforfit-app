@@ -31,8 +31,8 @@ env:
   ECR_REPOSITORY: needforfit-backend
   CONTAINER_NAME: needforfit-backend
   CONTAINER_PORT: 5000
-  DEPLOY_API_URL: https://needforfit-app.withkris.life/api
-  FRONTEND_URL: https://needforfit-app.withkris.life
+  DEPLOY_API_URL: https://training.withkris.life/api
+  FRONTEND_URL: https://training.withkris.life
 
 jobs:
   build-and-deploy:
@@ -50,6 +50,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Verify deploy secrets
+        run: |
+          set -euo pipefail
+          missing=()
+          [[ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]] && missing+=("AWS_ACCESS_KEY_ID")
+          [[ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]] && missing+=("AWS_SECRET_ACCESS_KEY")
+          [[ -z "${{ secrets.EC2_SSH_KEY }}" ]] && missing+=("EC2_SSH_KEY")
+          [[ -z "${{ secrets.EC2_HOST }}" ]] && missing+=("EC2_HOST")
+          [[ -z "${{ secrets.EC2_USER }}" ]] && missing+=("EC2_USER")
+          [[ -z "${{ secrets.DATABASE_URL }}" ]] && missing+=("DATABASE_URL")
+          [[ -z "${{ secrets.JWT_SECRET }}" ]] && missing+=("JWT_SECRET")
+          if [[ ${#missing[@]} -gt 0 ]]; then
+            echo "::error::Missing GitHub secrets: ${missing[*]}"
+            echo "Run AWS deploy first: bash scripts/setup-all.sh all"
+            echo "Then: bash scripts/github-secrets-updater.sh"
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

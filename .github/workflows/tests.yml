@@ -44,7 +44,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_API_URL: https://needforfit-app.withkris.life/api
+          VITE_API_URL: https://training.withkris.life/api
         run: npm run build --if-present
 
   backend:
