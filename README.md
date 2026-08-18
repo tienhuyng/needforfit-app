@@ -1,6 +1,6 @@
 # Needforfit App
 
-Gym Management & Coaching Platform — Phase 1 POC (Auth)
+Training Workout & Coaching Management Platform — Phase 1 POC (Auth)
 
 ## Structure
 
