@@ -3,14 +3,16 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/template';
+import { Button, Card, CardContent, CardHeader, CardTitle } from '@/components/template';
 import { Badge } from '@/components/ui/badge';
-import { traineeApi, getApiErrorMessage } from '@/services/trainee.service';
+import { authApi, getApiErrorMessage } from '@/services/auth.service';
+import { traineeApi } from '@/services/trainee.service';
 import { TraineeProgramItem } from '@/types/trainee';
 
 export const MyProgramsPage: React.FC = () => {
   const { t } = useTranslation();
   const [programs, setPrograms] = useState<TraineeProgramItem[]>([]);
+  const [selfTrainingEnabled, setSelfTrainingEnabled] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,7 +21,12 @@ export const MyProgramsPage: React.FC = () => {
       setError('');
       setIsLoading(true);
       try {
-        setPrograms(await traineeApi.getPrograms());
+        const [programList, profile] = await Promise.all([
+          traineeApi.getPrograms(),
+          authApi.getProfile(),
+        ]);
+        setPrograms(programList);
+        setSelfTrainingEnabled(profile.traineeProfile?.trainingMode === 'self_training');
       } catch (err) {
         setError(getApiErrorMessage(err, 'trainee.errors.loadFailed'));
       } finally {
@@ -32,6 +39,12 @@ export const MyProgramsPage: React.FC = () => {
   return (
     <TraineeLayout title={t('trainee.programs.title')}>
       <div className="space-y-4">
+        {selfTrainingEnabled && (
+          <Button asChild className="w-full">
+            <Link to="/trainee/programs/new">{t('trainee.selfTraining.createProgramLink')}</Link>
+          </Button>
+        )}
+
         {error && <Alert type="error" message={error} />}
 
         {isLoading ? (
@@ -49,7 +62,9 @@ export const MyProgramsPage: React.FC = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
-                  <p>{p.ptName}</p>
+                  <p>
+                    {p.isSelfTraining ? t('trainee.selfTraining.ptLabel') : p.ptName}
+                  </p>
                   <p>
                     {t(`pt.programTypes.${p.programType}`)} · {p.completedCount}/{p.sessionCount}{' '}
                     {t('trainee.programs.sessionsDone')}

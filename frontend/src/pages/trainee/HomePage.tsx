@@ -219,21 +219,33 @@ export const HomePage: React.FC = () => {
             </Card>
 
             <Card>
-              <CardHeader className="pb-2">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-base">{t('trainee.home.activePrograms')}</CardTitle>
+                {data.trainingMode === 'self_training' && (
+                  <Link
+                    to="/trainee/programs/new"
+                    className="text-xs font-medium text-primary hover:underline"
+                  >
+                    {t('trainee.selfTraining.createProgramLink')}
+                  </Link>
+                )}
               </CardHeader>
               <CardContent className="space-y-2">
                 {data.activePrograms.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t('trainee.home.noPrograms')}</p>
                 ) : (
                   data.activePrograms.map((p) => (
-                    <div key={p.id} className="rounded-md border p-3">
+                    <Link
+                      key={p.id}
+                      to={`/trainee/programs/${p.id}`}
+                      className="block rounded-md border p-3 transition-colors hover:bg-muted/50"
+                    >
                       <p className="font-medium">{p.name}</p>
                       <p className="text-xs text-muted-foreground">
                         {t(`pt.programTypes.${p.programType}`)} · {p.sessionCount}{' '}
                         {t('trainee.home.sessions')}
                       </p>
-                    </div>
+                    </Link>
                   ))
                 )}
               </CardContent>

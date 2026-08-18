@@ -5,6 +5,8 @@ import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage';
 import { ProfileSettingsPage } from '@/pages/auth/ProfileSettingsPage';
+import { WelcomePage } from '@/pages/public/WelcomePage';
+import { AvailableSoonPage } from '@/pages/public/AvailableSoonPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardPage } from '@/pages/pt/DashboardPage';
 import { TraineeListPage } from '@/pages/pt/TraineeListPage';
@@ -22,6 +24,9 @@ import { LogWorkoutPage } from '@/pages/trainee/LogWorkoutPage';
 import { WorkoutHistoryPage } from '@/pages/trainee/WorkoutHistoryPage';
 import { WorkoutDetailPage } from '@/pages/trainee/WorkoutDetailPage';
 import { BodyMetricsPage } from '@/pages/trainee/BodyMetricsPage';
+import { TraineeCreateProgramPage } from '@/pages/trainee/TraineeCreateProgramPage';
+import { TraineeCreateSessionPage } from '@/pages/trainee/TraineeCreateSessionPage';
+import { TraineeAddExercisesPage } from '@/pages/trainee/TraineeAddExercisesPage';
 
 export const App: React.FC = () => {
   return (
@@ -31,6 +36,7 @@ export const App: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/available-soon" element={<AvailableSoonPage />} />
         <Route
           path="/settings/profile"
           element={
@@ -40,7 +46,7 @@ export const App: React.FC = () => {
           }
         />
 
-        <Route path="/" element={<Navigate to="/trainee/home" replace />} />
+        <Route path="/" element={<WelcomePage />} />
 
         <Route
           path="/trainee/home"
@@ -55,6 +61,30 @@ export const App: React.FC = () => {
           element={
             <ProtectedRoute allowedRoles={['trainee']}>
               <MyProgramsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/programs/new"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <TraineeCreateProgramPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/self-programs/:programId/sessions/new"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <TraineeCreateSessionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trainee/self-programs/:programId/sessions/:sessionId/exercises"
+          element={
+            <ProtectedRoute allowedRoles={['trainee']}>
+              <TraineeAddExercisesPage />
             </ProtectedRoute>
           }
         />
@@ -180,7 +210,7 @@ export const App: React.FC = () => {
           }
         />
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

@@ -19,6 +19,7 @@ export interface PtDashboardTraineeRow {
 export interface PtActivityItem {
   id: string;
   type: 'workout_log' | 'program_created' | 'assignment';
+  tag: string;
   title: string;
   subtitle: string;
   occurredAt: string;
@@ -127,7 +128,7 @@ export interface SessionSummary {
   id: string;
   name: string;
   sessionType: SessionType;
-  scheduledDate: string;
+  scheduledDate: string | null;
   estimatedDurationMinutes: number | null;
   status: string;
   exerciseCount: number;

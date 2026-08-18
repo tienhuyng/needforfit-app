@@ -47,7 +47,6 @@ export const EditSessionPage: React.FC = () => {
         reset({
           name: data.name,
           sessionType: data.sessionType,
-          scheduledDate: data.scheduledDate,
           estimatedDurationMinutes: data.estimatedDurationMinutes ?? undefined,
           notes: data.notes ?? '',
         });
@@ -122,12 +121,6 @@ export const EditSessionPage: React.FC = () => {
                       </label>
                     ))}
                   </div>
-                </div>
-                <div>
-                  <FormLabel htmlFor="scheduledDate" required>
-                    {t('pt.sessions.scheduledDate')}
-                  </FormLabel>
-                  <Input id="scheduledDate" type="date" {...register('scheduledDate')} />
                 </div>
                 <div>
                   <FormLabel htmlFor="duration">{t('pt.sessions.duration')}</FormLabel>

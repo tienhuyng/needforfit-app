@@ -3,8 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PageStickyHeader } from '@/components/common/PageStickyHeader';
-import { PTLayout } from '@/components/pt/PTLayout';
+import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
 import {
   Button,
@@ -16,11 +15,11 @@ import {
   Input,
 } from '@/components/template';
 import { FormLabel } from '@/components/common/FormLabel';
-import { ptApi, getApiErrorMessage } from '@/services/pt.service';
+import { traineeApi, getApiErrorMessage } from '@/services/trainee.service';
 import { createSessionSchema, CreateSessionFormData } from '@/utils/pt-validation';
 import { cn } from '@/lib/utils';
 
-export const CreateSessionPage: React.FC = () => {
+export const TraineeCreateSessionPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { programId } = useParams<{ programId: string }>();
@@ -43,28 +42,22 @@ export const CreateSessionPage: React.FC = () => {
     setError('');
     setIsLoading(true);
     try {
-      const session = await ptApi.createSession(programId, data);
-      navigate(`/pt/programs/${programId}/sessions/${session.id}/exercises`);
+      const result = await traineeApi.createSelfSession(programId, data);
+      navigate(`/trainee/self-programs/${programId}/sessions/${result.sessionId}/exercises`);
     } catch (err) {
-      setError(getApiErrorMessage(err, 'pt.errors.createFailed'));
+      setError(getApiErrorMessage(err, 'trainee.errors.loadFailed'));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <PTLayout>
-      <PageStickyHeader
-        backTo={programId ? `/pt/programs/${programId}` : '/pt/programs'}
-        title={t('pt.sessions.createTitle')}
-        subtitle={t('pt.sessions.createSubtitle')}
-      />
-
+    <TraineeLayout title={t('trainee.selfTraining.createWorkoutTitle')} hideNav>
       <div className="mx-auto max-w-2xl space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>{t('pt.sessions.createTitle')}</CardTitle>
-            <CardDescription>{t('pt.sessions.createSubtitle')}</CardDescription>
+            <CardTitle>{t('trainee.selfTraining.createWorkoutTitle')}</CardTitle>
+            <CardDescription>{t('trainee.selfTraining.createWorkoutDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             {error && <Alert type="error" message={error} />}
@@ -93,11 +86,6 @@ export const CreateSessionPage: React.FC = () => {
                   <option value="cardio">{t('pt.sessionTypes.cardio')}</option>
                   <option value="flexibility">{t('pt.sessionTypes.flexibility')}</option>
                 </select>
-                {errors.sessionType && (
-                  <p className="text-sm font-medium text-destructive" role="alert">
-                    {errors.sessionType.message}
-                  </p>
-                )}
               </div>
 
               <Input
@@ -127,12 +115,12 @@ export const CreateSessionPage: React.FC = () => {
               >
                 {isSubmitting || isLoading
                   ? t('pt.sessions.submitting')
-                  : t('pt.sessions.submit')}
+                  : t('trainee.selfTraining.createWorkoutSubmit')}
               </Button>
             </form>
           </CardContent>
         </Card>
       </div>
-    </PTLayout>
+    </TraineeLayout>
   );
 };

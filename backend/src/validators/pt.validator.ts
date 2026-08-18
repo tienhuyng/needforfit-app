@@ -20,11 +20,12 @@ export const createProgramSchema = z.object({
 export const createSessionSchema = z.object({
   name: z.string({ required_error: PT_I18N_KEYS.nameRequired }).min(1, PT_I18N_KEYS.nameRequired),
   sessionType: sessionTypeSchema,
-  scheduledDate: z
-    .string({ required_error: PT_I18N_KEYS.scheduledDateRequired })
-    .min(1, PT_I18N_KEYS.scheduledDateRequired),
   estimatedDurationMinutes: z.coerce.number().int().positive().optional(),
   notes: z.string().optional(),
+});
+
+export const scheduleSessionSchema = z.object({
+  dates: z.array(z.string().min(1)).min(1, PT_I18N_KEYS.scheduledDateRequired),
 });
 
 export const exerciseItemSchema = z.object({
@@ -81,6 +82,7 @@ export type UpdateProgramInput = z.infer<typeof updateProgramSchema>;
 export type AssignProgramInput = z.infer<typeof assignProgramSchema>;
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
 export type UpdateSessionInput = z.infer<typeof updateSessionSchema>;
+export type ScheduleSessionInput = z.infer<typeof scheduleSessionSchema>;
 export type AddExercisesInput = z.infer<typeof addExercisesSchema>;
 export type InviteTraineeInput = z.infer<typeof inviteTraineeSchema>;
 export type TraineeListQuery = z.infer<typeof traineeListQuerySchema>;

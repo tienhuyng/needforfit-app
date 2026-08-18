@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PageStickyHeader } from '@/components/common/PageStickyHeader';
-import { PTLayout } from '@/components/pt/PTLayout';
+import { TraineeLayout } from '@/components/trainee/TraineeLayout';
 import { Alert } from '@/components/common/Alert';
 import {
   Button,
@@ -16,100 +15,94 @@ import {
   Input,
 } from '@/components/template';
 import { FormLabel } from '@/components/common/FormLabel';
-import { ptApi, getApiErrorMessage } from '@/services/pt.service';
-import { createSessionSchema, CreateSessionFormData } from '@/utils/pt-validation';
+import { traineeApi, getApiErrorMessage } from '@/services/trainee.service';
+import { createProgramSchema, CreateProgramFormData } from '@/utils/pt-validation';
 import { cn } from '@/lib/utils';
 
-export const CreateSessionPage: React.FC = () => {
+export const TraineeCreateProgramPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { programId } = useParams<{ programId: string }>();
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const schema = createSessionSchema(t);
+  const schema = createProgramSchema(t);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<CreateSessionFormData>({
+  } = useForm<CreateProgramFormData>({
     resolver: zodResolver(schema),
-    defaultValues: { sessionType: 'strength' },
+    defaultValues: { programType: 'strength' },
   });
 
-  const onSubmit = async (data: CreateSessionFormData) => {
-    if (!programId) return;
+  const onSubmit = async (data: CreateProgramFormData) => {
     setError('');
     setIsLoading(true);
     try {
-      const session = await ptApi.createSession(programId, data);
-      navigate(`/pt/programs/${programId}/sessions/${session.id}/exercises`);
+      const result = await traineeApi.createSelfProgram(data);
+      navigate(`/trainee/self-programs/${result.programId}/sessions/new`);
     } catch (err) {
-      setError(getApiErrorMessage(err, 'pt.errors.createFailed'));
+      setError(getApiErrorMessage(err, 'trainee.errors.loadFailed'));
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <PTLayout>
-      <PageStickyHeader
-        backTo={programId ? `/pt/programs/${programId}` : '/pt/programs'}
-        title={t('pt.sessions.createTitle')}
-        subtitle={t('pt.sessions.createSubtitle')}
-      />
-
+    <TraineeLayout title={t('trainee.selfTraining.createProgramTitle')} hideNav>
       <div className="mx-auto max-w-2xl space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>{t('pt.sessions.createTitle')}</CardTitle>
-            <CardDescription>{t('pt.sessions.createSubtitle')}</CardDescription>
+            <CardTitle>{t('trainee.selfTraining.createProgramTitle')}</CardTitle>
+            <CardDescription>{t('trainee.selfTraining.createProgramDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             {error && <Alert type="error" message={error} />}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
               <Input
-                label={t('pt.sessions.name')}
+                label={t('pt.programs.name')}
                 labelRequired
                 error={errors.name?.message}
                 {...register('name')}
               />
 
-              <div className="space-y-2">
-                <FormLabel htmlFor="sessionType" required>
-                  {t('pt.sessions.type')}
-                </FormLabel>
-                <select
-                  id="sessionType"
-                  className={cn(
-                    'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    errors.sessionType && 'border-destructive focus-visible:ring-destructive'
-                  )}
-                  {...register('sessionType')}
-                >
-                  <option value="strength">{t('pt.sessionTypes.strength')}</option>
-                  <option value="cardio">{t('pt.sessionTypes.cardio')}</option>
-                  <option value="flexibility">{t('pt.sessionTypes.flexibility')}</option>
-                </select>
-                {errors.sessionType && (
-                  <p className="text-sm font-medium text-destructive" role="alert">
-                    {errors.sessionType.message}
-                  </p>
-                )}
-              </div>
-
               <Input
-                label={t('pt.sessions.duration')}
-                type="number"
-                min={1}
-                error={errors.estimatedDurationMinutes?.message}
-                {...register('estimatedDurationMinutes')}
+                label={t('pt.programs.objective')}
+                error={errors.objective?.message}
+                {...register('objective')}
               />
 
               <div className="space-y-2">
-                <FormLabel htmlFor="notes">{t('pt.sessions.notes')}</FormLabel>
+                <FormLabel htmlFor="programType" required>
+                  {t('pt.programs.type')}
+                </FormLabel>
+                <select
+                  id="programType"
+                  className={cn(
+                    'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    errors.programType && 'border-destructive focus-visible:ring-destructive'
+                  )}
+                  {...register('programType')}
+                >
+                  <option value="strength">{t('pt.programTypes.strength')}</option>
+                  <option value="cardio">{t('pt.programTypes.cardio')}</option>
+                  <option value="flexibility">{t('pt.programTypes.flexibility')}</option>
+                  <option value="mixed">{t('pt.programTypes.mixed')}</option>
+                </select>
+              </div>
+
+              <Input
+                label={t('pt.programs.durationWeeks')}
+                type="number"
+                min={1}
+                error={errors.durationWeeks?.message}
+                {...register('durationWeeks')}
+              />
+
+              <div className="space-y-2">
+                <FormLabel htmlFor="notes">{t('pt.programs.notes')}</FormLabel>
                 <textarea
                   id="notes"
                   rows={3}
@@ -126,13 +119,13 @@ export const CreateSessionPage: React.FC = () => {
                 isLoading={isSubmitting || isLoading}
               >
                 {isSubmitting || isLoading
-                  ? t('pt.sessions.submitting')
-                  : t('pt.sessions.submit')}
+                  ? t('pt.programs.submitting')
+                  : t('trainee.selfTraining.createProgramSubmit')}
               </Button>
             </form>
           </CardContent>
         </Card>
       </div>
-    </PTLayout>
+    </TraineeLayout>
   );
 };

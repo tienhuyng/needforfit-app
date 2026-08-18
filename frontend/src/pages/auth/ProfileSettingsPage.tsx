@@ -13,6 +13,8 @@ import { authApi, getApiErrorMessage } from '@/services/auth.service';
 import { AuthUser, ProfileResponse } from '@/types/auth';
 import { getAuthUser, storeAuthUser } from '@/utils/auth-storage';
 import { SUPPORTED_LANGUAGES } from '@/config/i18n';
+import { useTheme } from '@/components/theme/ThemeProvider';
+import { Badge } from '@/components/ui/badge';
 
 const languageOptions = [
   { value: 'vi', label: 'Tiếng Việt' },
@@ -40,6 +42,7 @@ type ProfileFormData = {
   currentWeightKg: string;
   goal: (typeof TRAINEE_GOALS)[number] | '';
   injuryHistory: string;
+  trainingMode: 'self_training' | 'coached';
 };
 
 function toFormValues(profile: ProfileResponse | null, fallbackUser: AuthUser | null): ProfileFormData {
@@ -66,6 +69,7 @@ function toFormValues(profile: ProfileResponse | null, fallbackUser: AuthUser | 
     currentWeightKg: tp?.currentWeightKg != null ? String(tp.currentWeightKg) : '',
     goal,
     injuryHistory: tp?.injuryHistory ?? '',
+    trainingMode: tp?.trainingMode === 'self_training' ? 'self_training' : 'coached',
   };
 }
 
@@ -77,6 +81,7 @@ function parseOptionalPositive(value: string): number | undefined {
 
 export const ProfileSettingsPage: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<AuthUser | null>(() => getAuthUser());
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -102,6 +107,7 @@ export const ProfileSettingsPage: React.FC = () => {
       currentWeightKg: optionalPositive,
       goal: z.enum(['', ...TRAINEE_GOALS]),
       injuryHistory: z.string().optional(),
+      trainingMode: z.enum(['self_training', 'coached']),
     });
   }, [t]);
 
@@ -154,6 +160,7 @@ export const ProfileSettingsPage: React.FC = () => {
         if (weight !== undefined) payload.currentWeightKg = weight;
         payload.goal = data.goal;
         payload.injuryHistory = data.injuryHistory ?? '';
+        payload.trainingMode = data.trainingMode;
       }
 
       const result = await authApi.updateProfile(payload);
@@ -166,6 +173,15 @@ export const ProfileSettingsPage: React.FC = () => {
       setError(getApiErrorMessage(err, 'auth.errors.generic'));
     }
   };
+
+  const roleLabel =
+    user?.role === 'trainee'
+      ? t('auth.profile.roleTrainee')
+      : user?.role === 'pt'
+        ? t('auth.profile.rolePt')
+        : user?.role === 'admin'
+          ? t('auth.profile.roleAdmin')
+          : '';
 
   const today = new Date().toISOString().slice(0, 10);
 
@@ -190,6 +206,38 @@ export const ProfileSettingsPage: React.FC = () => {
               <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {user && (
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-3">
+                    <div>
+                      <p className="text-xs text-muted-foreground">{t('auth.profile.role')}</p>
+                      <Badge variant="secondary" className="mt-1">
+                        {roleLabel}
+                      </Badge>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">{t('auth.profile.theme')}</p>
+                      <div className="mt-1 flex gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={theme === 'light' ? 'primary' : 'secondary'}
+                          onClick={() => setTheme('light')}
+                        >
+                          {t('auth.profile.themeLight')}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={theme === 'dark' ? 'primary' : 'secondary'}
+                          onClick={() => setTheme('dark')}
+                        >
+                          {t('auth.profile.themeDark')}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <FormLabel htmlFor="firstName" required>
                     {t('auth.register.firstName')}
@@ -232,6 +280,21 @@ export const ProfileSettingsPage: React.FC = () => {
 
                 {isTrainee && (
                   <div className="space-y-4 border-t pt-4">
+                    <div>
+                      <FormLabel htmlFor="trainingMode">{t('auth.profile.trainingMode')}</FormLabel>
+                      <select
+                        id="trainingMode"
+                        className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        {...register('trainingMode')}
+                      >
+                        <option value="coached">{t('auth.profile.trainingModeCoached')}</option>
+                        <option value="self_training">{t('auth.profile.trainingModeSelf')}</option>
+                      </select>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {t('auth.profile.trainingModeDesc')}
+                      </p>
+                    </div>
+
                     <div>
                       <p className="text-sm font-medium">{t('auth.profile.traineeSectionTitle')}</p>
                       <p className="text-xs text-muted-foreground">

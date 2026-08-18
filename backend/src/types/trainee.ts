@@ -5,6 +5,7 @@ export interface TraineeHomeResponse {
   weightTrend: WeightTrendPoint[];
   activePrograms: ActiveProgramItem[];
   ptInvites: TraineePtInviteItem[];
+  trainingMode: 'self_training' | 'coached';
 }
 
 export interface TraineePtInviteItem {
@@ -66,6 +67,7 @@ export interface TraineeProgramItem {
   programType: string;
   status: string;
   ptName: string;
+  isSelfTraining: boolean;
   progressPercent: number;
   sessionCount: number;
   completedCount: number;
@@ -81,6 +83,8 @@ export interface TraineeProgramSessionItem {
   isLocked: boolean;
   existingLogId: string | null;
   isCompleted: boolean;
+  isTemplate: boolean;
+  canSchedule: boolean;
 }
 
 export interface SessionDetailResponse {
@@ -93,6 +97,7 @@ export interface SessionDetailResponse {
   canLog: boolean;
   isLocked: boolean;
   existingLogId: string | null;
+  canSchedule: boolean;
   exercises: SessionExerciseItem[];
 }
 

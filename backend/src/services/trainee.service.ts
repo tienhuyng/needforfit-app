@@ -4,6 +4,7 @@ import {
   Prisma,
   ProgramStatus,
   SessionStatus,
+  TrainingMode,
   WorkoutLogStatus,
 } from '@prisma/client';
 import { prisma } from '../config/database';
@@ -22,7 +23,14 @@ import {
   MetricsHistoryQuery,
   WorkoutHistoryQuery,
 } from '../validators/trainee.validator';
+import {
+  AddExercisesInput,
+  CreateProgramInput,
+  CreateSessionInput,
+  ScheduleSessionInput,
+} from '../validators/pt.validator';
 import { getCurrentVersionExercises } from '../utils/session-exercises';
+import { hasScheduledDate } from '../utils/session-schedule';
 import { parseSetDetails, totalVolumeKg } from '../utils/workout-volume';
 import { createUserNotification, formatUserName } from '../utils/user-notifications';
 import {
@@ -48,6 +56,10 @@ function decimalToNumber(value: Prisma.Decimal | null | undefined): number | nul
 
 function formatDate(date: Date): string {
   return date.toISOString().slice(0, 10);
+}
+
+function formatDateOptional(date: Date | null): string | null {
+  return date ? formatDate(date) : null;
 }
 
 async function getAssignedProgramIds(traineeId: string): Promise<string[]> {
@@ -108,6 +120,7 @@ async function lockExpiredLogs(traineeId: string): Promise<void> {
 
   const now = new Date();
   for (const log of logs) {
+    if (!hasScheduledDate(log.session.scheduledDate)) continue;
     if (shouldLockLog(log.session.scheduledDate, now)) {
       await prisma.workoutLog.update({
         where: { id: log.id },
@@ -145,13 +158,13 @@ export class TraineeService {
     const weekAhead = new Date(today);
     weekAhead.setDate(weekAhead.getDate() + 7);
 
-    const [sessions, recentLogs, weightLogs, programs, pendingInvites] = await Promise.all([
+    const [sessions, recentLogs, weightLogs, programs, pendingInvites, traineeProfile] = await Promise.all([
       programIds.length
         ? prisma.workoutSession.findMany({
             where: {
               programId: { in: programIds },
               status: { in: [SessionStatus.active, SessionStatus.completed] },
-              scheduledDate: { gte: today, lte: weekAhead },
+              scheduledDate: { not: null, gte: today, lte: weekAhead },
             },
             include: {
               program: true,
@@ -191,9 +204,12 @@ export class TraineeService {
         include: { pt: true },
         orderBy: { assignedAt: 'desc' },
       }),
+      prisma.traineeProfile.findUnique({ where: { userId: traineeId } }),
     ]);
 
-    const todaySessions = sessions.filter((s) => startOfDay(s.scheduledDate).getTime() === today.getTime());
+    const todaySessions = sessions.filter(
+      (s) => s.scheduledDate != null && startOfDay(s.scheduledDate).getTime() === today.getTime()
+    );
     const todaySession = todaySessions[0] ?? null;
 
     const todayWorkout = todaySession
@@ -208,7 +224,7 @@ export class TraineeService {
         programId: s.programId,
         programName: s.program.name,
         sessionName: s.name,
-        scheduledDate: formatDate(s.scheduledDate),
+        scheduledDate: formatDateOptional(s.scheduledDate) ?? '',
         exerciseCount: s.exercises.length,
       }));
 
@@ -247,6 +263,7 @@ export class TraineeService {
       weightTrend,
       activePrograms,
       ptInvites,
+      trainingMode: traineeProfile?.trainingMode ?? 'coached',
     };
   }
 
@@ -364,10 +381,12 @@ export class TraineeService {
     const existingLog = session.logs[0] ?? null;
     const canLog =
       !existingLog &&
+      hasScheduledDate(session.scheduledDate) &&
       isWithinLogWindow(session.scheduledDate) &&
       session.exercises.length > 0;
     const isLocked =
       existingLog?.status === WorkoutLogStatus.locked ||
+      !hasScheduledDate(session.scheduledDate) ||
       shouldLockLog(session.scheduledDate);
 
     return {
@@ -375,7 +394,7 @@ export class TraineeService {
       programId: session.programId,
       programName: session.program.name,
       sessionName: session.name,
-      scheduledDate: formatDate(session.scheduledDate),
+      scheduledDate: formatDateOptional(session.scheduledDate) ?? '',
       exerciseCount: session.exercises.length,
       canLog,
       isLocked,
@@ -390,21 +409,29 @@ export class TraineeService {
     const currentExercises = getCurrentVersionExercises(session.sessionVersion, session.exercises);
     const canLog =
       !existingLog &&
+      hasScheduledDate(session.scheduledDate) &&
       isWithinLogWindow(session.scheduledDate) &&
       currentExercises.length > 0;
+
+    const isTemplate =
+      session.status === SessionStatus.draft && !hasScheduledDate(session.scheduledDate);
+    const canSchedule =
+      session.program.isSelfTraining && isTemplate && currentExercises.length > 0;
 
     return {
       sessionId: session.id,
       programId: session.programId,
       programName: session.program.name,
       sessionName: session.name,
-      scheduledDate: formatDate(session.scheduledDate),
+      scheduledDate: formatDateOptional(session.scheduledDate) ?? '',
       sessionType: session.sessionType,
       canLog,
       isLocked:
         existingLog?.status === WorkoutLogStatus.locked ||
+        !hasScheduledDate(session.scheduledDate) ||
         shouldLockLog(session.scheduledDate),
       existingLogId: existingLog?.id ?? null,
+      canSchedule,
       exercises: currentExercises.map((e) => ({
         id: e.id,
         exerciseName: e.exerciseName,
@@ -432,7 +459,7 @@ export class TraineeService {
       );
     }
 
-    if (!isWithinLogWindow(session.scheduledDate)) {
+    if (!hasScheduledDate(session.scheduledDate) || !isWithinLogWindow(session.scheduledDate)) {
       throw new AppError(
         TRAINEE_ERROR_CODES.OUTSIDE_LOG_WINDOW,
         TRAINEE_I18N_KEYS.outsideLogWindow,
@@ -564,7 +591,7 @@ export class TraineeService {
       isLocked: log.status === WorkoutLogStatus.locked,
       programName: log.session.program.name,
       sessionName: log.session.name,
-      scheduledDate: formatDate(log.session.scheduledDate),
+      scheduledDate: formatDateOptional(log.session.scheduledDate) ?? '',
       totalVolumeKg: totalVolumeKg(exercises),
       exercises,
       feedback: log.feedback
@@ -729,8 +756,9 @@ export class TraineeService {
         completedSessionIds.has(s.id)
       ).length;
       const pt = a.program.pt;
-      const ptName =
-        [pt.firstName, pt.lastName].filter(Boolean).join(' ') || pt.email;
+      const ptName = a.program.isSelfTraining
+        ? 'Self-training'
+        : [pt.firstName, pt.lastName].filter(Boolean).join(' ') || pt.email;
 
       return {
         id: a.program.id,
@@ -738,6 +766,7 @@ export class TraineeService {
         programType: a.program.programType,
         status: a.program.status,
         ptName,
+        isSelfTraining: a.program.isSelfTraining,
         sessionCount,
         completedCount,
         progressPercent:
@@ -762,12 +791,29 @@ export class TraineeService {
       );
     }
 
+    const program = await prisma.trainingProgram.findUnique({
+      where: { id: programId },
+      select: { isSelfTraining: true },
+    });
+
+    if (!program) {
+      throw new AppError(
+        TRAINEE_ERROR_CODES.SESSION_NOT_ACCESSIBLE,
+        TRAINEE_I18N_KEYS.sessionNotAccessible,
+        403
+      );
+    }
+
     await lockExpiredLogs(traineeId);
+
+    const sessionStatuses = program.isSelfTraining
+      ? [SessionStatus.active, SessionStatus.completed, SessionStatus.draft]
+      : [SessionStatus.active, SessionStatus.completed];
 
     const sessions = await prisma.workoutSession.findMany({
       where: {
         programId,
-        status: { in: [SessionStatus.active, SessionStatus.completed] },
+        status: { in: sessionStatuses },
       },
       include: {
         exercises: true,
@@ -782,23 +828,33 @@ export class TraineeService {
         session.exercises
       );
       const existingLog = session.logs[0] ?? null;
+      const scheduled = session.scheduledDate;
       const canLog =
         !existingLog &&
-        isWithinLogWindow(session.scheduledDate) &&
+        hasScheduledDate(scheduled) &&
+        isWithinLogWindow(scheduled) &&
         currentExercises.length > 0;
+
+      const isTemplate =
+        session.status === SessionStatus.draft && !hasScheduledDate(scheduled);
+      const canSchedule =
+        program.isSelfTraining && isTemplate && currentExercises.length > 0;
 
       return {
         sessionId: session.id,
         sessionName: session.name,
-        scheduledDate: formatDate(session.scheduledDate),
+        scheduledDate: formatDateOptional(scheduled) ?? '',
         sessionType: session.sessionType,
         exerciseCount: currentExercises.length,
         canLog,
         isLocked:
           existingLog?.status === WorkoutLogStatus.locked ||
-          shouldLockLog(session.scheduledDate),
+          !hasScheduledDate(scheduled) ||
+          shouldLockLog(scheduled),
         existingLogId: existingLog?.id ?? null,
         isCompleted: !!existingLog,
+        isTemplate,
+        canSchedule,
       };
     });
   }
@@ -821,6 +877,128 @@ export class TraineeService {
     }
 
     return this.getSessionDetail(traineeId, sessionId);
+  }
+
+  private async assertSelfTrainingEnabled(traineeId: string) {
+    const profile = await prisma.traineeProfile.findUnique({ where: { userId: traineeId } });
+    if (profile?.trainingMode !== TrainingMode.self_training) {
+      throw new AppError(
+        TRAINEE_ERROR_CODES.SESSION_NOT_ACCESSIBLE,
+        TRAINEE_I18N_KEYS.selfTrainingDisabled,
+        403
+      );
+    }
+  }
+
+  private async assertSelfProgram(traineeId: string, programId: string) {
+    const program = await prisma.trainingProgram.findFirst({
+      where: { id: programId, ptId: traineeId, isSelfTraining: true },
+    });
+    if (!program) {
+      throw new AppError(
+        TRAINEE_ERROR_CODES.SESSION_NOT_ACCESSIBLE,
+        TRAINEE_I18N_KEYS.sessionNotAccessible,
+        403
+      );
+    }
+    return program;
+  }
+
+  async createSelfProgram(
+    traineeId: string,
+    input: CreateProgramInput,
+    language: SupportedLanguage
+  ) {
+    await this.assertSelfTrainingEnabled(traineeId);
+
+    const program = await prisma.$transaction(async (tx) => {
+      const created = await tx.trainingProgram.create({
+        data: {
+          ptId: traineeId,
+          name: input.name,
+          objective: input.objective,
+          programType: input.programType,
+          durationWeeks: input.durationWeeks,
+          notes: input.notes,
+          status: ProgramStatus.active,
+          isSelfTraining: true,
+        },
+      });
+      await tx.programTraineeAssignment.create({
+        data: { programId: created.id, traineeId },
+      });
+      return created;
+    });
+
+    return {
+      programId: program.id,
+      message: t(TRAINEE_I18N_KEYS.selfProgramCreated, language),
+    };
+  }
+
+  async createSelfSession(
+    traineeId: string,
+    programId: string,
+    input: CreateSessionInput,
+    language: SupportedLanguage
+  ) {
+    await this.assertSelfProgram(traineeId, programId);
+
+    const session = await prisma.workoutSession.create({
+      data: {
+        programId,
+        name: input.name,
+        sessionType: input.sessionType,
+        scheduledDate: null,
+        estimatedDurationMinutes: input.estimatedDurationMinutes,
+        notes: input.notes,
+        status: SessionStatus.draft,
+      },
+    });
+
+    return {
+      sessionId: session.id,
+      message: t(TRAINEE_I18N_KEYS.selfSessionCreated, language),
+    };
+  }
+
+  async addSelfExercises(
+    traineeId: string,
+    programId: string,
+    sessionId: string,
+    input: AddExercisesInput,
+    language: SupportedLanguage
+  ) {
+    await this.assertSelfProgram(traineeId, programId);
+
+    const session = await prisma.workoutSession.findFirst({
+      where: { id: sessionId, programId },
+      include: { exercises: true },
+    });
+    if (!session) {
+      throw new AppError(
+        TRAINEE_ERROR_CODES.SESSION_NOT_FOUND,
+        TRAINEE_I18N_KEYS.sessionNotFound,
+        404
+      );
+    }
+
+    const { ptService } = await import('./pt.service');
+    const result = await ptService.addExercises(traineeId, programId, sessionId, input, language);
+    return result;
+  }
+
+  async scheduleSelfSession(
+    traineeId: string,
+    programId: string,
+    sessionId: string,
+    input: ScheduleSessionInput,
+    language: SupportedLanguage
+  ) {
+    await this.assertSelfProgram(traineeId, programId);
+
+    const { ptService } = await import('./pt.service');
+    return ptService.scheduleSession(traineeId, programId, sessionId, input, language);
   }
 }
 

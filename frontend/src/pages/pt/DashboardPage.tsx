@@ -15,8 +15,17 @@ import {
   CardTitle,
 } from '@/components/template';
 import { Button } from '@/components/template';
+import { Badge } from '@/components/ui/badge';
 import { ptApi, getApiErrorMessage } from '@/services/pt.service';
 import { PtActivityItem, PtDashboardResponse } from '@/types/pt';
+
+const activityTagVariant = (tag: string): 'default' | 'secondary' | 'success' | 'warning' => {
+  if (tag === 'workout_log') return 'success';
+  if (tag === 'program_created') return 'default';
+  if (tag === 'invite_accepted') return 'success';
+  if (tag === 'invite_rejected') return 'warning';
+  return 'secondary';
+};
 
 export const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
@@ -109,7 +118,14 @@ export const DashboardPage: React.FC = () => {
                         className="flex flex-col gap-1 border-b pb-3 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div>
-                          <p className="font-medium">{item.title}</p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge variant={activityTagVariant(item.tag)}>
+                              {t(`pt.dashboard.activityTags.${item.tag}`, {
+                                defaultValue: item.tag,
+                              })}
+                            </Badge>
+                            <p className="font-medium">{item.title}</p>
+                          </div>
                           <p className="text-sm text-muted-foreground">{item.subtitle}</p>
                         </div>
                         <span className="text-xs text-muted-foreground">

@@ -65,6 +65,7 @@ export interface TraineeProfileSettings {
   heightCm: number | null;
   currentWeightKg: number | null;
   goal: string | null;
+  trainingMode: string;
   injuryHistory: string | null;
 }
 

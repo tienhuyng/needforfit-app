@@ -235,6 +235,7 @@ export class AuthService {
       currentWeightKg:
         profile.currentWeightKg != null ? Number(profile.currentWeightKg) : null,
       goal: profile.goal,
+      trainingMode: profile.trainingMode,
       injuryHistory: profile.injuryHistory,
     };
   }
@@ -310,6 +311,9 @@ export class AuthService {
       }
       if (input.injuryHistory !== undefined) {
         traineeData.injuryHistory = input.injuryHistory.trim() || null;
+      }
+      if (input.trainingMode !== undefined) {
+        traineeData.trainingMode = input.trainingMode;
       }
 
       if (Object.keys(traineeData).length > 0) {

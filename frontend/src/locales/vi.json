@@ -3,6 +3,23 @@
     "back": "Quay lại",
     "loading": "Đang tải..."
   },
+  "public": {
+    "tagline": "Nền tảng Quản lý Tập luyện & Huấn luyện",
+    "availableSoon": "Sắp ra mắt",
+    "memberCardTitle": "Thành viên Needforfit",
+    "memberCardDesc": "Đăng nhập để truy cập huấn luyện, chương trình và theo dõi buổi tập.",
+    "memberCardCta": "Đăng nhập",
+    "freeMemberCardTitle": "Thành viên miễn phí",
+    "freeMemberCardDesc": "Khám phá các công cụ miễn phí sắp ra mắt.",
+    "freeMemberCardCta": "Khám phá",
+    "freeToolsTitle": "Công cụ miễn phí",
+    "mealPlanner": "Meal Planner",
+    "bmiCalculator": "BMI Calculator",
+    "workoutReference": "Workout Reference",
+    "availableSoonTitle": "Sắp ra mắt",
+    "availableSoonDesc": "Tính năng đang được phát triển. Hãy quay lại sau!",
+    "backToHome": "Về trang chủ"
+  },
   "auth": {
     "common": {
       "showPassword": "Hiện",
@@ -88,6 +105,17 @@
       "goal": "Mục tiêu tập",
       "goalUnset": "Chưa chọn",
       "injuryHistory": "Tiền sử chấn thương / hạn chế",
+      "role": "Vai trò tài khoản",
+      "roleTrainee": "Học viên",
+      "rolePt": "Huấn luyện viên cá nhân",
+      "roleAdmin": "Quản trị viên",
+      "theme": "Giao diện",
+      "themeLight": "Sáng",
+      "themeDark": "Tối",
+      "trainingMode": "Chế độ tập",
+      "trainingModeCoached": "Có PT (Coached)",
+      "trainingModeSelf": "Tự tập (Self-training)",
+      "trainingModeDesc": "Tự tập cho phép bạn tạo chương trình riêng mà không cần PT mời.",
       "submit": "Lưu thay đổi",
       "submitting": "Đang lưu...",
       "success": "Cập nhật hồ sơ thành công.",
@@ -131,7 +159,14 @@
       "viewAll": "Xem tất cả",
       "recentActivity": "Hoạt động gần đây",
       "recentActivityDesc": "Buổi tập và cập nhật chương trình mới nhất.",
-      "noActivity": "Không có hoạt động gần đây."
+      "noActivity": "Không có hoạt động gần đây.",
+      "activityTags": {
+        "workout_log": "Nhật ký tập",
+        "program_created": "Chương trình",
+        "invite_accepted": "Chấp nhận lời mời",
+        "invite_rejected": "Từ chối lời mời",
+        "notification": "Cập nhật"
+      }
     },
     "trainees": {
       "title": "Học viên",
@@ -283,7 +318,8 @@
       "inviteSent": "Đã gửi lời mời.",
       "inviteResent": "Đã gửi lại lời mời.",
       "inviteCancelled": "Đã hủy lời mời.",
-      "workoutDeleted": "Đã xóa buổi tập."
+      "workoutDeleted": "Đã xóa buổi tập.",
+      "sessionScheduled": "Lên lịch buổi tập thành công."
     },
     "programList": {
       "title": "Chương trình",
@@ -305,7 +341,20 @@
       "deleteWorkout": "Xóa buổi tập",
       "deleteWorkoutConfirm": "Xóa buổi tập \"{{name}}\"? Không thể hoàn tác.",
       "assignedTrainees": "Học viên được gán",
-      "noAssignees": "Chưa gán cho học viên nào."
+      "noAssignees": "Chưa gán cho học viên nào.",
+      "unscheduled": "Chưa lên lịch"
+    },
+    "schedule": {
+      "button": "Lên lịch",
+      "title": "Lên lịch buổi tập",
+      "desc": "Chọn một hoặc nhiều ngày cho \"{{name}}\".",
+      "pickDate": "Ngày",
+      "addDate": "Thêm ngày",
+      "removeDate": "Xóa ngày",
+      "empty": "Chưa chọn ngày nào.",
+      "dateRequired": "Chọn ít nhất một ngày.",
+      "submit": "Lưu lịch",
+      "submitting": "Đang lưu..."
     },
     "assign": {
       "title": "Gán chương trình",
@@ -377,6 +426,33 @@
       "noPrograms": "Chưa có chương trình được gán.",
       "exercises": "bài tập",
       "sessions": "buổi tập"
+    },
+    "programs": {
+      "title": "Chương trình của tôi",
+      "empty": "Chưa có chương trình được gán.",
+      "sessionsDone": "buổi tập hoàn thành",
+      "sessionsTitle": "Buổi tập trong chương trình",
+      "noSessions": "Chưa có buổi tập trong chương trình này.",
+      "completed": "Đã hoàn thành"
+    },
+    "selfTraining": {
+      "createProgramLink": "Tạo chương trình",
+      "createProgramTitle": "Tạo chương trình tự tập",
+      "createProgramDesc": "Tự xây dựng chương trình — không cần PT gán.",
+      "createProgramSubmit": "Tạo & thêm buổi tập",
+      "createWorkoutTitle": "Thêm buổi tập",
+      "createWorkoutDesc": "Tạo mẫu buổi tập cho chương trình của bạn.",
+      "createWorkoutSubmit": "Tạo & thêm bài tập",
+      "addWorkout": "Thêm buổi tập",
+      "ptLabel": "Tự tập",
+      "templateBadge": "Mẫu"
+    },
+    "session": {
+      "title": "Chi tiết buổi tập",
+      "exercises": "Bài tập kế hoạch",
+      "logWorkout": "Ghi nhận buổi tập",
+      "locked": "Buổi tập này chưa thể ghi nhận.",
+      "viewDetail": "Xem chi tiết"
     },
     "log": {
       "title": "Ghi nhận buổi tập",
@@ -458,7 +534,8 @@
       "logSuccess": "Ghi nhận buổi tập thành công.",
       "metricSuccess": "Lưu chỉ số thành công.",
       "inviteAccepted": "Đã chấp nhận lời mời.",
-      "inviteDeclined": "Đã từ chối lời mời."
+      "inviteDeclined": "Đã từ chối lời mời.",
+      "sessionScheduled": "Lên lịch buổi tập thành công."
     },
     "errors": {
       "loadFailed": "Không thể tải dữ liệu. Vui lòng thử lại.",

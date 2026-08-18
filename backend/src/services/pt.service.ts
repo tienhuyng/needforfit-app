@@ -17,6 +17,7 @@ import {
   CreateProgramInput,
   CreateSessionInput,
   InviteTraineeInput,
+  ScheduleSessionInput,
   TraineeListQuery,
   UpdateProgramInput,
   UpdateSessionInput,
@@ -36,6 +37,7 @@ import {
   TraineeListItem,
 } from '../types/pt';
 import { getCurrentVersionExercises } from '../utils/session-exercises';
+import { hasScheduledDate } from '../utils/session-schedule';
 import { createUserNotification, formatUserName } from '../utils/user-notifications';
 
 type FlatExerciseInput = {
@@ -171,6 +173,7 @@ export class PtService {
       ...recentLogs.map((log) => ({
         id: log.id,
         type: 'workout_log' as const,
+        tag: 'workout_log',
         title: `${log.trainee.firstName ?? ''} ${log.trainee.lastName ?? ''}`.trim() || log.trainee.email,
         subtitle: `${log.session.name} · ${log.session.program.name}`,
         occurredAt: log.createdAt.toISOString(),
@@ -178,6 +181,7 @@ export class PtService {
       ...recentPrograms.map((p) => ({
         id: p.id,
         type: 'program_created' as const,
+        tag: 'program_created',
         title: p.name,
         subtitle: p.programType,
         occurredAt: p.createdAt.toISOString(),
@@ -185,6 +189,7 @@ export class PtService {
       ...recentNotifications.map((n) => ({
         id: n.id,
         type: 'assignment' as const,
+        tag: n.type === 'invite_accepted' ? 'invite_accepted' : n.type === 'invite_rejected' ? 'invite_rejected' : 'notification',
         title: n.title,
         subtitle: n.body,
         occurredAt: n.createdAt.toISOString(),
@@ -402,9 +407,10 @@ export class PtService {
         programId,
         name: input.name,
         sessionType: input.sessionType,
-        scheduledDate: new Date(input.scheduledDate),
+        scheduledDate: null,
         estimatedDurationMinutes: input.estimatedDurationMinutes,
         notes: input.notes,
+        status: SessionStatus.draft,
       },
     });
 
@@ -427,11 +433,75 @@ export class PtService {
       id: s.id,
       name: s.name,
       sessionType: s.sessionType,
-      scheduledDate: s.scheduledDate.toISOString().slice(0, 10),
+      scheduledDate: s.scheduledDate ? s.scheduledDate.toISOString().slice(0, 10) : null,
       estimatedDurationMinutes: s.estimatedDurationMinutes,
       status: s.status,
       exerciseCount: s._count.exercises,
     }));
+  }
+
+  async scheduleSession(
+    ptId: string,
+    programId: string,
+    sessionId: string,
+    input: ScheduleSessionInput,
+    lng: SupportedLanguage
+  ) {
+    await assertProgramOwned(ptId, programId);
+
+    const source = await prisma.workoutSession.findFirst({
+      where: { id: sessionId, programId },
+      include: { exercises: true },
+    });
+
+    if (!source) {
+      throw new AppError(PT_ERROR_CODES.SESSION_NOT_FOUND, PT_I18N_KEYS.sessionNotFound, 404);
+    }
+
+    const currentExercises = getCurrentVersionExercises(source.sessionVersion, source.exercises);
+    if (currentExercises.length === 0) {
+      throw new AppError(PT_ERROR_CODES.SESSION_NOT_FOUND, PT_I18N_KEYS.exerciseNameRequired, 400);
+    }
+
+    const createdIds: string[] = [];
+
+    await prisma.$transaction(async (tx) => {
+      for (const dateStr of input.dates) {
+        const scheduledDate = new Date(dateStr);
+        const created = await tx.workoutSession.create({
+          data: {
+            programId,
+            name: source.name,
+            sessionType: source.sessionType,
+            scheduledDate,
+            estimatedDurationMinutes: source.estimatedDurationMinutes,
+            notes: source.notes,
+            status: SessionStatus.active,
+            sessionVersion: 1,
+            exercises: {
+              create: currentExercises.map((e) => ({
+                exerciseName: e.exerciseName,
+                plannedSets: e.plannedSets,
+                plannedReps: e.plannedReps,
+                plannedWeightKg: e.plannedWeightKg,
+                restSeconds: e.restSeconds,
+                notes: e.notes,
+                orderIndex: e.orderIndex,
+                blockIndex: e.blockIndex,
+                blockType: e.blockType,
+                sessionVersion: 1,
+              })),
+            },
+          },
+        });
+        createdIds.push(created.id);
+      }
+    });
+
+    return {
+      createdSessionIds: createdIds,
+      message: t(PT_I18N_KEYS.sessionScheduled, lng),
+    };
   }
 
   async addExercises(
@@ -559,7 +629,7 @@ export class PtService {
         id: s.id,
         name: s.name,
         sessionType: s.sessionType,
-        scheduledDate: s.scheduledDate.toISOString().slice(0, 10),
+        scheduledDate: s.scheduledDate ? s.scheduledDate.toISOString().slice(0, 10) : null,
         estimatedDurationMinutes: s.estimatedDurationMinutes,
         status: s.status,
         exerciseCount: s._count.exercises,
@@ -664,7 +734,9 @@ export class PtService {
       id: session.id,
       name: session.name,
       sessionType: session.sessionType,
-      scheduledDate: session.scheduledDate.toISOString().slice(0, 10),
+      scheduledDate: session.scheduledDate
+        ? session.scheduledDate.toISOString().slice(0, 10)
+        : null,
       estimatedDurationMinutes: session.estimatedDurationMinutes,
       status: session.status,
       exerciseCount: currentExercises.length,
@@ -722,9 +794,6 @@ export class PtService {
         data: {
           ...(input.name !== undefined ? { name: input.name } : {}),
           ...(input.sessionType !== undefined ? { sessionType: input.sessionType } : {}),
-          ...(input.scheduledDate !== undefined
-            ? { scheduledDate: new Date(input.scheduledDate) }
-            : {}),
           ...(input.estimatedDurationMinutes !== undefined
             ? { estimatedDurationMinutes: input.estimatedDurationMinutes }
             : {}),

@@ -9,6 +9,12 @@ import {
   RespondPtInviteInput,
   WorkoutHistoryQuery,
 } from '../validators/trainee.validator';
+import {
+  AddExercisesInput,
+  CreateProgramInput,
+  CreateSessionInput,
+  ScheduleSessionInput,
+} from '../validators/pt.validator';
 
 function getTraineeId(req: Request): string {
   if (!req.user) throw new Error('Unauthorized');
@@ -87,4 +93,47 @@ export const getProgramSessionDetail = asyncHandler(async (req: Request, res: Re
 export const getMetricsProgress = asyncHandler(async (req: Request, res: Response) => {
   const data = await traineeService.getMetricsProgress(getTraineeId(req));
   res.json(buildSuccessResponse(data));
+});
+
+export const createSelfProgram = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as CreateProgramInput;
+  const result = await traineeService.createSelfProgram(getTraineeId(req), input, req.language);
+  res.status(201).json(buildSuccessResponse(result, result.message));
+});
+
+export const createSelfSession = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as CreateSessionInput;
+  const result = await traineeService.createSelfSession(
+    getTraineeId(req),
+    req.params.programId,
+    input,
+    req.language
+  );
+  res.status(201).json(buildSuccessResponse(result, result.message));
+});
+
+export const addSelfExercises = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as AddExercisesInput;
+  const result = await traineeService.addSelfExercises(
+    getTraineeId(req),
+    req.params.programId,
+    req.params.sessionId,
+    input,
+    req.language
+  );
+  res.status(201).json(buildSuccessResponse({ exercises: result.exercises }, result.message));
+});
+
+export const scheduleSelfSession = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as ScheduleSessionInput;
+  const result = await traineeService.scheduleSelfSession(
+    getTraineeId(req),
+    req.params.programId,
+    req.params.sessionId,
+    input,
+    req.language
+  );
+  res.status(201).json(
+    buildSuccessResponse({ createdSessionIds: result.createdSessionIds }, result.message)
+  );
 });

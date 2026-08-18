@@ -9,6 +9,12 @@ import {
   respondPtInviteSchema,
   workoutHistoryQuerySchema,
 } from '../validators/trainee.validator';
+import {
+  addExercisesSchema,
+  createProgramSchema,
+  createSessionSchema,
+  scheduleSessionSchema,
+} from '../validators/pt.validator';
 
 const router = Router();
 
@@ -40,5 +46,22 @@ router.get(
   traineeController.getMetricsHistory
 );
 router.get('/metrics/progress', traineeController.getMetricsProgress);
+
+router.post('/self-programs', validateBody(createProgramSchema), traineeController.createSelfProgram);
+router.post(
+  '/self-programs/:programId/sessions',
+  validateBody(createSessionSchema),
+  traineeController.createSelfSession
+);
+router.post(
+  '/self-programs/:programId/sessions/:sessionId/exercises',
+  validateBody(addExercisesSchema),
+  traineeController.addSelfExercises
+);
+router.post(
+  '/self-programs/:programId/sessions/:sessionId/schedule',
+  validateBody(scheduleSessionSchema),
+  traineeController.scheduleSelfSession
+);
 
 export default router;

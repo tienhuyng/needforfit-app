@@ -19,6 +19,7 @@ import {
 import { FormLabel } from '@/components/common/FormLabel';
 import { Badge } from '@/components/ui/badge';
 import { ptApi, getApiErrorMessage } from '@/services/pt.service';
+import { ScheduleWorkoutModal } from '@/components/pt/ScheduleWorkoutModal';
 import { ProgramDetailResponse } from '@/types/pt';
 import { createProgramSchema, CreateProgramFormData } from '@/utils/pt-validation';
 
@@ -30,6 +31,8 @@ export const ProgramDetailPage: React.FC = () => {
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [assignOpen, setAssignOpen] = useState(false);
+  const [scheduleSessionId, setScheduleSessionId] = useState<string | null>(null);
+  const [scheduleSessionName, setScheduleSessionName] = useState('');
 
   const schema = createProgramSchema(t);
   const {
@@ -193,7 +196,8 @@ export const ProgramDetailPage: React.FC = () => {
                       <div>
                         <p className="font-medium">{s.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {s.scheduledDate} · {s.exerciseCount} {t('pt.programDetail.exercises')}
+                          {s.scheduledDate ?? t('pt.programDetail.unscheduled')} · {s.exerciseCount}{' '}
+                          {t('pt.programDetail.exercises')}
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-2">
@@ -201,6 +205,17 @@ export const ProgramDetailPage: React.FC = () => {
                           <Link to={`/pt/programs/${programId}/sessions/${s.id}/edit`}>
                             {t('pt.programDetail.editSession')}
                           </Link>
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => {
+                            setScheduleSessionId(s.id);
+                            setScheduleSessionName(s.name);
+                          }}
+                        >
+                          {t('pt.schedule.button')}
                         </Button>
                         <Button asChild size="sm">
                           <Link to={`/pt/programs/${programId}/sessions/${s.id}/exercises`}>
@@ -252,6 +267,18 @@ export const ProgramDetailPage: React.FC = () => {
           onAssigned={() => {
             setSuccess(t('pt.messages.programAssigned'));
             void load();
+          }}
+        />
+
+        <ScheduleWorkoutModal
+          open={scheduleSessionId != null}
+          workoutName={scheduleSessionName}
+          onClose={() => setScheduleSessionId(null)}
+          onSubmit={async (dates) => {
+            if (!scheduleSessionId) return;
+            await ptApi.scheduleSession(programId, scheduleSessionId, dates);
+            setSuccess(t('pt.messages.sessionScheduled'));
+            await load();
           }}
         />
       </div>

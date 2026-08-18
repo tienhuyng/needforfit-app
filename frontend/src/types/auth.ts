@@ -17,6 +17,7 @@ export interface TraineeProfileSettings {
   currentWeightKg: number | null;
   goal: string | null;
   injuryHistory: string | null;
+  trainingMode: 'self_training' | 'coached' | null;
 }
 
 export interface ProfileResponse {

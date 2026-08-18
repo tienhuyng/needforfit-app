@@ -125,6 +125,18 @@ export const ptApi = {
     await api.delete(`/pt/programs/${programId}/sessions/${sessionId}`);
   },
 
+  scheduleSession: async (
+    programId: string,
+    sessionId: string,
+    dates: string[]
+  ): Promise<{ createdSessionIds: string[] }> => {
+    const res = await api.post<ApiSuccessResponse<{ createdSessionIds: string[] }>>(
+      `/pt/programs/${programId}/sessions/${sessionId}/schedule`,
+      { dates }
+    );
+    return res.data.data;
+  },
+
   inviteTrainee: async (email: string) => {
     const res = await api.post<ApiSuccessResponse<unknown>>('/pt/trainees/invite', { email });
     return res.data;

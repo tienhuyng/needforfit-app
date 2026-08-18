@@ -3,6 +3,23 @@
     "back": "Back",
     "loading": "Loading..."
   },
+  "public": {
+    "tagline": "Workout & Coaching Management Platform",
+    "availableSoon": "Available Soon",
+    "memberCardTitle": "Needforfit Member",
+    "memberCardDesc": "Sign in to access coaching, programs, and workout tracking.",
+    "memberCardCta": "Sign in",
+    "freeMemberCardTitle": "Free Member",
+    "freeMemberCardDesc": "Explore free tools and features coming soon.",
+    "freeMemberCardCta": "Explore",
+    "freeToolsTitle": "Free tools",
+    "mealPlanner": "Meal Planner",
+    "bmiCalculator": "BMI Calculator",
+    "workoutReference": "Workout Reference",
+    "availableSoonTitle": "Coming Soon",
+    "availableSoonDesc": "This feature is under development. Check back later!",
+    "backToHome": "Back to home"
+  },
   "auth": {
     "common": {
       "showPassword": "Show",
@@ -88,6 +105,17 @@
       "goal": "Training goal",
       "goalUnset": "Not set",
       "injuryHistory": "Injury history / limitations",
+      "role": "Account role",
+      "roleTrainee": "Trainee",
+      "rolePt": "Personal Trainer",
+      "roleAdmin": "Administrator",
+      "theme": "Appearance",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "trainingMode": "Training mode",
+      "trainingModeCoached": "Coached (with PT)",
+      "trainingModeSelf": "Self-training",
+      "trainingModeDesc": "Self-training lets you create your own programs without a PT invite.",
       "submit": "Save changes",
       "submitting": "Saving...",
       "success": "Profile updated successfully.",
@@ -131,7 +159,14 @@
       "viewAll": "View all",
       "recentActivity": "Recent Activity",
       "recentActivityDesc": "Latest workouts and program updates.",
-      "noActivity": "No recent activity."
+      "noActivity": "No recent activity.",
+      "activityTags": {
+        "workout_log": "Workout log",
+        "program_created": "Program",
+        "invite_accepted": "Invite accepted",
+        "invite_rejected": "Invite declined",
+        "notification": "Update"
+      }
     },
     "trainees": {
       "title": "Trainees",
@@ -283,7 +318,8 @@
       "inviteSent": "Invitation sent successfully.",
       "inviteResent": "Invitation resent successfully.",
       "inviteCancelled": "Invitation cancelled.",
-      "workoutDeleted": "Workout deleted successfully."
+      "workoutDeleted": "Workout deleted successfully.",
+      "sessionScheduled": "Workout scheduled successfully."
     },
     "programList": {
       "title": "Programs",
@@ -305,7 +341,20 @@
       "deleteWorkout": "Delete workout",
       "deleteWorkoutConfirm": "Delete workout \"{{name}}\"? This cannot be undone.",
       "assignedTrainees": "Assigned trainees",
-      "noAssignees": "Not assigned to any trainee yet."
+      "noAssignees": "Not assigned to any trainee yet.",
+      "unscheduled": "Not scheduled"
+    },
+    "schedule": {
+      "button": "Schedule",
+      "title": "Schedule workout",
+      "desc": "Pick one or more dates for \"{{name}}\".",
+      "pickDate": "Date",
+      "addDate": "Add date",
+      "removeDate": "Remove date",
+      "empty": "No dates selected yet.",
+      "dateRequired": "Select at least one date.",
+      "submit": "Save schedule",
+      "submitting": "Saving..."
     },
     "assign": {
       "title": "Assign program",
@@ -387,11 +436,24 @@
       "noSessions": "No workouts in this program.",
       "completed": "Completed"
     },
+    "selfTraining": {
+      "createProgramLink": "Create program",
+      "createProgramTitle": "Create self-training program",
+      "createProgramDesc": "Build your own program — no PT assignment required.",
+      "createProgramSubmit": "Create & add workout",
+      "createWorkoutTitle": "Add workout",
+      "createWorkoutDesc": "Create a workout template for your program.",
+      "createWorkoutSubmit": "Create & add exercises",
+      "addWorkout": "Add workout",
+      "ptLabel": "Self-training",
+      "templateBadge": "Template"
+    },
     "session": {
       "title": "Workout detail",
       "exercises": "Planned exercises",
       "logWorkout": "Log workout",
-      "locked": "This workout is not available for logging."
+      "locked": "This workout is not available for logging.",
+      "viewDetail": "View detail"
     },
     "log": {
       "title": "Log Workout",
@@ -471,7 +533,8 @@
     },
     "messages": {
       "logSuccess": "Workout logged successfully.",
-      "metricSuccess": "Body metrics saved successfully."
+      "metricSuccess": "Body metrics saved successfully.",
+      "sessionScheduled": "Workout scheduled successfully."
     },
     "errors": {
       "loadFailed": "Failed to load data. Please try again.",

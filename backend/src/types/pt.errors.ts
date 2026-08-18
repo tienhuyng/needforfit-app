@@ -31,6 +31,7 @@ export const PT_I18N_KEYS = {
   positiveNumber: 'pt.errors.positiveNumber',
   programCreated: 'pt.messages.programCreated',
   sessionCreated: 'pt.messages.sessionCreated',
+  sessionScheduled: 'pt.messages.sessionScheduled',
   exercisesAdded: 'pt.messages.exercisesAdded',
   programUpdated: 'pt.messages.programUpdated',
   programAssigned: 'pt.messages.programAssigned',

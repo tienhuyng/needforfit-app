@@ -86,6 +86,7 @@ export const authApi = {
     currentWeightKg?: number;
     goal?: string;
     injuryHistory?: string;
+    trainingMode?: 'self_training' | 'coached';
   }): Promise<import('@/types/auth').ProfileResponse> => {
     const res = await api.put<ApiSuccessResponse<import('@/types/auth').ProfileResponse>>(
       '/auth/profile',

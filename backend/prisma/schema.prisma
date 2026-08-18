@@ -36,6 +36,11 @@ enum TraineeGoal {
   improve_posture
 }
 
+enum TrainingMode {
+  self_training
+  coached
+}
+
 enum AssignmentStatus {
   invite_pending
   invite_rejected
@@ -152,6 +157,7 @@ model TraineeProfile {
   heightCm        Decimal?     @map("height_cm") @db.Decimal(5, 2)
   currentWeightKg Decimal?     @map("current_weight_kg") @db.Decimal(5, 2)
   goal            TraineeGoal?
+  trainingMode    TrainingMode @default(coached) @map("training_mode")
   injuryHistory   String?      @map("injury_history")
   createdAt       DateTime     @default(now()) @map("created_at")
   updatedAt       DateTime     @updatedAt @map("updated_at")
@@ -205,9 +211,10 @@ model TrainingProgram {
   status        ProgramStatus @default(draft)
   startDate     DateTime?     @map("start_date") @db.Date
   endDate       DateTime?     @map("end_date") @db.Date
-  notes         String?
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  notes           String?
+  isSelfTraining  Boolean       @default(false) @map("is_self_training")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
 
   pt          User                     @relation(fields: [ptId], references: [id], onDelete: Cascade)
   sessions    WorkoutSession[]
@@ -236,7 +243,7 @@ model WorkoutSession {
   programId                String        @map("program_id")
   name                     String
   sessionType              SessionType   @map("session_type")
-  scheduledDate            DateTime      @map("scheduled_date") @db.Date
+  scheduledDate            DateTime?     @map("scheduled_date") @db.Date
   estimatedDurationMinutes Int?          @map("estimated_duration_minutes")
   notes                    String?
   status                   SessionStatus @default(draft)

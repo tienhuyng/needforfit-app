@@ -19,7 +19,6 @@ export function createSessionSchema(t: TFunction) {
     sessionType: z.enum(['strength', 'cardio', 'flexibility'], {
       errorMap: () => ({ message: t('pt.errors.sessionTypeInvalid') }),
     }),
-    scheduledDate: z.string().min(1, t('pt.errors.scheduledDateRequired')),
     estimatedDurationMinutes: z.coerce
       .number()
       .int()

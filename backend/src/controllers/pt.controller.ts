@@ -12,6 +12,7 @@ import {
   TraineeListQuery,
   UpdateProgramInput,
   UpdateSessionInput,
+  ScheduleSessionInput,
 } from '../validators/pt.validator';
 
 export const getDashboard = asyncHandler(async (req: Request, res: Response) => {
@@ -98,6 +99,18 @@ export const updateSession = asyncHandler(async (req: Request, res: Response) =>
     req.language
   );
   res.json(buildSuccessResponse(result.session, result.message));
+});
+
+export const scheduleSession = asyncHandler(async (req: Request, res: Response) => {
+  const input = req.body as ScheduleSessionInput;
+  const result = await ptService.scheduleSession(
+    getPtId(req),
+    req.params.id,
+    req.params.sessionId,
+    input,
+    req.language
+  );
+  res.json(buildSuccessResponse(result, result.message));
 });
 
 export const addExercises = asyncHandler(async (req: Request, res: Response) => {

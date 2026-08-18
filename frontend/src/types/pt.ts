@@ -50,6 +50,7 @@ export interface PtDashboardTraineeRow {
 export interface PtActivityItem {
   id: string;
   type: PtActivityType;
+  tag: string;
   title: string;
   subtitle: string;
   occurredAt: string;
@@ -191,7 +192,7 @@ export interface SessionSummary {
   id: string;
   name: string;
   sessionType: SessionType;
-  scheduledDate: string;
+  scheduledDate: string | null;
   estimatedDurationMinutes: number | null;
   status: SessionStatus;
   exerciseCount: number;
@@ -202,7 +203,7 @@ export interface WorkoutSession {
   programId: string;
   name: string;
   sessionType: SessionType;
-  scheduledDate: string;
+  scheduledDate: string | null;
   estimatedDurationMinutes: number | null;
   notes: string | null;
   status: SessionStatus;
@@ -214,7 +215,7 @@ export interface WorkoutSession {
 export interface CreateSessionInput {
   name: string;
   sessionType: SessionType;
-  scheduledDate: string;
+  scheduledDate?: string | null;
   estimatedDurationMinutes?: number;
   notes?: string;
 }

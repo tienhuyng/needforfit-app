@@ -88,4 +88,42 @@ export const traineeApi = {
     const res = await api.get<ApiSuccessResponse<MetricsProgressResponse>>('/trainee/metrics/progress');
     return res.data.data;
   },
+
+  createSelfProgram: async (
+    data: import('@/utils/pt-validation').CreateProgramFormData
+  ): Promise<{ programId: string }> => {
+    const res = await api.post<ApiSuccessResponse<{ programId: string }>>('/trainee/self-programs', data);
+    return res.data.data;
+  },
+
+  createSelfSession: async (
+    programId: string,
+    data: import('@/utils/pt-validation').CreateSessionFormData
+  ): Promise<{ sessionId: string }> => {
+    const res = await api.post<ApiSuccessResponse<{ sessionId: string }>>(
+      `/trainee/self-programs/${programId}/sessions`,
+      data
+    );
+    return res.data.data;
+  },
+
+  addSelfExercises: async (
+    programId: string,
+    sessionId: string,
+    data: { blocks: import('@/utils/pt-validation').AddExercisesFormData['blocks'] }
+  ): Promise<void> => {
+    await api.post(`/trainee/self-programs/${programId}/sessions/${sessionId}/exercises`, data);
+  },
+
+  scheduleSelfSession: async (
+    programId: string,
+    sessionId: string,
+    dates: string[]
+  ): Promise<{ createdSessionIds: string[] }> => {
+    const res = await api.post<ApiSuccessResponse<{ createdSessionIds: string[] }>>(
+      `/trainee/self-programs/${programId}/sessions/${sessionId}/schedule`,
+      { dates }
+    );
+    return res.data.data;
+  },
 };

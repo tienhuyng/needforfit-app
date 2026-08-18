@@ -60,6 +60,8 @@ const traineeGoalSchema = z.enum([
   'improve_posture',
 ]);
 
+const trainingModeSchema = z.enum(['self_training', 'coached']);
+
 export const updateProfileSchema = z.object({
   firstName: z
     .string({ required_error: AUTH_I18N_KEYS.firstNameRequired })
@@ -76,6 +78,7 @@ export const updateProfileSchema = z.object({
   currentWeightKg: z.coerce.number().positive().optional(),
   goal: traineeGoalSchema.optional().or(z.literal('')),
   injuryHistory: z.string().optional(),
+  trainingMode: trainingModeSchema.optional(),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

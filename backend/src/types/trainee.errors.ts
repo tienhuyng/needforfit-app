@@ -34,4 +34,7 @@ export const TRAINEE_I18N_KEYS = {
   inviteNotFound: 'trainee.errors.inviteNotFound',
   inviteAccepted: 'trainee.messages.inviteAccepted',
   inviteRejected: 'trainee.messages.inviteRejected',
+  selfTrainingDisabled: 'trainee.errors.selfTrainingDisabled',
+  selfProgramCreated: 'trainee.messages.selfProgramCreated',
+  selfSessionCreated: 'trainee.messages.selfSessionCreated',
 } as const;

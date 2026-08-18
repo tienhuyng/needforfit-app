@@ -14,7 +14,7 @@ import { createAddExercisesSchema, AddExercisesFormData } from '@/utils/pt-valid
 import { sessionExercisesToFormBlocks } from '@/utils/exercise-blocks';
 import { cn } from '@/lib/utils';
 
-const defaultExercise = {
+export const defaultExercise = {
   exerciseName: '',
   plannedSets: undefined,
   plannedReps: undefined,
@@ -23,7 +23,7 @@ const defaultExercise = {
   notes: '',
 };
 
-const defaultBlock = {
+export const defaultBlock = {
   blockType: 'normal' as const,
   exercises: [{ ...defaultExercise }],
 };
@@ -219,7 +219,7 @@ type BlockEditorProps = {
   onDragEnd: () => void;
 };
 
-const BlockExercisesEditor: React.FC<BlockEditorProps> = ({
+export const BlockExercisesEditor: React.FC<BlockEditorProps> = ({
   blockIndex,
   register,
   control,

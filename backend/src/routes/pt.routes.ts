@@ -11,6 +11,7 @@ import {
   inviteTraineeSchema,
   updateProgramSchema,
   updateSessionSchema,
+  scheduleSessionSchema,
 } from '../validators/pt.validator';
 
 const router = Router();
@@ -37,6 +38,11 @@ router.put(
   '/programs/:id/sessions/:sessionId',
   validateBody(updateSessionSchema),
   ptController.updateSession
+);
+router.post(
+  '/programs/:id/sessions/:sessionId/schedule',
+  validateBody(scheduleSessionSchema),
+  ptController.scheduleSession
 );
 router.delete('/programs/:id/sessions/:sessionId', ptController.deleteSession);
 router.post(
